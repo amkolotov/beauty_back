@@ -1,0 +1,44 @@
+[
+{
+    "model": "salon.review",
+    "pk": 1,
+    "fields": {
+        "created_at": "2023-01-02T13:34:03.669Z",
+        "updated_at": "2023-01-02T13:34:03.669Z",
+        "user": 2,
+        "rating": 4,
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Magna fringilla urna porttitor rhoncus dolor purus. Integer feugiat scelerisque varius morbi. Nisi est sit amet facilisis magna. Convallis a cras semper auctor.",
+        "salon": 2,
+        "spec": 4,
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.review",
+    "pk": 2,
+    "fields": {
+        "created_at": "2023-01-02T13:34:35.273Z",
+        "updated_at": "2023-01-02T13:34:35.273Z",
+        "user": 3,
+        "rating": 3,
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Magna fringilla urna porttitor rhoncus dolor purus. Integer feugiat scelerisque varius morbi. Nisi est sit amet facilisis magna. Convallis a cras semper auctor.",
+        "salon": 1,
+        "spec": 3,
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.review",
+    "pk": 3,
+    "fields": {
+        "created_at": "2023-01-02T13:35:15.154Z",
+        "updated_at": "2023-01-02T13:35:15.154Z",
+        "user": 2,
+        "rating": 4,
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Magna fringilla urna porttitor rhoncus dolor purus. Integer feugiat scelerisque varius morbi. Nisi est sit amet facilisis magna. Convallis a cras semper auctor.",
+        "salon": 2,
+        "spec": 1,
+        "is_publish": true
+    }
+}
+]

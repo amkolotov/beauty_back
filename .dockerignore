@@ -1,0 +1,7 @@
+.idea
+venv
+logs
+pg_data
+staticfiles
+.env
+.git

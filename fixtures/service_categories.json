@@ -1,0 +1,68 @@
+[
+{
+    "model": "service.servicecategory",
+    "pk": 1,
+    "fields": {
+        "created_at": "2022-12-30T11:46:08Z",
+        "updated_at": "2022-12-30T11:46:08Z",
+        "name": "Nails",
+        "img": "service_types/nails_wnyj6VY.webp",
+        "is_publish": true
+    }
+},
+{
+    "model": "service.servicecategory",
+    "pk": 2,
+    "fields": {
+        "created_at": "2022-12-30T11:46:39Z",
+        "updated_at": "2022-12-30T11:46:39Z",
+        "name": "Make-up",
+        "img": "service_types/make-up_WY6gXkF.webp",
+        "is_publish": true
+    }
+},
+{
+    "model": "service.servicecategory",
+    "pk": 3,
+    "fields": {
+        "created_at": "2022-12-30T11:46:55Z",
+        "updated_at": "2022-12-30T11:46:55Z",
+        "name": "Hair",
+        "img": "service_types/hair_zAUmiGQ.webp",
+        "is_publish": true
+    }
+},
+{
+    "model": "service.servicecategory",
+    "pk": 4,
+    "fields": {
+        "created_at": "2022-12-30T11:47:12Z",
+        "updated_at": "2022-12-30T11:47:12Z",
+        "name": "Brows",
+        "img": "service_types/brows_xAHnEi9.webp",
+        "is_publish": true
+    }
+},
+{
+    "model": "service.servicecategory",
+    "pk": 5,
+    "fields": {
+        "created_at": "2022-12-30T11:47:25Z",
+        "updated_at": "2022-12-30T11:47:25Z",
+        "name": "Cosmetics",
+        "img": "service_types/cosmetics_X5CuyQZ.webp",
+        "is_publish": true
+    }
+},
+{
+    "model": "service.servicecategory",
+    "pk": 6,
+    "fields": {
+        "created_at": "2022-12-30T11:47:44Z",
+        "updated_at": "2022-12-30T11:47:44Z",
+        "name": "Massage",
+        "img": "service_types/massage_QIMmxUj.webp",
+        "is_publish": true
+    }
+}
+]

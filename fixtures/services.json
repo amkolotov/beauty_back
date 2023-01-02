@@ -1,0 +1,186 @@
+[
+{
+    "model": "service.service",
+    "pk": 1,
+    "fields": {
+        "created_at": "2022-12-30T12:03:55Z",
+        "updated_at": "2022-12-30T12:03:55Z",
+        "name": "Базовый уход» + покрытие лаком",
+        "price": "3200.00",
+        "category": 4,
+        "is_publish": true,
+        "salons": [
+            1
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 2,
+    "fields": {
+        "created_at": "2022-12-30T12:06:01Z",
+        "updated_at": "2022-12-30T12:06:01Z",
+        "name": "«Интенсивный уход» + покрытие лаком",
+        "price": "3800.00",
+        "category": 4,
+        "is_publish": true,
+        "salons": [
+            1
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 3,
+    "fields": {
+        "created_at": "2022-12-30T12:06:42Z",
+        "updated_at": "2022-12-30T12:06:42Z",
+        "name": "Мужской маникюр-уход",
+        "price": "3200.00",
+        "category": 5,
+        "is_publish": false,
+        "salons": [
+            1
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 4,
+    "fields": {
+        "created_at": "2022-12-30T12:07:06Z",
+        "updated_at": "2022-12-30T12:07:06Z",
+        "name": "Маникюр детский (до 7 лет)",
+        "price": "1600.00",
+        "category": 5,
+        "is_publish": true,
+        "salons": [
+            1
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 5,
+    "fields": {
+        "created_at": "2022-12-30T12:07:41Z",
+        "updated_at": "2022-12-30T12:07:41Z",
+        "name": "Услуга для ногтей Стиль/Форма/Блеск",
+        "price": "1800.00",
+        "category": 3,
+        "is_publish": false,
+        "salons": [
+            1,
+            2
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 6,
+    "fields": {
+        "created_at": "2022-12-30T12:08:12Z",
+        "updated_at": "2022-12-30T12:08:12Z",
+        "name": "Авторский экспресс-уход от Christina Fitzgerald",
+        "price": "1500.00",
+        "category": 3,
+        "is_publish": true,
+        "salons": [
+            1,
+            2
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 7,
+    "fields": {
+        "created_at": "2022-12-30T12:08:37Z",
+        "updated_at": "2022-12-30T12:08:37Z",
+        "name": "Массаж рук (30 мин)",
+        "price": "1500.00",
+        "category": 6,
+        "is_publish": true,
+        "salons": [
+            2
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 8,
+    "fields": {
+        "created_at": "2022-12-30T12:09:02Z",
+        "updated_at": "2022-12-30T12:09:02Z",
+        "name": "Покрытие (лак: Smith&Cult, Сhristina Fitzgerald, LondonTown)",
+        "price": "1000.00",
+        "category": 6,
+        "is_publish": true,
+        "salons": [
+            2
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 9,
+    "fields": {
+        "created_at": "2022-12-30T12:09:24Z",
+        "updated_at": "2022-12-30T12:09:24Z",
+        "name": "Покрытие Genius (LondonTown)",
+        "price": "1000.00",
+        "category": 2,
+        "is_publish": true,
+        "salons": [
+            2
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 10,
+    "fields": {
+        "created_at": "2022-12-30T12:09:49Z",
+        "updated_at": "2022-12-30T12:09:49Z",
+        "name": "Покрытие (гель-лак LondonTown)",
+        "price": "180.00",
+        "category": 2,
+        "is_publish": true,
+        "salons": [
+            2
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 11,
+    "fields": {
+        "created_at": "2022-12-30T12:10:17Z",
+        "updated_at": "2022-12-30T12:10:17Z",
+        "name": "Покрытие (гель-лак Luxio)",
+        "price": "1800.00",
+        "category": 1,
+        "is_publish": true,
+        "salons": [
+            1,
+            2
+        ]
+    }
+},
+{
+    "model": "service.service",
+    "pk": 12,
+    "fields": {
+        "created_at": "2022-12-30T12:10:48Z",
+        "updated_at": "2022-12-30T12:10:48Z",
+        "name": "Укрепление ногтевой пластины (Akrygel)",
+        "price": "2000.00",
+        "category": 1,
+        "is_publish": true,
+        "salons": [
+            1,
+            2
+        ]
+    }
+}
+]

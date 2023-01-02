@@ -1,0 +1,98 @@
+[
+{
+    "model": "salon.workimg",
+    "pk": 1,
+    "fields": {
+        "created_at": "2022-12-30T14:45:38Z",
+        "updated_at": "2022-12-30T14:45:38Z",
+        "name": "work1",
+        "spec": 1,
+        "img": "works/work_HnZWNmX.png",
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.workimg",
+    "pk": 2,
+    "fields": {
+        "created_at": "2022-12-30T14:45:52Z",
+        "updated_at": "2022-12-30T14:45:52Z",
+        "name": "work2",
+        "spec": 1,
+        "img": "works/work2.png",
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.workimg",
+    "pk": 3,
+    "fields": {
+        "created_at": "2022-12-30T14:46:07Z",
+        "updated_at": "2022-12-30T14:46:07Z",
+        "name": "work3",
+        "spec": 2,
+        "img": "works/work3.png",
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.workimg",
+    "pk": 4,
+    "fields": {
+        "created_at": "2022-12-30T14:46:21Z",
+        "updated_at": "2022-12-30T14:46:21Z",
+        "name": "work4",
+        "spec": 2,
+        "img": "works/work4.png",
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.workimg",
+    "pk": 5,
+    "fields": {
+        "created_at": "2022-12-30T14:46:34Z",
+        "updated_at": "2022-12-30T14:46:34Z",
+        "name": "work5",
+        "spec": 4,
+        "img": "works/work5.png",
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.workimg",
+    "pk": 6,
+    "fields": {
+        "created_at": "2022-12-30T14:46:53Z",
+        "updated_at": "2022-12-30T14:46:53Z",
+        "name": "work6",
+        "spec": 4,
+        "img": "works/work6.png",
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.workimg",
+    "pk": 7,
+    "fields": {
+        "created_at": "2022-12-30T14:47:05Z",
+        "updated_at": "2022-12-30T14:47:05Z",
+        "name": "work7",
+        "spec": 3,
+        "img": "works/work3_zGcaIUe.png",
+        "is_publish": true
+    }
+},
+{
+    "model": "salon.workimg",
+    "pk": 8,
+    "fields": {
+        "created_at": "2022-12-30T14:47:20Z",
+        "updated_at": "2022-12-30T14:47:20Z",
+        "name": "work8",
+        "spec": 3,
+        "img": "works/work5_mmqWmA6.png",
+        "is_publish": true
+    }
+}
+]

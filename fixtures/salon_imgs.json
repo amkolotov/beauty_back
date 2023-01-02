@@ -1,0 +1,24 @@
+[
+{
+    "model": "salon.salonimg",
+    "pk": 1,
+    "fields": {
+        "created_at": "2022-12-30T10:17:13Z",
+        "updated_at": "2022-12-30T10:17:13Z",
+        "salon": 1,
+        "img": "salons/salon1.png",
+        "is_main": true
+    }
+},
+{
+    "model": "salon.salonimg",
+    "pk": 2,
+    "fields": {
+        "created_at": "2022-12-30T10:18:01Z",
+        "updated_at": "2022-12-30T10:18:01Z",
+        "salon": 2,
+        "img": "salons/salon2.png",
+        "is_main": true
+    }
+}
+]
