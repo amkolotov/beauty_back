@@ -48,9 +48,10 @@ services:
       - web
     labels:
       - "traefik.enable=true"
-      - "traefik.subdomain=beauty"
       - "traefik.http.services.beauty.loadbalancer.server.port=8002"
+      - "traefik.http.routers.beauty.rule=Host(`${DOMAIN}`)"
       - "traefik.http.routers.beauty.tls.certresolver=letsEncrypt"
+
 
 networks:
   default:
