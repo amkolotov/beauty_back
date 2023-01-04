@@ -1,4 +1,3 @@
-from decouple import config
 from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand, call_command
 

@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'admin_reorder',
+    # 'admin_reorder',
 
     'apps.auth_app',
     'apps.profile',
@@ -67,7 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'admin_reorder.middleware.ModelAdminReorder',
+    # 'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -264,14 +264,14 @@ LOGGING = {
     }
 }
 
-ADMIN_REORDER = [
-    {"app": "salon", "models": [
-        {'model': 'salon.CompanyInfo', 'label': 'Компания'},
-        'salon.Salon', 'salon.Specialist', 'service.ServiceCategory', 'service.Service',
-        'salon.Sale', 'salon.Review', 'service.Order',
-    ]},
-    {"app": "blog", "models": ["blog.Post"]},
-    {"app": "auth_app", "models": ["auth_app.User", 'auth.Group', 'auth_app.Code']},
-]
+# ADMIN_REORDER = [
+#     {"app": "salon", "models": [
+#         {'model': 'salon.CompanyInfo', 'label': 'Компания'},
+#         'salon.Salon', 'salon.Specialist', 'service.ServiceCategory', 'service.Service',
+#         'salon.Sale', 'salon.Review', 'service.Order',
+#     ]},
+#     {"app": "blog", "models": ["blog.Post"]},
+#     {"app": "auth_app", "models": ["auth_app.User", 'auth.Group', 'auth_app.Code']},
+# ]
 
 
