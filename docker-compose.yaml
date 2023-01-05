@@ -22,9 +22,9 @@ services:
       - ./staticfiles:/app/staticfiles
 
     depends_on:
-      - postgres
+      - beauty_postgres
     links:
-      - postgres
+      - beauty_postgres
 
   beauty_postgres:
     image: postgres:latest
@@ -46,7 +46,7 @@ services:
       - ./staticfiles:/app/staticfiles
       - ./media:/app/media
     depends_on:
-      - web
+      - beauty_web
     labels:
       - "traefik.enable=true"
       - "traefik.subdomain=beauty"
