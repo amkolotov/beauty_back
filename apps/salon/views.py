@@ -17,7 +17,7 @@ class MainSalonInfoView(APIView):
             .annotate(avg_rating=Avg('salon_reviews__rating')).all()
         data['salons'] = SalonListSerializer(salons, many=True).data
         company = CompanyInfo.objects.filter(is_publish=True).first()
-        data['company'] = CompanyInfoSerializer(company).data
+        data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
 
         if salon_id := request.GET.get('salon'):
 
@@ -51,8 +51,10 @@ class MainSalonInfoView(APIView):
                 )
             ).filter(services__salons=salon_id).distinct()
 
-            salon_data = SalonSerializer(salon).data
-            salon_data['service_categories'] = ServiceCategorySerializer(categories, many=True).data
+            salon_data = SalonSerializer(salon, context={'request': request}).data
+            salon_data['service_categories'] = ServiceCategorySerializer(
+                categories, many=True, context={'request': request}
+            ).data
             salon_data.update(data)
 
             return Response(salon_data)
