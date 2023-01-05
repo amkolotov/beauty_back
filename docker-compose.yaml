@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
 
-  web:
+  beauty_web:
     build: .
     restart: unless-stopped
     command: >
@@ -26,7 +26,7 @@ services:
     links:
       - postgres
 
-  postgres:
+  beauty_postgres:
     image: postgres:latest
     restart: unless-stopped
     expose:
@@ -36,7 +36,7 @@ services:
     volumes:
       - ./pg_data:/var/lib/postgresql/data
 
-  nginx:
+  beauty_nginx:
     restart: unless-stopped
     image: nginx:stable
     expose:
