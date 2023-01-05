@@ -4,6 +4,16 @@ from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg
 from apps.service.models import ServiceCategory, Service
 
 
+class SalonListSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для списка салонов"""
+
+    avg_rating = serializers.FloatField()
+
+    class Meta:
+        model = Salon
+        fields = ['id', 'name', 'address', 'avg_rating']
+
+
 class SalonImgSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для специалиста"""
 

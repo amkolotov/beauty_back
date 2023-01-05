@@ -1,10 +1,10 @@
-from django.db.models import Prefetch
-from rest_framework.permissions import AllowAny
+from django.db.models import Prefetch, Avg
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo
-from apps.salon.serializers import SalonSerializer, ServiceCategorySerializer, CompanyInfoSerializer
+from apps.salon.serializers import SalonSerializer, ServiceCategorySerializer, CompanyInfoSerializer, \
+    SalonListSerializer
 from apps.service.models import Service, ServiceCategory
 
 
@@ -12,6 +12,13 @@ class MainSalonInfoView(APIView):
     """Возвращает информацию для главной страницы"""
 
     def get(self, request):
+        data = {}
+        salons = Salon.objects.filter(is_publish=True)\
+            .annotate(avg_rating=Avg('salon_reviews__rating')).all()
+        data['salons'] = SalonListSerializer(salons, many=True).data
+        company = CompanyInfo.objects.filter(is_publish=True).first()
+        data['company'] = CompanyInfoSerializer(company).data
+
         if salon_id := request.GET.get('salon'):
 
             salon = Salon.objects.filter(id=salon_id, is_publish=True) \
@@ -44,10 +51,10 @@ class MainSalonInfoView(APIView):
                 )
             ).filter(services__salons=salon_id).distinct()
 
-            company = CompanyInfo.objects.filter(is_publish=True).first()
+            salon_data = SalonSerializer(salon).data
+            salon_data['service_categories'] = ServiceCategorySerializer(categories, many=True).data
+            salon_data.update(data)
 
-            data = SalonSerializer(salon).data
-            data['service_categories'] = ServiceCategorySerializer(categories, many=True).data
-            data['company'] = CompanyInfoSerializer(company).data
+            return Response(salon_data)
 
-            return Response(data)
+        return Response(data)
