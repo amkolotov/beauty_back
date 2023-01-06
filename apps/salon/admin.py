@@ -101,8 +101,8 @@ class SpecialistAdmin(admin.ModelAdmin):
 
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
-    list_display = ['title', 'desc', 'text', 'img', 'img_preview', 'is_publish', 'created_at', 'updated_at']
-    fields = ['title', 'desc', 'text', 'img', 'img_preview', 'salons', 'is_publish', ]
+    list_display = ['title', 'desc', 'img', 'img_preview', 'is_publish', 'created_at', 'updated_at']
+    fields = ['title', 'desc', 'text', 'button_text', 'img', 'img_preview', 'salons', 'is_publish', ]
     readonly_fields = ['img_preview']
     list_filter = ['is_publish']
     search_fields = ['name']
