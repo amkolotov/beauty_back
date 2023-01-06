@@ -4,22 +4,23 @@ from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg
 from apps.service.models import ServiceCategory, Service
 
 
-class SalonListSerializer(serializers.ModelSerializer):
-    """Класс сериалайзер для списка салонов"""
-
-    avg_rating = serializers.FloatField()
-
-    class Meta:
-        model = Salon
-        fields = ['id', 'name', 'address', 'avg_rating']
-
-
 class SalonImgSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для специалиста"""
 
     class Meta:
         model = SalonImg
         fields = ['id', 'img', 'is_main']
+
+
+class SalonListSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для списка салонов"""
+
+    salon_imgs = SalonImgSerializer(many=True)
+    avg_rating = serializers.FloatField()
+
+    class Meta:
+        model = Salon
+        fields = ['id', 'name', 'address', 'salon_imgs', 'avg_rating']
 
 
 class WorkImgSerializer(serializers.ModelSerializer):
@@ -30,15 +31,26 @@ class WorkImgSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'img']
 
 
+class ReviewSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для акции"""
+
+    username = serializers.CharField(source='user.username')
+
+    class Meta:
+        model = Review
+        fields = ['id', 'username', 'rating', 'text', 'text', 'spec', 'salon', 'created_at']
+
+
 class SpecialistSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для изображений салона"""
 
     work_imgs = WorkImgSerializer(many=True)
+    spec_reviews = ReviewSerializer(many=True)
 
     class Meta:
         model = Specialist
         fields = ['id', 'name', 'photo', 'position', 'experience', 'title',
-                  'text', 'services', 'work_imgs']
+                  'text', 'services', 'work_imgs', 'spec_reviews']
 
 
 class SaleSerializer(serializers.ModelSerializer):
@@ -46,15 +58,9 @@ class SaleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ['id', 'title', 'desc', 'text', 'img']
+        fields = ['id', 'title', 'desc', 'text', 'button_text', 'img']
 
 
-class ReviewSerializer(serializers.ModelSerializer):
-    """Класс сериалайзер для акции"""
-
-    class Meta:
-        model = Review
-        fields = ['id', 'user', 'rating', 'text', 'text', 'spec']
 
 
 class SalonSerializer(serializers.ModelSerializer):

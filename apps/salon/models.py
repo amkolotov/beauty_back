@@ -109,6 +109,7 @@ class Sale(BaseModel):
     title = models.CharField('Заголовок', max_length=128)
     desc = models.CharField('Описание', max_length=512)
     text = models.TextField('Текст')
+    button_text = models.CharField('Текст кнопки', max_length=29)
     img = models.ImageField('Изображение', upload_to='sales')
     salons = models.ManyToManyField(Salon, verbose_name='Салоны', related_name='sales')
     is_publish = models.BooleanField('Опубликована', default=False)

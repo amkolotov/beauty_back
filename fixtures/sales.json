@@ -8,6 +8,7 @@
         "title": "Friends sale -10%",
         "desc": "Приведи подругу и получи скидку на любую услугу -10%",
         "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "button_text": "Записать подругу",
         "img": "sales/card.webp",
         "is_publish": true,
         "salons": [
@@ -24,7 +25,8 @@
         "updated_at": "2023-01-02T04:40:53Z",
         "title": "Friends sale -15%",
         "desc": "Приведи подругу и получи скидку на любую услугу -15%",
-        "text": "Скидака 15%, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "text": "Скидка 15%, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "button_text": "Записать подругу",
         "img": "sales/Rectangle_19.webp",
         "is_publish": true,
         "salons": [
@@ -41,6 +43,7 @@
         "title": "Friends sale -20%",
         "desc": "Приведи подругу и получи скидку на любую услугу -20%",
         "text": "Скидка 20%. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "button_text": "Записать подругу",
         "img": "sales/Rectangle_18.webp",
         "is_publish": true,
         "salons": [

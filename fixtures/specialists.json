@@ -32,7 +32,7 @@
         "experience": "Стаж, 3 года",
         "title": "#стрижки #укладки #уход",
         "text": "Иванова Светлана. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Magna fringilla urna porttitor rhoncus dolor purus. Integer feugiat scelerisque varius morbi. Nisi est sit amet facilisis magna. Convallis a cras semper auctor.",
-        "is_publish": false,
+        "is_publish": true,
         "salons": [
             1
         ],
