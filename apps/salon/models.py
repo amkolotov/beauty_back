@@ -17,6 +17,7 @@ class CompanyInfo(BaseModel):
     img = models.ImageField('Изображение', upload_to='company')
     address = models.CharField('Адрес', max_length=128, null=True, blank=True)
     phone = PhoneField('Телефон', max_length=20, null=True, blank=True)
+    tagline = models.CharField('Слоган', max_length=256)
     decs = models.TextField('Описание')
     is_publish = models.BooleanField('Опубликована', default=False)
 
