@@ -73,7 +73,6 @@ class SalonSerializer(serializers.ModelSerializer):
         model = Salon
         fields = ['id', 'name', 'address', 'phone', 'desc', 'salon_imgs',
                   'specialists', 'sales', 'salon_reviews']
-        # depth = 2
 
 
 class ServiceSerializer(serializers.ModelSerializer):
@@ -91,7 +90,7 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ServiceCategory
-        fields = ['id', 'name', 'img', 'services']
+        fields = ['id', 'name', 'img', 'title', 'text', 'services']
 
 
 class CompanyInfoSerializer(serializers.ModelSerializer):

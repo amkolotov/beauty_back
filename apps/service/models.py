@@ -10,6 +10,9 @@ class ServiceCategory(BaseModel):
     """Модель категории услуг"""
     name = models.CharField('Наименование', max_length=128)
     img = models.ImageField('Изображение', upload_to='service_types')
+    title = models.CharField('Заголовок описания', max_length=128,
+                             null=True, blank=True)
+    text = models.TextField('Полное описание')
     is_publish = models.BooleanField('Опубликовано', default=False)
 
     class Meta:

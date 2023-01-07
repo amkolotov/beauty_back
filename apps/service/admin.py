@@ -6,8 +6,8 @@ from apps.service.models import ServiceCategory, Service, Order
 
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'img_preview', 'is_publish', 'created_at', 'updated_at']
-    fields = ['name', 'img', 'img_preview', 'is_publish']
+    list_display = ['name', 'img_preview', 'title', 'is_publish', 'created_at', 'updated_at']
+    fields = ['name', 'img', 'img_preview', 'title', 'text', 'is_publish']
     readonly_fields = ['img_preview']
     list_filter = ['is_publish']
     search_fields = ['name']
