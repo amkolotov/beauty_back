@@ -6,10 +6,10 @@ from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg,
 
 @admin.register(CompanyInfo)
 class CompanyInfoAdmin(admin.ModelAdmin):
-    list_display = ['name', 'logo_preview', 'img_preview', 'address', 'phone', 'is_publish',
+    list_display = ['name', 'logo_preview', 'tagline', 'img_preview', 'address', 'phone', 'is_publish',
                     'created_at', 'updated_at']
     fields = ['name', 'logo', 'logo_preview', 'img', 'img_preview', 'address',
-              'phone', 'decs', 'is_publish']
+              'phone', 'tagline', 'decs', 'is_publish']
     readonly_fields = ['logo_preview', 'img_preview']
 
     def logo_preview(self, obj):

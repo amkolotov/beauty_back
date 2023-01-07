@@ -61,8 +61,6 @@ class SaleSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'desc', 'text', 'button_text', 'img']
 
 
-
-
 class SalonSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для салона"""
 
