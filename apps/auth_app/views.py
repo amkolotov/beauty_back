@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 
 from rest_framework.permissions import IsAuthenticated
@@ -91,23 +90,3 @@ class ResetPasswordSetView(BaseGenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_200_OK)
-
-
-class ChangeUserDataView(UpdateAPIView):
-    """Изменение данных пользователя"""
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user
-
-
-class GetUserDataView(RetrieveAPIView):
-    """Получение данных пользователя"""
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user

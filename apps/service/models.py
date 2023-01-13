@@ -40,27 +40,3 @@ class Service(BaseModel):
 
     def __str__(self):
         return self.name
-
-
-class Order(BaseModel):
-    """Модель заявки"""
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True,
-                             verbose_name='Пользователь', related_name='orders')
-    salon = models.ForeignKey('salon.Salon', on_delete=models.CASCADE,
-                              verbose_name='Салон', related_name='salon_orders')
-    service = models.ForeignKey(Service, on_delete=models.SET_NULL, null=True,
-                                verbose_name='Услуга', related_name='service_orders')
-    spec = models.ForeignKey('salon.Specialist', on_delete=models.SET_NULL, null=True, blank=True,
-                             verbose_name='Cпециалист', related_name='spec_orders')
-    date = models.DateTimeField('Дата бронирования')
-    is_confirmed = models.BooleanField('Подтверждена', default=False)
-    is_canceled = models.BooleanField('Отменена', default=False)
-    is_completed = models.BooleanField('Выполнена', default=False)
-
-    class Meta:
-        ordering = ['user']
-        verbose_name = 'Заявка'
-        verbose_name_plural = 'Заявки'
-
-    def __str__(self):
-        return f'{self.salon}-{self.user}'

@@ -1,7 +1,28 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, Sale, Review
+from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, \
+    Sale, Review, Order, Messenger, MessengerImg, Notification
+
+
+class MessengerImgInlineAdmin(admin.TabularInline):
+    model = MessengerImg
+    exclude = ['id']
+    extra = 1
+
+
+class MessengerCompanyInlineAdmin(admin.TabularInline):
+    model = CompanyInfo.messengers.through
+    inlines = [MessengerImgInlineAdmin]
+    exclude = ['id']
+    extra = 1
+
+
+class SalonSalonInlineAdmin(admin.TabularInline):
+    model = Salon.messengers.through
+    inlines = [MessengerImgInlineAdmin]
+    exclude = ['id']
+    extra = 1
 
 
 @admin.register(CompanyInfo)
@@ -9,8 +30,9 @@ class CompanyInfoAdmin(admin.ModelAdmin):
     list_display = ['name', 'logo_preview', 'tagline', 'img_preview', 'address', 'phone', 'is_publish',
                     'created_at', 'updated_at']
     fields = ['name', 'logo', 'logo_preview', 'img', 'img_preview', 'address',
-              'phone', 'tagline', 'decs', 'is_publish']
+              'phone', 'email', 'tagline', 'decs', 'is_publish']
     readonly_fields = ['logo_preview', 'img_preview']
+    inlines = [MessengerCompanyInlineAdmin]
 
     def logo_preview(self, obj):
         if obj.logo:
@@ -43,14 +65,12 @@ class SalonImgInlineAdmin(admin.TabularInline):
 
 @admin.register(Salon)
 class SalonAdmin(admin.ModelAdmin):
-    list_display = ['name', 'address', 'phone', 'is_publish',
+    list_display = ['name', 'address', 'phone', 'email', 'is_publish',
                     'created_at', 'updated_at']
-    fields = ['name', 'address', 'phone', 'desc', 'is_publish', ]
-    inlines = [
-        SalonImgInlineAdmin
-    ]
+    fields = ['name', 'address', 'phone', 'email', 'desc', 'is_publish', ]
+    inlines = [SalonImgInlineAdmin, SalonSalonInlineAdmin]
     list_filter = ['name']
-    search_fields = ['name', 'address', 'phone']
+    search_fields = ['name', 'address', 'phone', 'email']
     ordering = ['-updated_at']
 
 
@@ -58,7 +78,7 @@ class WorkImgInlineAdmin(admin.TabularInline):
     model = WorkImg
     fields = ['name', 'img_preview', 'is_publish']
     readonly_fields = ['img_preview']
-    extra = 0
+    extra = 1
     list_filter = ['is_publish']
     search_fields = ['name']
     ordering = ['-updated_at']
@@ -77,9 +97,7 @@ class SpecialistAdmin(admin.ModelAdmin):
     fields = ['name', 'photo', 'photo_preview', 'position', 'experience', 'title', 'text',
               'services', 'salons', 'is_publish', ]
     readonly_fields = ['photo_preview']
-    inlines = [
-        WorkImgInlineAdmin
-    ]
+    inlines = [WorkImgInlineAdmin]
     list_filter = ['is_publish']
     search_fields = ['name']
     ordering = ['-updated_at']
@@ -131,4 +149,26 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ['user', 'salon', 'spec']
     ordering = ['-updated_at']
 
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['salon', 'service', 'spec', 'user', 'name', 'phone',  'date', 'status',
+                    'is_processed', 'created_at', 'updated_at']
+    fields = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'date', 'status', 'is_processed']
+    list_filter = ['salon', 'service', 'spec', 'status', 'is_processed']
+    search_fields = ['user', 'salon', 'service', 'spec', 'name', 'phone']
+    ordering = ['-updated_at']
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            return queryset
+        elif request.user.is_staff:
+            return queryset.filter(salons=request.user.profile.salon.id)
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ['text', 'is_publish', 'created_at', 'updated_at']
+    fields = ['text', 'is_publish']
 

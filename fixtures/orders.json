@@ -1,70 +1,66 @@
 [
 {
-    "model": "service.order",
+    "model": "salon.order",
     "pk": 1,
     "fields": {
         "created_at": "2023-01-02T13:37:30.259Z",
         "updated_at": "2023-01-02T13:37:30.259Z",
         "user": 2,
         "salon": 1,
-        "service": 12,
+        "service": 2,
         "spec": 4,
         "date": "2023-01-08T05:00:00Z",
-        "is_confirmed": true,
-        "is_canceled": false,
-        "is_completed": false
+        "status": "new",
+        "is_processed": false
     }
 },
 {
-    "model": "service.order",
+    "model": "salon.order",
     "pk": 2,
     "fields": {
         "created_at": "2023-01-02T13:37:48.083Z",
         "updated_at": "2023-01-02T13:37:48.083Z",
         "user": 2,
         "salon": 2,
-        "service": 5,
+        "service": 3,
         "spec": 1,
         "date": "2023-01-09T05:00:00Z",
-        "is_confirmed": true,
-        "is_canceled": false,
-        "is_completed": false
+        "status": "confirmed",
+        "is_processed": true
     }
 },
 {
-    "model": "service.order",
+    "model": "salon.order",
     "pk": 3,
     "fields": {
         "created_at": "2023-01-02T13:38:08.721Z",
         "updated_at": "2023-01-02T13:38:08.721Z",
         "user": 3,
         "salon": 2,
-        "service": 8,
+        "service": 4,
         "spec": 2,
         "date": "2023-01-10T10:00:00Z",
-        "is_confirmed": true,
-        "is_canceled": true,
-        "is_completed": false
+        "status": "canceled",
+        "is_processed": true
     }
 },
 {
-    "model": "service.order",
+    "model": "salon.order",
     "pk": 4,
     "fields": {
         "created_at": "2023-01-02T13:38:26.351Z",
         "updated_at": "2023-01-02T13:38:26.351Z",
         "user": 2,
         "salon": 1,
-        "service": 3,
+        "service": 5,
         "spec": 3,
         "date": "2023-01-04T18:00:00Z",
-        "is_confirmed": true,
-        "is_canceled": false,
-        "is_completed": false
+        "status": "completed",
+        "is_processed": true
     }
 },
 {
-    "model": "service.order",
+    "model": "salon.order",
     "pk": 5,
     "fields": {
         "created_at": "2023-01-02T13:39:04.605Z",
@@ -74,9 +70,8 @@
         "service": 1,
         "spec": 4,
         "date": "2023-01-01T08:00:00Z",
-        "is_confirmed": true,
-        "is_canceled": false,
-        "is_completed": true
+        "status": "completed",
+        "is_processed": true
     }
 }
 ]

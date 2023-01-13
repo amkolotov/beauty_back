@@ -7,4 +7,4 @@ from apps.blog.serializers import PostSerializer
 class PostViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """Вьюсет постов"""
     serializer_class = PostSerializer
-    queryset = Post.objects.all()
+    queryset = Post.objects.filter(is_publish=True)

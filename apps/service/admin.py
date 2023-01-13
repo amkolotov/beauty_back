@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from apps.service.models import ServiceCategory, Service, Order
+from apps.service.models import ServiceCategory, Service
 
 
 @admin.register(ServiceCategory)
@@ -37,19 +37,3 @@ class ServiceAdmin(admin.ModelAdmin):
             return queryset.filter(salons=request.user.profile.salon.id)
 
 
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ['user', 'salon', 'service', 'spec', 'date', 'is_confirmed',
-                    'is_canceled', 'is_completed', 'created_at', 'updated_at']
-    fields = ['user', 'salon', 'service', 'spec', 'date', 'is_confirmed',
-              'is_canceled', 'is_completed']
-    list_filter = ['salon', 'service', 'spec', 'is_confirmed', 'is_canceled', 'is_completed']
-    search_fields = ['user', 'salon', 'service', 'spec']
-    ordering = ['-updated_at']
-
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        if request.user.is_superuser:
-            return queryset
-        elif request.user.is_staff:
-            return queryset.filter(salons=request.user.profile.salon.id)

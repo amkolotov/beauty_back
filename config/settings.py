@@ -190,7 +190,7 @@ REST_FRAMEWORK = {
         'no_underscore_before_number': True,
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 2
+    'PAGE_SIZE': 5
     }
 
 SIMPLE_JWT = {
@@ -268,7 +268,7 @@ ADMIN_REORDER = [
     {"app": "salon", "models": [
         {'model': 'salon.CompanyInfo', 'label': 'Компания'},
         'salon.Salon', 'salon.Specialist', 'service.ServiceCategory', 'service.Service',
-        'salon.Sale', 'salon.Review', 'service.Order',
+        'salon.Sale', 'salon.Review', 'salon.Order', 'salon.Notification'
     ]},
     {"app": "blog", "models": ["blog.Post"]},
     {"app": "auth_app", "models": ["auth_app.User", 'auth.Group', 'auth_app.Code']},

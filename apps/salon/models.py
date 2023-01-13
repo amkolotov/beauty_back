@@ -9,6 +9,43 @@ from apps.service.models import ServiceCategory
 User = get_user_model()
 
 
+class MessengerImg(BaseModel):
+    """Модель изображения мессенджера"""
+    name = models.CharField('Наименование', max_length=128)
+    img = models.ImageField('Иконка', upload_to='salons')
+    is_publish = models.BooleanField('Опубликовано', default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Иконка мессенджера'
+        verbose_name_plural = 'Иконки мессенджеров'
+
+    def __str__(self):
+        return self.name
+
+
+MESSENGERS = (
+    (WA := 'watsapp', 'Ватсапп'),
+    (TG := 'telegram', 'Телеграмм'),
+)
+
+
+class Messenger(BaseModel):
+    """Модель мессенджера"""
+    type = models.CharField('Тип мессенджера', max_length=10, choices=MESSENGERS, default='TG')
+    img = models.ForeignKey(MessengerImg, on_delete=models.CASCADE, verbose_name='Иконка')
+    link = models.CharField('Ссылка на мессенджер', max_length=128)
+    is_publish = models.BooleanField('Опубликована', default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Ссылка на мессенджер'
+        verbose_name_plural = 'Ссылки на мессенджеры'
+
+    def __str__(self):
+        return self.link
+
+
 class CompanyInfo(BaseModel):
     """Модель компании"""
     name = models.CharField('Наименование', max_length=128)
@@ -17,6 +54,8 @@ class CompanyInfo(BaseModel):
     img = models.ImageField('Изображение', upload_to='company')
     address = models.CharField('Адрес', max_length=128, null=True, blank=True)
     phone = PhoneField('Телефон', max_length=20, null=True, blank=True)
+    email = models.EmailField('E-mail', null=True, blank=True)
+    messengers = models.ManyToManyField(Messenger, related_name='company_messangers')
     tagline = models.CharField('Слоган', max_length=256)
     decs = models.TextField('Описание')
     is_publish = models.BooleanField('Опубликована', default=False)
@@ -35,6 +74,8 @@ class Salon(BaseModel):
     name = models.CharField('Наименование', max_length=128)
     address = models.CharField('Адрес', max_length=256)
     phone = PhoneField('Телефон', max_length=20, null=True, blank=True)
+    email = models.EmailField('E-mail', null=True, blank=True)
+    messengers = models.ManyToManyField(Messenger, related_name='salon_messangers')
     desc = models.TextField('Описание')
     is_publish = models.BooleanField('Опубликован', default=False)
 
@@ -127,7 +168,7 @@ class Sale(BaseModel):
 class Review(BaseModel):
     """Модель отзыва"""
     user = models.ForeignKey(User, on_delete=models.SET_NULL,
-                             verbose_name='Пользователь', null=True)
+                             verbose_name='Пользователь', null=True, blank=True)
     rating = models.IntegerField('Рейтинг')
     text = models.TextField('Текст')
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE, verbose_name='Салон',
@@ -143,3 +184,52 @@ class Review(BaseModel):
 
     def __str__(self):
         return self.user.username
+
+
+STATUSES = (
+    (New := 'new', 'Новая'),
+    (CONFIRMED := 'confirmed', 'Подтверждена'),
+    (CANCELED := 'canceled', 'Отменена'),
+    (COMPLETED := 'completed', 'Выполнена'),
+)
+
+
+class Order(BaseModel):
+    """Модель заявки"""
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='Пользователь', related_name='orders')
+    name = models.CharField('Имя', max_length=256, null=True, blank=True)
+    phone = PhoneField('Телефон', max_length=20)
+    salon = models.ForeignKey('salon.Salon', on_delete=models.SET_NULL, null=True, blank=True,
+                              verbose_name='Салон', related_name='salon_orders')
+    service = models.ForeignKey(ServiceCategory, on_delete=models.SET_NULL, null=True, blank=True,
+                                verbose_name='Услуга', related_name='service_orders')
+    spec = models.ForeignKey('salon.Specialist', on_delete=models.SET_NULL, null=True, blank=True,
+                             verbose_name='Cпециалист', related_name='spec_orders')
+    date = models.DateTimeField('Дата и время бронирования')
+    status = models.CharField('Статус', max_length=10, choices=STATUSES, default='new')
+    is_processed = models.BooleanField('Обработана', default=False)
+
+    class Meta:
+        ordering = ['user']
+        verbose_name = 'Заявка'
+        verbose_name_plural = 'Заявки'
+
+    def __str__(self):
+        return f'{self.salon}-{self.user}'
+
+
+class Notification(BaseModel):
+    """Модель уведомлений"""
+    text = models.TextField('Текст', max_length=256, null=True, blank=True)
+    read = models.ManyToManyField(User, related_name='read_notifications')
+    is_publish = models.BooleanField('Опубликовано', default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Уведомление'
+        verbose_name_plural = 'Уведомления'
+
+    def __str__(self):
+        return self.text
+

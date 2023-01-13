@@ -8,7 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.exceptions import Throttled
 from apps.auth_app import services
-from apps.auth_app.validators import validate_phone
 from apps.profile.models import Profile
 
 User = get_user_model()
@@ -59,7 +58,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Изменение аватара"""
+    """Изменение данных пользователя"""
 
     avatar = serializers.ImageField(source='profile.avatar')
 
@@ -67,12 +66,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('email', 'username', 'phone', 'avatar')
         read_only_fields = ('email', 'avatar')
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        if instance.profile.avatar:
-            data['avatar'] = instance.profile.avatar.url
-        return data
 
 
 class CustomTokenObtainPairSerializer(serializers.Serializer):
