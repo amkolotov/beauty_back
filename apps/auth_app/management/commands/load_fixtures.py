@@ -24,3 +24,5 @@ class Command(BaseCommand):
             call_command('loaddata', 'fixtures/reviews.json')
             call_command('loaddata', 'fixtures/orders.json')
             call_command('loaddata', 'fixtures/notification.json')
+            call_command('loaddata', 'fixtures/messenger_type.json')
+            call_command('loaddata', 'fixtures/messenger.json')

@@ -268,8 +268,9 @@ ADMIN_REORDER = [
     {"app": "salon", "models": [
         {'model': 'salon.CompanyInfo', 'label': 'Компания'},
         'salon.Salon', 'salon.Specialist', 'service.ServiceCategory', 'service.Service',
-        'salon.Sale', 'salon.Review', 'salon.Order', 'salon.Notification'
+        'salon.Sale', 'salon.Review', 'salon.Order', 'salon.Notification',
     ]},
+    {"app": "salon", 'label': 'Мессенджеры', "models": ["salon.Messenger", 'salon.MessengerType']},
     {"app": "blog", "models": ["blog.Post"]},
     {"app": "auth_app", "models": ["auth_app.User", 'auth.Group', 'auth_app.Code']},
 ]

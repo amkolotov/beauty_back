@@ -9,43 +9,6 @@ from apps.service.models import ServiceCategory
 User = get_user_model()
 
 
-class MessengerImg(BaseModel):
-    """Модель изображения мессенджера"""
-    name = models.CharField('Наименование', max_length=128)
-    img = models.ImageField('Иконка', upload_to='salons')
-    is_publish = models.BooleanField('Опубликовано', default=False)
-
-    class Meta:
-        ordering = ['-created_at']
-        verbose_name = 'Иконка мессенджера'
-        verbose_name_plural = 'Иконки мессенджеров'
-
-    def __str__(self):
-        return self.name
-
-
-MESSENGERS = (
-    (WA := 'watsapp', 'Ватсапп'),
-    (TG := 'telegram', 'Телеграмм'),
-)
-
-
-class Messenger(BaseModel):
-    """Модель мессенджера"""
-    type = models.CharField('Тип мессенджера', max_length=10, choices=MESSENGERS, default='TG')
-    img = models.ForeignKey(MessengerImg, on_delete=models.CASCADE, verbose_name='Иконка')
-    link = models.CharField('Ссылка на мессенджер', max_length=128)
-    is_publish = models.BooleanField('Опубликована', default=False)
-
-    class Meta:
-        ordering = ['-created_at']
-        verbose_name = 'Ссылка на мессенджер'
-        verbose_name_plural = 'Ссылки на мессенджеры'
-
-    def __str__(self):
-        return self.link
-
-
 class CompanyInfo(BaseModel):
     """Модель компании"""
     name = models.CharField('Наименование', max_length=128)
@@ -55,7 +18,6 @@ class CompanyInfo(BaseModel):
     address = models.CharField('Адрес', max_length=128, null=True, blank=True)
     phone = PhoneField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)
-    messengers = models.ManyToManyField(Messenger, related_name='company_messangers')
     tagline = models.CharField('Слоган', max_length=256)
     decs = models.TextField('Описание')
     is_publish = models.BooleanField('Опубликована', default=False)
@@ -75,7 +37,6 @@ class Salon(BaseModel):
     address = models.CharField('Адрес', max_length=256)
     phone = PhoneField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)
-    messengers = models.ManyToManyField(Messenger, related_name='salon_messangers')
     desc = models.TextField('Описание')
     is_publish = models.BooleanField('Опубликован', default=False)
 
@@ -90,8 +51,8 @@ class Salon(BaseModel):
 
 class SalonImg(BaseModel):
     """Модель изображения салона"""
-    salon = models.ForeignKey(Salon, on_delete=models.CASCADE,
-                              related_name='salon_imgs', verbose_name='Салон')
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE, related_name='salon_imgs',
+                              verbose_name='Салон')
     img = models.ImageField('Изображение салона', upload_to='salons')
     is_main = models.BooleanField('Главное фото', default=False)
     is_publish = models.BooleanField('Опубликовано', default=False)
@@ -103,6 +64,45 @@ class SalonImg(BaseModel):
 
     def __str__(self):
         return self.salon.name
+
+
+MESSENGERS = (
+    (WA := 'watsapp', 'Ватсапп'),
+    (TG := 'telegram', 'Телеграмм'),
+)
+
+
+class MessengerType(BaseModel):
+    """Модель изображения мессенджера"""
+    name = models.CharField('Тип мессенджера', max_length=10, choices=MESSENGERS, default='TG')
+    img = models.FileField('Иконка', upload_to='messengers', validators=[validate_image_and_svg_file_extension])
+    is_publish = models.BooleanField('Опубликовано', default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Тип мессенджера'
+        verbose_name_plural = 'Типы мессенджеров'
+
+    def __str__(self):
+        return self.name
+
+
+class Messenger(BaseModel):
+    """Модель мессенджера"""
+    type = models.ForeignKey(MessengerType, on_delete=models.CASCADE, verbose_name='Тип мессенджера')
+    link = models.CharField('Ссылка на мессенджер', max_length=128)
+    salon = models.ForeignKey(Salon, on_delete=models.CASCADE, null=True, blank=True,
+                              related_name='salon_messengers', verbose_name='Салон')
+    for_company = models.BooleanField('Использовать для компании (салон не заполнять)', default=False)
+    is_publish = models.BooleanField('Опубликована', default=False)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Ссылка на мессенджер'
+        verbose_name_plural = 'Ссылки на мессенджеры'
+
+    def __str__(self):
+        return self.link
 
 
 class Specialist(BaseModel):

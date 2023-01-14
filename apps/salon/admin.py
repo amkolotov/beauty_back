@@ -2,27 +2,43 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, \
-    Sale, Review, Order, Messenger, MessengerImg, Notification
+    Sale, Review, Order, Messenger, MessengerType, Notification
 
 
-class MessengerImgInlineAdmin(admin.TabularInline):
-    model = MessengerImg
-    exclude = ['id']
-    extra = 1
+class MessengerInlineCompanyAdmin(admin.TabularInline):
+    model = Messenger
+    fk_name = 'company'
+    exclude = ['id', 'created_at', 'updated_at', ]
+    extra = 0
 
 
-class MessengerCompanyInlineAdmin(admin.TabularInline):
-    model = CompanyInfo.messengers.through
-    inlines = [MessengerImgInlineAdmin]
-    exclude = ['id']
-    extra = 1
+class MessengerInlineSalonAdmin(admin.TabularInline):
+    model = Messenger
+    fk_name = 'salon'
+    exclude = ['id', 'created_at', 'updated_at']
+    extra = 0
 
 
-class SalonSalonInlineAdmin(admin.TabularInline):
-    model = Salon.messengers.through
-    inlines = [MessengerImgInlineAdmin]
-    exclude = ['id']
-    extra = 1
+@admin.register(MessengerType)
+class MessengerTypeAdmin(admin.ModelAdmin):
+    list_display = ['name', 'img_preview', 'is_publish']
+    fields = ['name', 'img_preview', 'img', 'is_publish']
+    readonly_fields = ['img_preview']
+
+    def img_preview(self, obj):
+        if obj.img:
+            return mark_safe(f'<img src="{obj.img.url}" width="50" />')
+        return ""
+
+    img_preview.short_description = 'Иконка'
+
+
+@admin.register(Messenger)
+class MessengerAdmin(admin.ModelAdmin):
+    list_display = ['type', 'link', 'salon', 'for_company', 'is_publish']
+    list_filter = ['type', 'is_publish', 'for_company']
+    search_fields = ['salon', 'link']
+    ordering = ['-updated_at']
 
 
 @admin.register(CompanyInfo)
@@ -32,7 +48,6 @@ class CompanyInfoAdmin(admin.ModelAdmin):
     fields = ['name', 'logo', 'logo_preview', 'img', 'img_preview', 'address',
               'phone', 'email', 'tagline', 'decs', 'is_publish']
     readonly_fields = ['logo_preview', 'img_preview']
-    inlines = [MessengerCompanyInlineAdmin]
 
     def logo_preview(self, obj):
         if obj.logo:
@@ -68,7 +83,7 @@ class SalonAdmin(admin.ModelAdmin):
     list_display = ['name', 'address', 'phone', 'email', 'is_publish',
                     'created_at', 'updated_at']
     fields = ['name', 'address', 'phone', 'email', 'desc', 'is_publish', ]
-    inlines = [SalonImgInlineAdmin, SalonSalonInlineAdmin]
+    inlines = [SalonImgInlineAdmin]
     list_filter = ['name']
     search_fields = ['name', 'address', 'phone', 'email']
     ordering = ['-updated_at']

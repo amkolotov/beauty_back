@@ -2,14 +2,13 @@ from django.db.models import Prefetch, Avg, Subquery, OuterRef, Case, When, Valu
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_404_NOT_FOUND
-from rest_framework.views import APIView
+from rest_framework.status import HTTP_404_NOT_FOUND
 
 from api.v1.views import BaseGenericAPIView
 from apps.auth_app.throttles import TokenObtainThrottle
-from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo, Order, Notification
+from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo, Order, Notification, Messenger
 from apps.salon.serializers import SalonSerializer, ServiceCategorySerializer, CompanyInfoSerializer, \
-    SalonListSerializer, ReviewSerializer, OrderSerializer, NotificationSerializer
+    SalonListSerializer, ReviewSerializer, OrderSerializer, NotificationSerializer, SalonMessengersSerializer
 from apps.service.models import Service, ServiceCategory
 
 
@@ -18,12 +17,21 @@ class MainSalonInfoView(BaseGenericAPIView):
 
     def get(self, request):
         data = {}
+        messengers_subquery = Subquery(Messenger.objects \
+                                       .filter(salon_id=OuterRef('salon_id'), is_publish=True) \
+                                       .values_list('id', flat=True))
+
         salons = Salon.objects.filter(is_publish=True) \
             .annotate(avg_rating=Avg('salon_reviews__rating')) \
             .prefetch_related(
             Prefetch(
                 'salon_imgs',
-                queryset=SalonImg.objects.filter(is_main=True)
+                queryset=SalonImg.objects.filter(is_main=True, is_publish=True)
+            )
+        ).prefetch_related(
+            Prefetch(
+                'salon_messengers',
+                queryset=Messenger.objects.filter(id__in=messengers_subquery)
             )).all()
         data['salons'] = SalonListSerializer(
             salons, many=True, context={'request': request}
@@ -31,6 +39,10 @@ class MainSalonInfoView(BaseGenericAPIView):
 
         company = CompanyInfo.objects.filter(is_publish=True).first()
         data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
+
+        data['company']['messangers'] = SalonMessengersSerializer(
+            Messenger.objects.filter(for_company=True, is_publish=True), many=True
+        ).data
 
         if salon_id := request.GET.get('salon'):
             review_subqery = Subquery(Review.objects \
