@@ -21,7 +21,7 @@ class SalonMessengersSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Messenger
-        exclude = ['salon']
+        exclude = ['salon', 'created_at', 'updated_at']
 
 
 class SalonListSerializer(serializers.ModelSerializer):
@@ -33,7 +33,8 @@ class SalonListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Salon
-        fields = ['id', 'name', 'address', 'salon_imgs', 'salon_messengers', 'avg_rating']
+        fields = ['id', 'name', 'address', 'email', 'phone', 'salon_imgs',
+                  'salon_messengers', 'avg_rating']
 
 
 class WorkImgSerializer(serializers.ModelSerializer):
