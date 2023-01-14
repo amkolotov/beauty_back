@@ -2,10 +2,29 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg, \
-    CompanyInfo, Notification, Order, Messenger
+    CompanyInfo, Notification, Order, Messenger, MessengerType
 from apps.service.models import ServiceCategory, Service
 
 User = get_user_model()
+
+
+class MessengerTypeSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для изображений салона"""
+
+    class Meta:
+        model = MessengerType
+        fields = ['id', 'img']
+
+
+class SalonMessengersSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для мессенджера"""
+
+    type = MessengerTypeSerializer()
+
+    class Meta:
+        model = Messenger
+        exclude = ['salon', 'for_company', 'is_publish', 'created_at', 'updated_at']
+        depth = 1
 
 
 class SalonImgSerializer(serializers.ModelSerializer):
@@ -14,14 +33,6 @@ class SalonImgSerializer(serializers.ModelSerializer):
     class Meta:
         model = SalonImg
         fields = ['id', 'img', 'is_main']
-
-
-class SalonMessengersSerializer(serializers.ModelSerializer):
-    """Класс сериалайзер для мессенджера"""
-
-    class Meta:
-        model = Messenger
-        exclude = ['salon', 'created_at', 'updated_at']
 
 
 class SalonListSerializer(serializers.ModelSerializer):
