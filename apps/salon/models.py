@@ -16,7 +16,7 @@ class CompanyInfo(BaseModel):
                             validators=[validate_image_and_svg_file_extension])
     img = models.ImageField('Изображение', upload_to='company')
     address = models.CharField('Адрес', max_length=128, null=True, blank=True)
-    phone = PhoneField('Телефон', max_length=20, null=True, blank=True)
+    phone = models.CharField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)
     tagline = models.CharField('Слоган', max_length=256)
     decs = models.TextField('Описание')
@@ -35,7 +35,7 @@ class Salon(BaseModel):
     """Модель салона"""
     name = models.CharField('Наименование', max_length=128)
     address = models.CharField('Адрес', max_length=256)
-    phone = PhoneField('Телефон', max_length=20, null=True, blank=True)
+    phone = models.CharField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)
     desc = models.TextField('Описание')
     is_publish = models.BooleanField('Опубликован', default=False)
