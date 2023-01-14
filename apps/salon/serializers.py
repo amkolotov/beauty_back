@@ -24,7 +24,6 @@ class SalonMessengersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Messenger
         exclude = ['salon', 'for_company', 'is_publish', 'created_at', 'updated_at']
-        depth = 1
 
 
 class SalonImgSerializer(serializers.ModelSerializer):

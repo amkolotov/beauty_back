@@ -40,8 +40,8 @@ class MainSalonInfoView(BaseGenericAPIView):
         company = CompanyInfo.objects.filter(is_publish=True).first()
         data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
 
-        data['company']['messangers'] = SalonMessengersSerializer(
-            Messenger.objects.filter(for_company=True, is_publish=True), many=True
+        data['company']['messengers'] = SalonMessengersSerializer(
+            Messenger.objects.filter(for_company=True, is_publish=True), many=True, context={'request': request}
         ).data
 
         if salon_id := request.GET.get('salon'):
