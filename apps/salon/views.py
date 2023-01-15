@@ -101,20 +101,28 @@ class MainSalonInfoView(BaseGenericAPIView):
         return Response(data)
 
 
-class ReviewCreateApiView(BaseGenericAPIView):
-    """Создание нового отзыва"""
+class ReviewViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
+                    viewsets.GenericViewSet, BaseGenericAPIView):
+    """Вьюсет отзывов"""
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
     throttle_classes = [TokenObtainThrottle]
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         instance = serializer.save(source=kwargs['slug'])
         instance.save()
 
         return Response({'status': 'success'})
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.request.GET.get('salon'):
+            return queryset.filter(spec__isnull=True)
+        else:
+            return queryset.filter(spec__isnull=False)
 
 
 class OrderViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
@@ -135,6 +143,10 @@ class OrderViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
             serializer.save(user=self.request.user)
         else:
             serializer.save()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
 
 
 class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
