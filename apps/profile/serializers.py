@@ -35,6 +35,8 @@ class UserDataSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
+        if not hasattr(instance, 'profile'):
+            Profile.objects.get_or_create(user=self.instance)
         if instance.profile.avatar:
             data['avatar'] = instance.profile.avatar.url
         return data
