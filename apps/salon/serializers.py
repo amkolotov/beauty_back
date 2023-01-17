@@ -131,12 +131,15 @@ class OrderSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(
         default=None, queryset=User.objects.all(),
     )
+    salon_name = serializers.CharField(source='salon.name', required=False)
+    service_name = serializers.CharField(source='service.name', required=False)
+    spec_name = serializers.CharField(source='spec.name', required=False)
 
     class Meta:
         model = Order
-        fields = ['user', 'name', 'phone', 'salon',
-                  'service', 'spec', 'date', 'status']
-        read_only_fields = ['status']
+        fields = ['user', 'name', 'phone', 'salon', 'service', 'spec',
+                  'salon_name', 'service_name', 'spec_name', 'date', 'status']
+        read_only_fields = ['status', 'service_name', 'salon_name', 'spec_name']
 
 
 class NotificationSerializer(serializers.ModelSerializer):

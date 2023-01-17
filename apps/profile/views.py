@@ -9,8 +9,7 @@ from rest_framework.response import Response
 from api.v1.views import GenericAPIView, BaseGenericAPIView
 
 from apps.profile.serializers import ProfileAvatarSerializer, UserDataSerializer
-from apps.salon.models import Order, Notification
-from apps.salon.serializers import NotificationSerializer
+from apps.salon.models import Notification
 
 User = get_user_model()
 
@@ -46,22 +45,8 @@ class GetUserDataView(BaseGenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        orders_subqery = Subquery(Order.objects.filter(user=self.request.user)
-                                  .values_list('id', flat=True)[:10])
-        user = self.queryset.filter(id=request.user.id) \
-            .prefetch_related(
-            Prefetch(
-                'orders',
-                queryset=Order.objects.filter(id__in=orders_subqery)
-            )).first()
+        user = self.queryset.filter(id=request.user.id).first()
         data = self.get_serializer(user).data
-
-        notifications = Notification.objects.filter(is_publish=True) \
-            .annotate(is_read=Case(
-                When(read=request.user, then=True),
-                default=False,
-                output_field=BooleanField())
-            )[:10]
-        data['notifications'] = NotificationSerializer(notifications, many=True).data
-
+        data['unread_count'] = Notification.objects.filter(is_publish=True)\
+            .exclude(read=request.user).count()
         return Response(data)

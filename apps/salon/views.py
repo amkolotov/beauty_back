@@ -112,7 +112,7 @@ class ReviewViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        instance = serializer.save(source=kwargs['slug'])
+        instance = serializer.save()
         instance.save()
 
         return Response({'status': 'success'})
@@ -158,17 +158,24 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(is_publish=True)\
+        return self.queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
             .annotate(is_read=Case(
                 When(read=self.request.user, then=True),
                 default=False,
                 output_field=BooleanField())
         )
 
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        response.data['unread_count'] = self.get_queryset().exclude(is_read=True).count()
+        return response
+
     def update(self, request, *args, **kwargs):
         notification_id = kwargs.get('pk')
         if Notification.objects.filter(id=notification_id).exists():
             notification = Notification.objects.get(id=notification_id)
             notification.read.add(request.user)
-            return Response({'status': 'success'})
+            count = Notification.objects.filter(is_publish=True)\
+                .exclude(read=request.user).count()
+            return Response({'unread_count': count})
         return Response(status=HTTP_404_NOT_FOUND)

@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.profile.models import Profile
-from apps.salon.serializers import OrderSerializer, NotificationSerializer
 
 User = get_user_model()
 
@@ -26,12 +25,11 @@ class UserDataSerializer(serializers.ModelSerializer):
     """Изменение данных пользователя"""
 
     avatar = serializers.ImageField(source='profile.avatar')
-    orders = OrderSerializer(many=True)
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'phone', 'avatar', 'orders')
-        read_only_fields = ('email', 'avatar', 'orders')
+        fields = ('email', 'username', 'phone', 'avatar')
+        read_only_fields = ('email', 'avatar')
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
