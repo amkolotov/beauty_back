@@ -47,6 +47,7 @@ class GetUserDataView(BaseGenericAPIView):
     def get(self, request):
         user = self.queryset.filter(id=request.user.id).first()
         data = self.get_serializer(user).data
-        data['unread_count'] = Notification.objects.filter(is_publish=True)\
+        data['unread_count'] = Notification.objects.filter(
+            is_publish=True, created_at__gt=self.request.user.created_at)\
             .exclude(read=request.user).count()
         return Response(data)
