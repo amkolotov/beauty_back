@@ -211,7 +211,7 @@ class Order(BaseModel):
     is_processed = models.BooleanField('Обработана', default=False)
 
     class Meta:
-        ordering = ['user']
+        ordering = ['-created_at']
         verbose_name = 'Заявка'
         verbose_name_plural = 'Заявки'
 
