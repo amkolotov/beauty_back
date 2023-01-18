@@ -110,7 +110,7 @@ class ReviewViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
     throttle_classes = [TokenObtainThrottle]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         instance = serializer.save()
         instance.save()

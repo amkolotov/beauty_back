@@ -58,11 +58,13 @@ class WorkImgSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для акции"""
 
-    username = serializers.CharField(source='user.username')
+    username = serializers.CharField(source='user.username', required=False)
+    user = serializers.CharField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Review
-        fields = ['id', 'username', 'rating', 'text', 'spec', 'salon', 'created_at']
+        fields = ['id', 'username', 'user', 'rating', 'text', 'spec', 'salon', 'created_at']
+        read_only_fields = ['id', 'username', 'created_at']
 
 
 class SpecialistSerializer(serializers.ModelSerializer):
