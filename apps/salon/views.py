@@ -175,7 +175,8 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
         if Notification.objects.filter(id=notification_id).exists():
             notification = Notification.objects.get(id=notification_id)
             notification.read.add(request.user)
-            count = Notification.objects.filter(is_publish=True)\
+            count = Notification.objects.filter(
+                is_publish=True, created_at__gt=self.request.user.created_at)\
                 .exclude(read=request.user).count()
             return Response({'unread_count': count})
         return Response(status=HTTP_404_NOT_FOUND)
