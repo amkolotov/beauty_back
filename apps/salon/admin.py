@@ -184,6 +184,8 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ['text', 'is_publish', 'created_at', 'updated_at']
-    fields = ['text', 'is_publish']
+    list_display = ['text', 'for_salon', 'for_all', 'is_publish', 'created_at', 'updated_at']
+    fields = ['text', 'for_salon', 'for_all', 'is_publish', 'for_users']
+    list_filter = ['for_salon', 'for_all', 'is_publish']
+    search_fields = ['text']
 

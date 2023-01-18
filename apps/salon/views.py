@@ -1,4 +1,4 @@
-from django.db.models import Prefetch, Avg, Subquery, OuterRef, Case, When, Value, BooleanField
+from django.db.models import Prefetch, Avg, Subquery, OuterRef, Case, When, Value, BooleanField, Q
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -159,6 +159,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
 
     def get_queryset(self):
         return self.queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
+            .filter(Q(salon=self.request.user.profile.salon) | Q(for_users=self.request.user) | Q(for_all=True))\
             .annotate(is_read=Case(
                 When(read=self.request.user, then=True),
                 default=False,
