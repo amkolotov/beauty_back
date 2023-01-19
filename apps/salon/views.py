@@ -159,7 +159,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
 
     def get_queryset(self):
         return self.queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
-            .filter(Q(salon=self.request.user.profile.salon) | Q(for_users=self.request.user) | Q(for_all=True))\
+            .filter(Q(for_salon=self.request.user.profile.salon) | Q(for_users=self.request.user) | Q(for_all=True))\
             .annotate(is_read=Case(
                 When(read=self.request.user, then=True),
                 default=False,

@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils.safestring import mark_safe
 
 from apps.auth_app.models import BaseModel
@@ -31,3 +33,9 @@ class Profile(BaseModel):
             return mark_safe(f'<img src="{src}" width="50" height="50" />')
         else:
             return '-'
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
