@@ -183,7 +183,7 @@ class Review(BaseModel):
         verbose_name_plural = 'Отзывы'
 
     def __str__(self):
-        return self.user.username
+        return self.user.email
 
 
 STATUSES = (
@@ -224,7 +224,6 @@ class Notification(BaseModel):
     text = models.TextField('Текст', max_length=256, null=True, blank=True)
     read = models.ManyToManyField(User, related_name='read_notifications')
     for_users = models.ManyToManyField(User, related_name='personal_notifications',
-                                       null=True, blank=True,
                                        verbose_name='Для конкретных клиентов')
     for_salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, blank=True,
                                   verbose_name='Для клиентов салона')

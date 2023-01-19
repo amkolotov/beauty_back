@@ -119,10 +119,10 @@ class ReviewViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.request.GET.get('salon'):
-            return queryset.filter(spec__isnull=True)
-        else:
-            return queryset.filter(spec__isnull=False)
+        if salon_id := self.request.GET.get('salon'):
+            return queryset.filter(spec__isnull=True, salon_id=salon_id)
+        elif spec_id := self.request.GET.get('spec'):
+            return queryset.filter(spec_id=spec_id)
 
 
 class OrderViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
