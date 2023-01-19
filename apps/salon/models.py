@@ -225,8 +225,7 @@ class Notification(BaseModel):
     read = models.ManyToManyField(User, related_name='read_notifications')
     for_users = models.ManyToManyField(User, related_name='personal_notifications',
                                        blank=True, verbose_name='Для конкретных клиентов')
-    for_salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, blank=True,
-                                  verbose_name='Для клиентов салона')
+    for_salons = models.ManyToManyField(Salon, blank=True, verbose_name='Для клиентов салонов')
     for_all = models.BooleanField('Для всех клиентов компании', default=True)
     is_publish = models.BooleanField('Опубликовано', default=True)
 

@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Case, When, BooleanField, Prefetch, Subquery
 from rest_framework import status
 from rest_framework.generics import UpdateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser

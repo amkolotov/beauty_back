@@ -158,8 +158,17 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
-            .filter(Q(for_salon=self.request.user.profile.salon) | Q(for_users=self.request.user) | Q(for_all=True))\
+        queryset = super().get_queryset()
+        if salon_id := self.request.GET.get('salon'):
+            return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at) \
+                .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
+                .annotate(is_read=Case(
+                    When(read=self.request.user, then=True),
+                    default=False,
+                    output_field=BooleanField())
+            )
+        return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
+            .filter(Q(for_users=self.request.user) | Q(for_all=True))\
             .annotate(is_read=Case(
                 When(read=self.request.user, then=True),
                 default=False,
