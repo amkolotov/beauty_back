@@ -224,11 +224,12 @@ class Notification(BaseModel):
     text = models.TextField('Текст', max_length=256, null=True, blank=True)
     read = models.ManyToManyField(User, related_name='read_notifications')
     for_users = models.ManyToManyField(User, related_name='personal_notifications',
+                                       null=True, blank=True,
                                        verbose_name='Для конкретных клиентов')
     for_salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, blank=True,
                                   verbose_name='Для клиентов салона')
-    for_all = models.BooleanField('Для всех клиентов компании', default=False)
-    is_publish = models.BooleanField('Опубликовано', default=False)
+    for_all = models.BooleanField('Для всех клиентов компании', default=True)
+    is_publish = models.BooleanField('Опубликовано', default=True)
 
     class Meta:
         ordering = ['-created_at']

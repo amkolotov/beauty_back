@@ -56,7 +56,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     class Meta:
-        ordering = ('-updated_at',)
+        ordering = ('email',)
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
