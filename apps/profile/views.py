@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.generics import UpdateAPIView
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -46,7 +47,16 @@ class GetUserDataView(BaseGenericAPIView):
     def get(self, request):
         user = self.queryset.filter(id=request.user.id).first()
         data = self.get_serializer(user).data
-        data['unread_count'] = Notification.objects.filter(
-            is_publish=True, created_at__gt=self.request.user.created_at)\
-            .exclude(read=request.user).count()
+        if salon_id := self.request.GET.get('salon'):
+            data['unread_count'] = Notification.objects.filter(
+                is_publish=True, created_at__gt=self.request.user.created_at
+            ) \
+                .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
+                .exclude(read=request.user).count()
+        else:
+            data['unread_count'] = Notification.objects.filter(
+                is_publish=True, created_at__gt=self.request.user.created_at
+            ) \
+                .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
+                .exclude(read=request.user).count()
         return Response(data)

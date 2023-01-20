@@ -107,7 +107,6 @@ class ReviewViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
-    throttle_classes = [TokenObtainThrottle]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, context={'request': request})
@@ -130,7 +129,6 @@ class OrderViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
     """Вьюсет заявок"""
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    throttle_classes = [TokenObtainThrottle]
 
     def get_permissions(self, *args, **kwargs):
         if self.request.method in ['GET']:
@@ -154,7 +152,6 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
     """Вьюсет уведомлений"""
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
-    throttle_classes = [TokenObtainThrottle]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -185,8 +182,18 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
         if Notification.objects.filter(id=notification_id).exists():
             notification = Notification.objects.get(id=notification_id)
             notification.read.add(request.user)
-            count = Notification.objects.filter(
-                is_publish=True, created_at__gt=self.request.user.created_at)\
-                .exclude(read=request.user).count()
+            if salon_id := self.request.GET.get('salon'):
+                count = Notification.objects.filter(
+                    is_publish=True, created_at__gt=self.request.user.created_at
+                ) \
+                    .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
+                    .exclude(read=request.user).count()
+            else:
+                count = Notification.objects.filter(
+                    is_publish=True, created_at__gt=self.request.user.created_at
+                ) \
+                    .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
+                    .exclude(read=request.user).count()
+
             return Response({'unread_count': count})
         return Response(status=HTTP_404_NOT_FOUND)
