@@ -272,6 +272,7 @@ ADMIN_REORDER = [
     ]},
     {"app": "salon", 'label': 'Мессенджеры', "models": ["salon.Messenger", 'salon.MessengerType']},
     {"app": "blog", "models": ["blog.Post"]},
+    {"app": "salon", 'label': 'Для сайта', "models": ["salon.Faq", 'salon.MobileAppSection']},
     {"app": "auth_app", "models": ["auth_app.User", 'auth.Group', 'auth_app.Code']},
 ]
 

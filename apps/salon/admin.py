@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, \
-    Sale, Review, Order, Messenger, MessengerType, Notification
+    Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store
 
 
 class MessengerInlineCompanyAdmin(admin.TabularInline):
@@ -21,8 +21,8 @@ class MessengerInlineSalonAdmin(admin.TabularInline):
 
 @admin.register(MessengerType)
 class MessengerTypeAdmin(admin.ModelAdmin):
-    list_display = ['name', 'img_preview', 'is_publish']
-    fields = ['name', 'img_preview', 'img', 'is_publish']
+    list_display = ['name', 'img_preview', 'is_social', 'is_publish']
+    fields = ['name', 'img_preview', 'img', 'is_social', 'is_publish']
     readonly_fields = ['img_preview']
 
     def img_preview(self, obj):
@@ -36,6 +36,7 @@ class MessengerTypeAdmin(admin.ModelAdmin):
 @admin.register(Messenger)
 class MessengerAdmin(admin.ModelAdmin):
     list_display = ['type', 'link', 'salon', 'for_company', 'is_publish']
+    fields = ['type', 'link', 'salon', 'for_company', 'is_publish']
     list_filter = ['type', 'is_publish', 'for_company']
     search_fields = ['salon', 'link']
     ordering = ['-updated_at']
@@ -199,3 +200,25 @@ class NotificationAdmin(admin.ModelAdmin):
     is_for_salons.short_description = "Для салонов"
     is_for_users.boolean = True
     is_for_users.short_description = "Для пользователей"
+
+
+@admin.register(Faq)
+class FaqAdmin(admin.ModelAdmin):
+    list_display = ['question', 'answer', 'created_at', 'updated_at']
+    fields = ['question', 'answer']
+
+
+class StoreInlineAdmin(admin.TabularInline):
+    model = Store
+    list_display = ['name', 'img', 'link', 'is_publish', 'created_at', 'updated_at']
+    fields = ['name', 'img', 'link', 'is_publish']
+    extra = 1
+
+
+@admin.register(MobileAppSection)
+class MobileAppSectionAdmin(admin.ModelAdmin):
+    list_display = ['title', 'text', 'promo', 'is_publish', 'created_at', 'updated_at']
+    fields = ['title', 'text', 'promo', 'is_publish']
+
+    inlines = [StoreInlineAdmin]
+

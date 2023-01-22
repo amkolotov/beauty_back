@@ -66,16 +66,11 @@ class SalonImg(BaseModel):
         return self.salon.name
 
 
-MESSENGERS = (
-    (WA := 'watsapp', 'Ватсапп'),
-    (TG := 'telegram', 'Телеграмм'),
-)
-
-
 class MessengerType(BaseModel):
     """Модель изображения мессенджера"""
-    name = models.CharField('Тип мессенджера', max_length=10, choices=MESSENGERS, default='TG')
+    name = models.CharField('Наименование', max_length=28)
     img = models.FileField('Иконка', upload_to='messengers', validators=[validate_image_and_svg_file_extension])
+    is_social = models.BooleanField('Это социальная сеть', default=False)
     is_publish = models.BooleanField('Опубликовано', default=False)
 
     class Meta:
@@ -237,3 +232,68 @@ class Notification(BaseModel):
     def __str__(self):
         return self.text
 
+
+class Faq(BaseModel):
+    """Модель вопроса"""
+    question = models.CharField('Вопрос', max_length=512)
+    answer = models.TextField('Ответ')
+
+    class Meta:
+        ordering = ['-updated_at']
+        verbose_name = 'FAQ'
+
+    def __str__(self):
+        return self.question
+
+
+class MobileAppSection(BaseModel):
+    """Модель секции мобильного приложения для сайта"""
+    title = models.CharField('Текст блока', max_length=70)
+    text = models.CharField('Текст блока', max_length=128)
+    promo = models.CharField('Промо', max_length=15)
+    is_publish = models.BooleanField('Опубликовано', default=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        verbose_name = 'Секция мобильного приложения'
+        verbose_name_plural = 'Секция мобильного приложения'
+
+    def __str__(self):
+        return self.title
+
+
+class Store(BaseModel):
+    """Модель магазина приложений"""
+    name = models.CharField('Наименование', max_length=64)
+    section = models.ForeignKey(MobileAppSection, on_delete=models.CASCADE,
+                                verbose_name='Секция', related_name='stores')
+    img = models.FileField('Изображение ', upload_to='app_stores',
+                           validators=[validate_image_and_svg_file_extension])
+    link = models.CharField('Ссылка', max_length=512)
+    is_publish = models.BooleanField('Опубликовано', default=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Магазин приложений'
+        verbose_name_plural = 'Магазины приложений'
+
+    def __str__(self):
+        return self.name
+
+
+class AppReasons(BaseModel):
+    title = models.CharField('Заголовок', max_length=64)
+    section = models.ForeignKey(MobileAppSection, on_delete=models.CASCADE,
+                                verbose_name='Секция', related_name='faqs')
+    img = models.FileField('Изображение ', upload_to='app_stores',
+                           validators=[validate_image_and_svg_file_extension])
+    text = models.TextField('Текст')
+    is_publish = models.BooleanField('Опубликовано', default=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        verbose_name = 'Магазин приложений'
+        verbose_name_plural = 'Магазины приложений'
+
+    def __str__(self):
+        return self.title

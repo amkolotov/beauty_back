@@ -6,4 +6,5 @@ urlpatterns = [
     path('blog/', include('apps.blog.urls')),
     path('salon/', include('apps.salon.urls')),
 
+    path('site/', include('api.v1.site_api.urls'))
 ]

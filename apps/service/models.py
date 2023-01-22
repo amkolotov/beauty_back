@@ -24,6 +24,21 @@ class ServiceCategory(BaseModel):
         return self.name
 
 
+class AddServiceImg(BaseModel):
+    """Модель изображения услуги для сайти"""
+    service = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE,
+                                related_name='service_imgs', verbose_name='Услуга')
+    img = models.ImageField('Изображение услуги для сайта', upload_to='services_types_site')
+
+    class Meta:
+        ordering = ['service']
+        verbose_name = 'Изображение для сайта'
+        verbose_name_plural = 'Изображения для сайта'
+
+    def __str__(self):
+        return f'{self.id} - {self.service}'
+
+
 class Service(BaseModel):
     """Модель услуги"""
     name = models.CharField('Наименование', max_length=128)
