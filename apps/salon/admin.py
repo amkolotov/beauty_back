@@ -92,7 +92,7 @@ class SalonAdmin(admin.ModelAdmin):
 
 class WorkImgInlineAdmin(admin.TabularInline):
     model = WorkImg
-    fields = ['name', 'img_preview', 'is_publish']
+    fields = ['name', 'img_preview', 'img', 'is_publish']
     readonly_fields = ['img_preview']
     extra = 1
     list_filter = ['is_publish']
