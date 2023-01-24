@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'admin_reorder',
+    'ckeditor',
 
     'apps.auth_app',
     'apps.profile',
@@ -164,7 +165,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles/'
-CKEDITOR_BASEPATH = STATIC_ROOT / 'ckeditor/ckeditor/'
+CKEDITOR_BASEPATH = 'staticfiles/ckeditor/ckeditor/'
 
 MEDIA_ROOT = BASE_DIR / 'media/'
 MEDIA_URL = '/media/'
