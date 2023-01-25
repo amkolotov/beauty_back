@@ -127,7 +127,7 @@ class ReviewViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
 class OrderViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
                    viewsets.GenericViewSet, BaseGenericAPIView):
     """Вьюсет заявок"""
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().exclude(status='canceled')
     serializer_class = OrderSerializer
 
     def get_permissions(self, *args, **kwargs):
@@ -163,14 +163,14 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                     When(read=self.request.user, then=True),
                     default=False,
                     output_field=BooleanField())
-            )
+            ).distinct()
         return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
             .filter(Q(for_users=self.request.user) | Q(for_all=True))\
             .annotate(is_read=Case(
                 When(read=self.request.user, then=True),
                 default=False,
                 output_field=BooleanField())
-        )
+        ).distinct()
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)

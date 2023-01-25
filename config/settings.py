@@ -37,7 +37,7 @@ CORS_ALLOW_CREDENTIALS = True
 # Application definition
 
 INSTALLED_APPS = [
-    'grappelli',
+    # 'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -257,10 +257,6 @@ LOGGING = {
             'handlers': ['django_file', 'console'],
             'level': 'ERROR',
             'propagate': False,
-        },
-        'brut': {
-            'handlers': ['django_file', 'console'],
-            'level': 'INFO',
         },
     }
 }

@@ -164,6 +164,7 @@ class ReviewAdmin(admin.ModelAdmin):
     list_filter = ['salon', 'spec', 'rating', 'is_publish']
     search_fields = ['user', 'salon', 'spec']
     ordering = ['-updated_at']
+    list_display_links = ['rating']
 
 
 @admin.register(Order)

@@ -8,6 +8,7 @@ from apps.profile.models import Profile
 admin.site.site_title = "Beauty"
 admin.site.site_header = "Beauty"
 # admin.site.unregister(Group)
+admin.site.enable_nav_sidebar = False
 
 
 class ProfileInlineAdmin(admin.TabularInline):
