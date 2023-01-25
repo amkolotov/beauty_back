@@ -178,7 +178,9 @@ class Review(BaseModel):
         verbose_name_plural = 'Отзывы'
 
     def __str__(self):
-        return self.user.email
+        if self.user:
+            return self.user.email
+        return ''
 
 
 STATUSES = (
