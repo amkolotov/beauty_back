@@ -49,7 +49,7 @@ class MainSalonInfoView(BaseGenericAPIView):
                                       .filter(salon_id=OuterRef('salon_id'), is_publish=True, spec__isnull=True) \
                                       .values_list('id', flat=True)[:3])
             review_spec_subqery = Subquery(Review.objects \
-                                           .filter(is_publish=True, salon_id=salon_id) \
+                                           .filter(is_publish=True) \
                                            .values_list('id', flat=True)[:3])
 
             salon = Salon.objects.filter(id=salon_id, is_publish=True) \
@@ -159,18 +159,20 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
         if salon_id := self.request.GET.get('salon'):
             return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at) \
                 .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
+                .distinct()\
                 .annotate(is_read=Case(
                     When(read=self.request.user, then=True),
                     default=False,
                     output_field=BooleanField())
-            ).distinct()
+                )
         return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
-            .filter(Q(for_users=self.request.user) | Q(for_all=True))\
+            .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
+            .distinct()\
             .annotate(is_read=Case(
                 When(read=self.request.user, then=True),
                 default=False,
                 output_field=BooleanField())
-        ).distinct()
+            )
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
