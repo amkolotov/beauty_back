@@ -194,7 +194,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                 ) \
                     .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
                     .order_by('-id') \
-                    .distinct('-id') \
+                    .distinct('id') \
                     .exclude(read=request.user)\
                     .count()
             else:
@@ -203,7 +203,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                 ) \
                     .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
                     .order_by('-id') \
-                    .distinct('-id') \
+                    .distinct('id') \
                     .exclude(read=request.user)\
                     .count()
 
