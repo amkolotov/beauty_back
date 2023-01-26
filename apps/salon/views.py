@@ -161,7 +161,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
         if salon_id := self.request.GET.get('salon'):
             return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at) \
                 .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
-                .order_by('id') \
+                .order_by('-id') \
                 .distinct('id') \
                 .annotate(is_read=Case(
                     When(read=self.request.user, then=True),
@@ -170,7 +170,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                 )
         return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
             .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
-            .order_by('id') \
+            .order_by('-id') \
             .distinct('id') \
             .annotate(is_read=Case(
                 When(read=self.request.user, then=True),
@@ -193,8 +193,8 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                     is_publish=True, created_at__gt=self.request.user.created_at
                 ) \
                     .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
-                    .order_by('id') \
-                    .distinct('id') \
+                    .order_by('-id') \
+                    .distinct('-id') \
                     .exclude(read=request.user)\
                     .count()
             else:
@@ -202,8 +202,8 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                     is_publish=True, created_at__gt=self.request.user.created_at
                 ) \
                     .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
-                    .order_by('id') \
-                    .distinct('id') \
+                    .order_by('-id') \
+                    .distinct('-id') \
                     .exclude(read=request.user)\
                     .count()
 

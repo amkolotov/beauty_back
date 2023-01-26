@@ -52,7 +52,7 @@ class GetUserDataView(BaseGenericAPIView):
                 is_publish=True, created_at__gt=self.request.user.created_at
             ) \
                 .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
-                .order_by('id') \
+                .order_by('-id') \
                 .distinct('id') \
                 .exclude(read=request.user).\
                 count()
@@ -61,7 +61,7 @@ class GetUserDataView(BaseGenericAPIView):
                 is_publish=True, created_at__gt=self.request.user.created_at
             ) \
                 .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
-                .order_by('id') \
+                .order_by('-id') \
                 .distinct('id') \
                 .exclude(read=request.user)\
                 .count()
