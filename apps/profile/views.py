@@ -52,11 +52,17 @@ class GetUserDataView(BaseGenericAPIView):
                 is_publish=True, created_at__gt=self.request.user.created_at
             ) \
                 .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
-                .exclude(read=request.user).count()
+                .order_by('id') \
+                .distinct('id') \
+                .exclude(read=request.user).\
+                count()
         else:
             data['unread_count'] = Notification.objects.filter(
                 is_publish=True, created_at__gt=self.request.user.created_at
             ) \
                 .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
-                .exclude(read=request.user).count()
+                .order_by('id') \
+                .distinct('id') \
+                .exclude(read=request.user)\
+                .count()
         return Response(data)
