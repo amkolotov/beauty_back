@@ -180,7 +180,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
-        response.data['unread_count'] = self.get_queryset().exclude(is_read=True).count()
+        response.data['unread_count'] = self.get_queryset().filter(is_read=False).count()
         return response
 
     def update(self, request, *args, **kwargs):
@@ -193,13 +193,19 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                     is_publish=True, created_at__gt=self.request.user.created_at
                 ) \
                     .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
-                    .exclude(read=request.user).count()
+                    .order_by('id') \
+                    .distinct('id') \
+                    .exclude(read=request.user)\
+                    .count()
             else:
                 count = Notification.objects.filter(
                     is_publish=True, created_at__gt=self.request.user.created_at
                 ) \
                     .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
-                    .exclude(read=request.user).count()
+                    .order_by('id') \
+                    .distinct('id') \
+                    .exclude(read=request.user)\
+                    .count()
 
             return Response({'unread_count': count})
         return Response(status=HTTP_404_NOT_FOUND)
