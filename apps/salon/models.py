@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -12,14 +13,17 @@ User = get_user_model()
 class CompanyInfo(BaseModel):
     """Модель компании"""
     name = models.CharField('Наименование', max_length=128)
-    logo = models.FileField('Логотип', upload_to='company',
+    logo = models.FileField('Логотип cветлый', upload_to='company',
                             validators=[validate_image_and_svg_file_extension])
+    logo_black = models.FileField('Логотип темный', upload_to='company', null=True, blank=True,
+                                  validators=[validate_image_and_svg_file_extension])
     img = models.ImageField('Изображение', upload_to='company')
     address = models.CharField('Адрес', max_length=128, null=True, blank=True)
     phone = models.CharField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)
     tagline = models.CharField('Слоган', max_length=256)
     decs = models.TextField('Описание')
+    work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
     is_publish = models.BooleanField('Опубликована', default=False)
 
     class Meta:
@@ -38,6 +42,7 @@ class Salon(BaseModel):
     phone = models.CharField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)
     desc = models.TextField('Описание')
+    work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
     is_publish = models.BooleanField('Опубликован', default=False)
 
     class Meta:
@@ -113,6 +118,7 @@ class Specialist(BaseModel):
                                       related_name='specialists')
     salons = models.ManyToManyField(Salon, verbose_name='Салоны',
                                     related_name='specialists')
+    is_manager = models.BooleanField('Менеджер', default=False)
     is_publish = models.BooleanField('Опубликовано', default=False)
 
     class Meta:
@@ -238,7 +244,8 @@ class Notification(BaseModel):
 class Faq(BaseModel):
     """Модель вопроса"""
     question = models.CharField('Вопрос', max_length=512)
-    answer = models.TextField('Ответ')
+    answer = RichTextField('Текст')
+    is_publish = models.BooleanField('Опубликован', default=False)
 
     class Meta:
         ordering = ['-updated_at']

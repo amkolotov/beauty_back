@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg, \
-    CompanyInfo, Notification, Order, Messenger, MessengerType
+    CompanyInfo, Notification, Order, Messenger, MessengerType, Faq
 from apps.service.models import ServiceCategory, Service
 
 User = get_user_model()
@@ -43,7 +43,7 @@ class SalonListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Salon
-        fields = ['id', 'name', 'address', 'email', 'phone', 'salon_imgs',
+        fields = ['id', 'name', 'address', 'email', 'phone', 'work_time', 'salon_imgs',
                   'salon_messengers', 'avg_rating']
 
 
@@ -76,7 +76,7 @@ class SpecialistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Specialist
-        fields = ['id', 'name', 'photo', 'position', 'experience', 'title',
+        fields = ['id', 'name', 'photo', 'position', 'experience', 'title', 'is_manager',
                   'text', 'services', 'work_imgs', 'spec_reviews', 'avg_rating']
 
 
@@ -98,7 +98,7 @@ class SalonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Salon
-        fields = ['id', 'name', 'address', 'phone', 'desc', 'salon_imgs',
+        fields = ['id', 'name', 'address', 'phone', 'desc', 'work_time', 'salon_imgs',
                   'specialists', 'sales', 'salon_reviews']
 
 
@@ -145,9 +145,16 @@ class OrderSerializer(serializers.ModelSerializer):
 
 
 class NotificationSerializer(serializers.ModelSerializer):
-
+    """Класс сериалайзер для уведомления"""
     is_read = serializers.BooleanField(default=False)
 
     class Meta:
         model = Notification
         fields = ['id', 'text', 'is_read', 'created_at']
+
+
+class FaqSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для faq"""
+    class Meta:
+        model = Faq
+        fields = '__all__'

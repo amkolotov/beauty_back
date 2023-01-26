@@ -6,9 +6,11 @@ from rest_framework.status import HTTP_404_NOT_FOUND
 
 from api.v1.views import BaseGenericAPIView
 from apps.auth_app.throttles import TokenObtainThrottle
-from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo, Order, Notification, Messenger
+from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo, Order, Notification, Messenger, \
+    Faq
 from apps.salon.serializers import SalonSerializer, ServiceCategorySerializer, CompanyInfoSerializer, \
-    SalonListSerializer, ReviewSerializer, OrderSerializer, NotificationSerializer, SalonMessengersSerializer
+    SalonListSerializer, ReviewSerializer, OrderSerializer, NotificationSerializer, SalonMessengersSerializer, \
+    FaqSerializer
 from apps.service.models import Service, ServiceCategory
 
 
@@ -24,15 +26,15 @@ class MainSalonInfoView(BaseGenericAPIView):
         salons = Salon.objects.filter(is_publish=True) \
             .annotate(avg_rating=Avg('salon_reviews__rating')) \
             .prefetch_related(
-            Prefetch(
-                'salon_imgs',
-                queryset=SalonImg.objects.filter(is_main=True, is_publish=True)
-            )
-        ).prefetch_related(
-            Prefetch(
-                'salon_messengers',
-                queryset=Messenger.objects.filter(id__in=messengers_subquery)
-            )).all()
+                Prefetch(
+                    'salon_imgs',
+                    queryset=SalonImg.objects.filter(is_main=True, is_publish=True)
+                )
+            ).prefetch_related(
+                Prefetch(
+                    'salon_messengers',
+                    queryset=Messenger.objects.filter(id__in=messengers_subquery)
+                )).all()
         data['salons'] = SalonListSerializer(
             salons, many=True, context={'request': request}
         ).data
@@ -45,11 +47,11 @@ class MainSalonInfoView(BaseGenericAPIView):
         ).data
 
         if salon_id := request.GET.get('salon'):
-            review_subqery = Subquery(Review.objects \
+            review_subquery = Subquery(Review.objects \
                                       .filter(salon_id=OuterRef('salon_id'), is_publish=True, spec__isnull=True) \
                                       .values_list('id', flat=True)[:3])
-            review_spec_subqery = Subquery(Review.objects \
-                                           .filter(is_publish=True) \
+            review_spec_subquery = Subquery(Review.objects \
+                                           .filter(spec_id=OuterRef('spec_id'), is_publish=True) \
                                            .values_list('id', flat=True)[:3])
 
             salon = Salon.objects.filter(id=salon_id, is_publish=True) \
@@ -67,7 +69,7 @@ class MainSalonInfoView(BaseGenericAPIView):
                         .prefetch_related(
                         Prefetch(
                             'spec_reviews',
-                            queryset=Review.objects.filter(id__in=review_spec_subqery)
+                            queryset=Review.objects.filter(id__in=review_spec_subquery)
                         )
                     )
                 )
@@ -79,7 +81,7 @@ class MainSalonInfoView(BaseGenericAPIView):
             ).prefetch_related(
                 Prefetch(
                     'salon_reviews',
-                    queryset=Review.objects.filter(id__in=review_subqery)
+                    queryset=Review.objects.filter(id__in=review_subquery)
                 )
             ).first()
 
@@ -159,7 +161,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
         if salon_id := self.request.GET.get('salon'):
             return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at) \
                 .filter(Q(for_users=self.request.user) | Q(for_all=True) | Q(for_salons=salon_id)) \
-                .distinct()\
+                .distinct('id')\
                 .annotate(is_read=Case(
                     When(read=self.request.user, then=True),
                     default=False,
@@ -167,7 +169,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                 )
         return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
             .filter(Q(for_users=self.request.user) | Q(for_all=True)) \
-            .distinct()\
+            .distinct('id')\
             .annotate(is_read=Case(
                 When(read=self.request.user, then=True),
                 default=False,
@@ -199,3 +201,9 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
 
             return Response({'unread_count': count})
         return Response(status=HTTP_404_NOT_FOUND)
+
+
+class FaqViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """Вьюсет постов"""
+    serializer_class = FaqSerializer
+    queryset = Faq.objects.filter(is_publish=True)
