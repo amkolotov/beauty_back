@@ -25,7 +25,7 @@ class ServiceCategory(BaseModel):
 
 
 class AddServiceImg(BaseModel):
-    """Модель изображения услуги для сайти"""
+    """Модель изображения услуги для сайта"""
     service = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE,
                                 related_name='service_imgs', verbose_name='Услуга')
     img = models.ImageField('Изображение услуги для сайта', upload_to='services_types_site')

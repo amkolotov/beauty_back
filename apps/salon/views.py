@@ -212,6 +212,6 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
 
 
 class FaqViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
-    """Вьюсет постов"""
+    """Вьюсет faq"""
     serializer_class = FaqSerializer
     queryset = Faq.objects.filter(is_publish=True)
