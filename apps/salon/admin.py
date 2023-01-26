@@ -44,15 +44,20 @@ class MessengerAdmin(admin.ModelAdmin):
 
 @admin.register(CompanyInfo)
 class CompanyInfoAdmin(admin.ModelAdmin):
-    list_display = ['name', 'logo_preview', 'tagline', 'img_preview', 'address', 'phone', 'is_publish',
-                    'created_at', 'updated_at']
-    fields = ['name', 'logo', 'logo_preview', 'img', 'img_preview', 'address',
-              'phone', 'email', 'tagline', 'decs', 'is_publish']
-    readonly_fields = ['logo_preview', 'img_preview']
+    list_display = ['name', 'logo_preview', 'logo_black_preview', 'tagline', 'img_preview',
+                    'address', 'phone', 'work_time', 'is_publish', 'created_at', 'updated_at']
+    fields = ['name', 'logo', 'logo_preview', 'logo_black', 'logo_black_preview', 'img',
+              'img_preview', 'address', 'phone', 'email', 'work_time', 'tagline', 'decs', 'is_publish']
+    readonly_fields = ['logo_preview', 'logo_black_preview', 'img_preview']
 
     def logo_preview(self, obj):
         if obj.logo:
             return mark_safe(f'<img src="{obj.logo.url}" width="50" />')
+        return ""
+
+    def logo_black_preview(self, obj):
+        if obj.logo_black:
+            return mark_safe(f'<img src="{obj.logo_black.url}" width="50" />')
         return ""
 
     def img_preview(self, obj):
@@ -61,6 +66,7 @@ class CompanyInfoAdmin(admin.ModelAdmin):
         return ""
 
     logo_preview.short_description = 'Превью логотипа'
+    logo_black_preview.short_description = 'Превью темного логотипа'
     img_preview.short_description = 'Превью изображения'
 
 
@@ -81,9 +87,9 @@ class SalonImgInlineAdmin(admin.TabularInline):
 
 @admin.register(Salon)
 class SalonAdmin(admin.ModelAdmin):
-    list_display = ['name', 'address', 'phone', 'email', 'is_publish',
+    list_display = ['name', 'address', 'phone', 'email', 'work_time', 'is_publish',
                     'created_at', 'updated_at']
-    fields = ['name', 'address', 'phone', 'email', 'desc', 'is_publish', ]
+    fields = ['name', 'address', 'phone', 'email', 'work_time', 'desc', 'is_publish', ]
     inlines = [SalonImgInlineAdmin]
     list_filter = ['name']
     search_fields = ['name', 'address', 'phone', 'email']
@@ -205,8 +211,8 @@ class NotificationAdmin(admin.ModelAdmin):
 
 @admin.register(Faq)
 class FaqAdmin(admin.ModelAdmin):
-    list_display = ['question', 'answer', 'created_at', 'updated_at']
-    fields = ['question', 'answer']
+    list_display = ['question', 'answer', 'is_publish', 'created_at', 'updated_at']
+    fields = ['question', 'answer', 'is_publish']
 
 
 class StoreInlineAdmin(admin.TabularInline):
