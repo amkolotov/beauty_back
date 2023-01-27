@@ -115,9 +115,10 @@ class WorkImgInlineAdmin(admin.TabularInline):
 
 @admin.register(Specialist)
 class SpecialistAdmin(admin.ModelAdmin):
-    list_display = ['name', 'photo_preview', 'position', 'is_publish', 'created_at', 'updated_at']
+    list_display = ['name', 'photo_preview', 'position', 'is_manager', 'is_publish',
+                    'created_at', 'updated_at']
     fields = ['name', 'photo', 'photo_preview', 'position', 'experience', 'title', 'text',
-              'services', 'salons', 'is_publish', ]
+              'services', 'salons', 'is_manager', 'is_publish', ]
     readonly_fields = ['photo_preview']
     inlines = [WorkImgInlineAdmin]
     list_filter = ['is_publish']
@@ -144,7 +145,7 @@ class SaleAdmin(admin.ModelAdmin):
     list_display = ['title', 'desc', 'img_preview', 'is_publish', 'created_at', 'updated_at']
     fields = ['title', 'desc', 'text', 'button_text', 'img', 'img_preview', 'salons', 'is_publish', ]
     readonly_fields = ['img_preview']
-    list_filter = ['is_publish']
+    list_filter = ['is_publish', 'salons', 'is_manager']
     search_fields = ['name']
     ordering = ['-updated_at']
 

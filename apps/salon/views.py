@@ -1,4 +1,5 @@
 from django.db.models import Prefetch, Avg, Subquery, OuterRef, Case, When, Value, BooleanField, Q
+from django.db.models.functions import Coalesce
 from rest_framework import mixins, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -24,7 +25,7 @@ class MainSalonInfoView(BaseGenericAPIView):
                                        .values_list('id', flat=True))
 
         salons = Salon.objects.filter(is_publish=True) \
-            .annotate(avg_rating=Avg('salon_reviews__rating')) \
+            .annotate(avg_rating=Coalesce(Avg('salon_reviews__rating'), 0.0)) \
             .prefetch_related(
                 Prefetch(
                     'salon_imgs',
@@ -64,7 +65,7 @@ class MainSalonInfoView(BaseGenericAPIView):
                 Prefetch(
                     'specialists',
                     queryset=Specialist.objects.filter(is_publish=True) \
-                        .annotate(avg_rating=Avg('spec_reviews__rating'))
+                        .annotate(avg_rating=Coalesce(Avg('spec_reviews__rating'), 0.00))
                         .prefetch_related('work_imgs') \
                         .prefetch_related(
                         Prefetch(
