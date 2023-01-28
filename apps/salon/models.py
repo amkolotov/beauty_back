@@ -260,7 +260,9 @@ class MobileAppSection(BaseModel):
     title = models.CharField('Текст блока', max_length=70)
     text = models.CharField('Текст блока', max_length=128)
     promo = models.CharField('Промо', max_length=15)
-    img = models.ImageField('Изображение для секции приложения',
+    img = models.ImageField('Изображение для страницы приложения',
+                            upload_to='site', null=True, blank=True)
+    img_for_section = models.ImageField('Изображение для секции приложения',
                             upload_to='site', null=True, blank=True)
     is_publish = models.BooleanField('Опубликовано', default=True)
 

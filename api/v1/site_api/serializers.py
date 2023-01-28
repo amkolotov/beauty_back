@@ -108,4 +108,4 @@ class MobileAppSectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MobileAppSection
-        fields = ['title', 'text', 'promo', 'img', 'stores']
+        fields = ['title', 'text', 'promo', 'img', 'img_for_section', 'stores']
