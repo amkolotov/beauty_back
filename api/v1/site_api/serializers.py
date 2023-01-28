@@ -13,7 +13,7 @@ class MessengerTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MessengerType
-        fields = ['id', 'img']
+        fields = ['id', 'img', 'is_social']
 
 
 class SalonMessengersSerializer(serializers.ModelSerializer):
