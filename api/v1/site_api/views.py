@@ -88,7 +88,7 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
         salon_data['app_section'] = MobileAppSectionSerializer(app_section).data
 
         posts = Post.objects.filter(is_publish=True)[:8]
-        salon_data['posts'] = PostSerializer(posts, many=True).data
+        salon_data['posts'] = PostSerializer(posts, many=True, context={'request': request}).data
 
         faqs = Faq.objects.filter(is_publish=True)[:4]
         salon_data['faqs'] = FaqSerializer(faqs, many=True).data
