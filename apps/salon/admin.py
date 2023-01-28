@@ -226,7 +226,7 @@ class StoreInlineAdmin(admin.TabularInline):
 @admin.register(MobileAppSection)
 class MobileAppSectionAdmin(admin.ModelAdmin):
     list_display = ['title', 'text', 'promo', 'is_publish', 'created_at', 'updated_at']
-    fields = ['title', 'text', 'promo', 'is_publish']
+    fields = ['title', 'text', 'promo', 'img', 'is_publish']
 
     inlines = [StoreInlineAdmin]
 

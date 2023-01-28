@@ -10,7 +10,8 @@ class Post(BaseModel):
     image = models.ImageField('Изображение', upload_to='posts')
     title = models.CharField('Заголовок', max_length=256)
     text = RichTextField('Текст')
-    salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, blank=True)
+    salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, blank=True,
+                              verbose_name='Салон')
     is_publish = models.BooleanField('Опубликован', default=False)
 
     class Meta:
