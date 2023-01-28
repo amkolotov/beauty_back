@@ -72,7 +72,7 @@ class SalonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Salon
-        fields = ['id', 'name', 'address', 'phone', 'desc', 'salon_imgs',
+        fields = ['id', 'name', 'address', 'phone', 'email', 'desc', 'salon_imgs',
                   'specialists', 'sales']
 
 
