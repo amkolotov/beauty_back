@@ -46,26 +46,6 @@ class SalonListSerializer(serializers.ModelSerializer):
                   'salon_messengers']
 
 
-# class WorkImgSerializer(serializers.ModelSerializer):
-#     """Класс сериалайзер для специалиста"""
-#
-#     class Meta:
-#         model = WorkImg
-#         fields = ['id', 'name', 'img']
-
-
-# class ReviewSerializer(serializers.ModelSerializer):
-#     """Класс сериалайзер для акции"""
-#
-#     username = serializers.CharField(source='user.username', required=False)
-#     user = serializers.CharField(default=serializers.CurrentUserDefault())
-#
-#     class Meta:
-#         model = Review
-#         fields = ['id', 'username', 'user', 'rating', 'text', 'spec', 'salon', 'created_at']
-#         read_only_fields = ['id', 'username', 'created_at']
-
-
 class SpecialistSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для изображений салона"""
 
@@ -114,39 +94,6 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'img', 'service_imgs', 'title', 'text', 'services']
 
 
-# class CompanyInfoSerializer(serializers.ModelSerializer):
-#     """Класс сериалайзер для компании"""
-#
-#     class Meta:
-#         model = CompanyInfo
-#         exclude = ['is_publish']
-
-
-# class OrderSerializer(serializers.ModelSerializer):
-#     """Класс сериалайзер для заявки"""
-#     user = serializers.PrimaryKeyRelatedField(
-#         default=None, queryset=User.objects.all(),
-#     )
-#     salon_name = serializers.CharField(source='salon.name', required=False)
-#     service_name = serializers.CharField(source='service.name', required=False)
-#     spec_name = serializers.CharField(source='spec.name', required=False)
-#
-#     class Meta:
-#         model = Order
-#         fields = ['user', 'name', 'phone', 'salon', 'service', 'spec',
-#                   'salon_name', 'service_name', 'spec_name', 'date', 'status']
-#         read_only_fields = ['status', 'service_name', 'salon_name', 'spec_name']
-
-
-# class NotificationSerializer(serializers.ModelSerializer):
-#
-#     is_read = serializers.BooleanField(default=False)
-#
-#     class Meta:
-#         model = Notification
-#         fields = ['id', 'text', 'is_read', 'created_at']
-
-
 class StoreSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для секции мобильного приложения"""
     class Meta:
@@ -161,4 +108,4 @@ class MobileAppSectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MobileAppSection
-        fields = ['title', 'text', 'promo', 'stores']
+        fields = ['title', 'text', 'promo', 'img', 'stores']

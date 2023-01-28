@@ -115,7 +115,7 @@ class Specialist(BaseModel):
                              null=True, blank=True)
     text = models.TextField('Полное описание')
     services = models.ManyToManyField(ServiceCategory, verbose_name='Услуги',
-                                      related_name='specialists')
+                                      related_name='specialists', blank=True)
     salons = models.ManyToManyField(Salon, verbose_name='Салоны',
                                     related_name='specialists')
     is_manager = models.BooleanField('Менеджер', default=False)
@@ -260,6 +260,8 @@ class MobileAppSection(BaseModel):
     title = models.CharField('Текст блока', max_length=70)
     text = models.CharField('Текст блока', max_length=128)
     promo = models.CharField('Промо', max_length=15)
+    img = models.ImageField('Изображение для секции приложения',
+                            upload_to='site', null=True, blank=True)
     is_publish = models.BooleanField('Опубликовано', default=True)
 
     class Meta:

@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from api.v1.views import BaseGenericAPIView
 from apps.blog.models import Post
 from apps.blog.serializers import PostSerializer
-from apps.salon.models import Messenger, Salon, SalonImg, CompanyInfo, Specialist, Sale, MobileAppSection
-from apps.salon.serializers import CompanyInfoSerializer
+from apps.salon.models import Messenger, Salon, SalonImg, CompanyInfo, Specialist, Sale, MobileAppSection, Faq
+from apps.salon.serializers import CompanyInfoSerializer, FaqSerializer
 
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 from api.v1.site_api.serializers import SalonListSerializer, SalonMessengersSerializer, SalonSerializer, \
@@ -89,5 +89,8 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
 
         posts = Post.objects.filter(is_publish=True)[:8]
         salon_data['posts'] = PostSerializer(posts, many=True).data
+
+        faqs = Faq.objects.filter(is_publish=True)[:4]
+        salon_data['faqs'] = FaqSerializer(faqs, many=True).data
 
         return Response(salon_data)
