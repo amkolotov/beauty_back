@@ -41,7 +41,8 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
         data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
 
         data['company']['messengers'] = SalonMessengersSerializer(
-            Messenger.objects.filter(for_company=True, is_publish=True), many=True, context={'request': request}
+            Messenger.objects.filter(for_company=True, is_publish=True), many=True,
+            context={'request': request}
         ).data
 
         if request.GET.get('salon'):
@@ -85,10 +86,14 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
 
         app_section = MobileAppSection.objects.filter(is_publish=True)\
             .prefetch_related('stores').first()
-        salon_data['app_section'] = MobileAppSectionSerializer(app_section).data
+        salon_data['app_section'] = MobileAppSectionSerializer(
+            app_section, context={'request': request}
+        ).data
 
         posts = Post.objects.filter(is_publish=True)[:8]
-        salon_data['posts'] = PostSerializer(posts, many=True, context={'request': request}).data
+        salon_data['posts'] = PostSerializer(
+            posts, many=True, context={'request': request}
+        ).data
 
         faqs = Faq.objects.filter(is_publish=True)[:4]
         salon_data['faqs'] = FaqSerializer(faqs, many=True).data
