@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg, \
     CompanyInfo, Notification, Order, Messenger, MessengerType, MobileAppSection, Store
-from apps.service.models import ServiceCategory, Service
+from apps.service.models import ServiceCategory, Service, AddServiceImg
 
 User = get_user_model()
 
@@ -84,10 +84,19 @@ class ServiceSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'price']
 
 
+class ServiceImgSerializer(serializers.ModelSerializer):
+
+    """Сериализатор для изображения услуги"""
+    class Meta:
+        model = AddServiceImg
+        fields = ['id', 'img']
+
+
 class ServiceCategorySerializer(serializers.ModelSerializer):
     """Класс сериалайзер для категории услуг"""
 
     services = ServiceSerializer(many=True)
+    service_imgs = ServiceImgSerializer(many=True)
 
     class Meta:
         model = ServiceCategory
