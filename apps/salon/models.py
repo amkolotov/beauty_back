@@ -41,6 +41,7 @@ class Salon(BaseModel):
     address = models.CharField('Адрес', max_length=256)
     phone = models.CharField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)
+    short_desc = models.CharField('Краткое описание', max_length=128, null=True, blank=True)
     desc = models.TextField('Описание')
     work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
     is_publish = models.BooleanField('Опубликован', default=False)
