@@ -1,4 +1,5 @@
 from django.db.models import Subquery, OuterRef, Prefetch
+from rest_framework import mixins, viewsets
 from rest_framework.response import Response
 
 from api.v1.views import BaseGenericAPIView
@@ -99,3 +100,10 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
         salon_data['faqs'] = FaqSerializer(faqs, many=True).data
 
         return Response(salon_data)
+
+
+class PostSiteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """Вьюсет постов"""
+    serializer_class = PostSerializer
+    queryset = Post.objects.filter(is_publish=True)
+    paginate_by = 8
