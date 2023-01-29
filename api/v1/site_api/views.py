@@ -2,6 +2,7 @@ from django.db.models import Subquery, OuterRef, Prefetch
 from rest_framework import mixins, viewsets
 from rest_framework.response import Response
 
+from api.v1.site_api.paginator import PostPagination
 from api.v1.views import BaseGenericAPIView
 from apps.blog.models import Post
 from apps.blog.serializers import PostSerializer
@@ -106,4 +107,4 @@ class PostSiteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets
     """Вьюсет постов"""
     serializer_class = PostSerializer
     queryset = Post.objects.filter(is_publish=True)
-    paginate_by = 8
+    pagination_class = PostPagination
