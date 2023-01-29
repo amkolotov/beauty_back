@@ -43,7 +43,7 @@ class SalonListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Salon
         fields = ['id', 'name', 'address', 'email', 'phone', 'salon_imgs',
-                  'salon_messengers']
+                  'desc', 'salon_messengers']
 
 
 class SpecialistSerializer(serializers.ModelSerializer):
