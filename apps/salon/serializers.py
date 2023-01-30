@@ -44,7 +44,7 @@ class SalonListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Salon
         fields = ['id', 'name', 'address', 'email', 'phone', 'work_time', 'salon_imgs',
-                  'salon_messengers', 'avg_rating']
+                  'coords', 'salon_messengers', 'avg_rating']
 
 
 class WorkImgSerializer(serializers.ModelSerializer):
@@ -99,7 +99,7 @@ class SalonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Salon
         fields = ['id', 'name', 'address', 'phone', 'short_desc', 'desc', 'work_time', 'salon_imgs',
-                  'specialists', 'sales', 'salon_reviews']
+                  'coords', 'specialists', 'sales', 'salon_reviews']
 
 
 class ServiceSerializer(serializers.ModelSerializer):

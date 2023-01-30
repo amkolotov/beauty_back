@@ -44,6 +44,7 @@ class Salon(BaseModel):
     short_desc = models.CharField('Краткое описание', max_length=128, null=True, blank=True)
     desc = models.TextField('Описание')
     work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
+    coords = models.CharField('Координаты(58.786093,62.516021)', max_length=64, null=True, blank=True)
     is_publish = models.BooleanField('Опубликован', default=False)
 
     class Meta:
