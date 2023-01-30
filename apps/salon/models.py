@@ -308,8 +308,8 @@ class AppReasons(BaseModel):
 
     class Meta:
         ordering = ['-updated_at']
-        verbose_name = 'Магазин приложений'
-        verbose_name_plural = 'Магазины приложений'
+        verbose_name = 'Причина для установки приложения'
+        verbose_name_plural = 'Причины для установки приложения'
 
     def __str__(self):
         return self.title
