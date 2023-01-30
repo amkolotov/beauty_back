@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, \
-    Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store
+    Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store, AppReasons
 
 
 class MessengerInlineCompanyAdmin(admin.TabularInline):
@@ -224,10 +224,17 @@ class StoreInlineAdmin(admin.TabularInline):
     extra = 1
 
 
+class ReasonsInlineAdmin(admin.TabularInline):
+    model = AppReasons
+    list_display = ['title', 'img', 'text', 'is_publish', 'created_at', 'updated_at']
+    fields = ['title', 'img', 'text', 'is_publish', ]
+    extra = 1
+
+
 @admin.register(MobileAppSection)
 class MobileAppSectionAdmin(admin.ModelAdmin):
     list_display = ['title', 'text', 'promo', 'is_publish', 'created_at', 'updated_at']
     fields = ['title', 'text', 'promo', 'img', 'img_for_section', 'is_publish']
 
-    inlines = [StoreInlineAdmin]
+    inlines = [StoreInlineAdmin, ReasonsInlineAdmin]
 

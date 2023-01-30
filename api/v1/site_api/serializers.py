@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg, \
-    CompanyInfo, Notification, Order, Messenger, MessengerType, MobileAppSection, Store
+    CompanyInfo, Notification, Order, Messenger, MessengerType, MobileAppSection, Store, AppReasons
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 
 User = get_user_model()
@@ -110,10 +110,18 @@ class StoreSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'img', 'link']
 
 
+class ReasonSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для плюсов приложения"""
+    class Meta:
+        model = AppReasons
+        fields = ['id', 'title', 'img', 'text']
+
+
 class MobileAppSectionSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для секции мобильного приложения"""
 
     stores = StoreSerializer(many=True)
+    reasons = StoreSerializer(many=True)
 
     class Meta:
         model = MobileAppSection
