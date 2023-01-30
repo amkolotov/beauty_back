@@ -121,8 +121,8 @@ class MobileAppSectionSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для секции мобильного приложения"""
 
     stores = StoreSerializer(many=True)
-    reasons = StoreSerializer(many=True)
+    reasons = ReasonSerializer(many=True)
 
     class Meta:
         model = MobileAppSection
-        fields = ['title', 'text', 'promo', 'img', 'img_for_section', 'stores']
+        fields = ['title', 'text', 'promo', 'img', 'img_for_section', 'reasons', 'stores']

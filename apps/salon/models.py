@@ -297,9 +297,10 @@ class Store(BaseModel):
 
 
 class AppReasons(BaseModel):
+    """Модель причин для установки приложения"""
     title = models.CharField('Заголовок', max_length=64)
     section = models.ForeignKey(MobileAppSection, on_delete=models.CASCADE,
-                                verbose_name='Секция', related_name='faqs')
+                                verbose_name='Секция', related_name='reasons')
     img = models.FileField('Изображение ', upload_to='app_stores',
                            validators=[validate_image_and_svg_file_extension])
     text = models.TextField('Текст')
