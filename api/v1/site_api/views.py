@@ -56,7 +56,7 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
             .prefetch_related(
             Prefetch(
                 'salon_imgs',
-                queryset=SalonImg.objects.all()
+                queryset=SalonImg.objects.filter(is_publish=True)
             )
         ).prefetch_related(
             Prefetch(

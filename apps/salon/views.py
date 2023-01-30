@@ -59,7 +59,7 @@ class MainSalonInfoView(BaseGenericAPIView):
                 .prefetch_related(
                 Prefetch(
                     'salon_imgs',
-                    queryset=SalonImg.objects.filter(is_main=True)
+                    queryset=SalonImg.objects.filter(is_publish=True)
                 )
             ).prefetch_related(
                 Prefetch(
