@@ -67,7 +67,7 @@ services:
       - .:/app
     depends_on:
       - beauty_postgres
-      - beauty_redis
+      - redis
       - beauty_web
 
 
