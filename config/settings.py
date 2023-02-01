@@ -247,6 +247,15 @@ LOGGING = {
             'backupCount': config('LOGFILE_COUNT', cast=int),
             'formatter': 'verbose'
         },
+        'tasks': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': BASE_DIR / 'logs/tasks.log',
+            'maxBytes': config('LOGFILE_SIZE', cast=int),
+            'backupCount': config('LOGFILE_COUNT', cast=int),
+            'formatter': 'verbose'
+        },
+
     },
     'loggers': {
         'django.server': {
@@ -257,6 +266,10 @@ LOGGING = {
             'handlers': ['django_file', 'console'],
             'level': 'ERROR',
             'propagate': False,
+        },
+        'tasks': {
+            'handlers': ['tasks', 'console'],
+            'level': 'INFO',
         },
     }
 }

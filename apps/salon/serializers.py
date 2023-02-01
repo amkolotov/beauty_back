@@ -5,7 +5,7 @@ from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg
     CompanyInfo, Notification, Order, Messenger, MessengerType, Faq
 from apps.service.models import ServiceCategory, Service
 
-User = get_user_model()
+c
 
 
 class MessengerTypeSerializer(serializers.ModelSerializer):

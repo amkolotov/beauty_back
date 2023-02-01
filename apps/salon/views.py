@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_404_NOT_FOUND
 
 from api.v1.views import BaseGenericAPIView
-from apps.auth_app.throttles import TokenObtainThrottle
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo, Order, Notification, Messenger, \
     Faq
 from apps.salon.serializers import SalonSerializer, ServiceCategorySerializer, CompanyInfoSerializer, \

@@ -13,8 +13,8 @@ admin.site.enable_nav_sidebar = False
 
 class ProfileInlineAdmin(admin.TabularInline):
     model = Profile
-    readonly_fields = ['avatar_img']
-    fields = ['avatar_img', 'avatar', 'salon']
+    readonly_fields = ['avatar_img', 'expo_token']
+    fields = ['avatar_img', 'avatar', 'salon', 'expo_token']
 
 
 @admin.register(User)

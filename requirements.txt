@@ -12,3 +12,7 @@ django-grappelli==3.0.4
 psycopg2-binary==2.9.3
 django-modeladmin-reorder==0.3.1
 django-ckeditor==6.5.1
+exponent-server-sdk==2.0.0
+celery==5.2.7
+django-celery-results==2.4.0
+django-celery-beat==2.4.0

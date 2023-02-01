@@ -15,6 +15,7 @@ class Profile(BaseModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField('Аватар', upload_to='avatars', null=True, blank=True)
     salon = models.ForeignKey(Salon, on_delete=models.SET_NULL, null=True, blank=True)
+    expo_token = models.CharField('Push токен', max_length=128, null=True, blank=True)
 
     def __str__(self):
         return self.user.email

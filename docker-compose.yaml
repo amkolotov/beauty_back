@@ -52,6 +52,25 @@ services:
       - "traefik.http.services.beauty.loadbalancer.server.port=8002"
       - "traefik.http.routers.beauty.tls.certresolver=letsEncrypt"
 
+  beauty_redis:
+    image: "redis:latest"
+    restart: unless-stopped
+    expose:
+      - 6379
+
+  beauty_celery_main:
+    build: .
+    command: celery -A config.settings worker -Q main
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - beauty_postgres
+      - beauty_redis
+      - beauty_web
+
+
 networks:
   default:
     external:

@@ -1,11 +1,14 @@
 from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from apps.auth_app.fields import PhoneField
 from apps.auth_app.models import BaseModel
 from apps.auth_app.validators import validate_image_and_svg_file_extension
 from apps.service.models import ServiceCategory
+from apps.salon.tasks import send_push_notifications_task
 
 User = get_user_model()
 
@@ -241,6 +244,12 @@ class Notification(BaseModel):
 
     def __str__(self):
         return self.text
+
+
+@receiver(post_save, sender=Notification)
+def update_stock(sender, instance, **kwargs):
+    if instance.is_publish:
+        send_push_notifications_task.delay(instance.id)
 
 
 class Faq(BaseModel):
