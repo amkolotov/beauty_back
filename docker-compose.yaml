@@ -19,7 +19,6 @@ services:
       - ./logs:/app/logs
       - ./media:/app/media
       - ./staticfiles:/app/staticfiles
-
     depends_on:
       - beauty_postgres
     links:
@@ -60,7 +59,7 @@ services:
 
   beauty_celery_main:
     build: .
-    command: celery -A config worker -Q main
+    command: celery -A config worker -Q main -E
     env_file:
       - .env
     volumes:
