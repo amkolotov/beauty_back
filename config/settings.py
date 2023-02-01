@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'admin_reorder',
     'ckeditor',
+    'django_celery_results',
 
     'apps.auth_app',
     'apps.profile',
