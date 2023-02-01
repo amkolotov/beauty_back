@@ -6,7 +6,7 @@ from kombu import Queue, Exchange
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
-app = Celery('config', include=['salon.tasks'])
+app = Celery('config', include=['apps.salon.tasks'])
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
