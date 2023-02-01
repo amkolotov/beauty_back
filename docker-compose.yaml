@@ -52,7 +52,7 @@ services:
       - "traefik.http.services.beauty.loadbalancer.server.port=8002"
       - "traefik.http.routers.beauty.tls.certresolver=letsEncrypt"
 
-  beauty_redis:
+  redis:
     image: "redis:latest"
     restart: unless-stopped
     expose:
