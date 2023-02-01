@@ -24,7 +24,7 @@ app.conf.task_routes = {
     },
 }
 
-@signals.setup_logging.connect
-def on_celery_setup_logging(**kwargs):
-    pass
+# @signals.setup_logging.connect
+# def on_celery_setup_logging(**kwargs):
+#     pass
 
