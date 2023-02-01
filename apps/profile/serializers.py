@@ -25,10 +25,11 @@ class UserDataSerializer(serializers.ModelSerializer):
     """Изменение данных пользователя"""
 
     avatar = serializers.ImageField(source='profile.avatar')
+    expo_token = serializers.CharField(source='profile.expo_token')
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'phone', 'avatar')
+        fields = ('email', 'username', 'phone', 'avatar', 'expo_token')
         read_only_fields = ('email', 'avatar')
 
     def to_representation(self, instance):
