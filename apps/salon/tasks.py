@@ -72,7 +72,7 @@ def send_push_notifications_task(notification_id: int) -> None:
         profiles_qs = Profile.objects.filter(expo_token__isnull=False)
 
         if notification.for_users:
-            profiles_qs.filter(user__in=notification.for_users)
+            profiles_qs.filter(user__in=notification.for_users.all())
 
         for profile in profiles_qs:
             try:
