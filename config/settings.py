@@ -215,6 +215,14 @@ DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
 BOT_TOKEN = config('BOT_TOKEN')
 CHAT_IDS = config('CHAT_IDS', cast=Csv())
 
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_TIMEZONE = 'Europe/Moscow'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_RESULT_EXTENDED = True
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
