@@ -24,13 +24,13 @@ class ProfileAvatarSerializer(serializers.ModelSerializer):
 class UserDataSerializer(serializers.ModelSerializer):
     """Изменение данных пользователя"""
 
-    avatar = serializers.ImageField(source='profile.avatar')
-    expo_token = serializers.CharField(source='profile.expo_token')
+    avatar = serializers.ImageField(source='profile.avatar', required=False)
+    expo_token = serializers.CharField(source='profile.expo_token', required=False)
 
     class Meta:
         model = User
         fields = ('email', 'username', 'phone', 'avatar', 'expo_token')
-        read_only_fields = ('email', 'avatar')
+        read_only_fields = ('email', 'avatar',)
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -39,3 +39,10 @@ class UserDataSerializer(serializers.ModelSerializer):
         if instance.profile.avatar:
             data['avatar'] = instance.profile.avatar.url
         return data
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.get('profile')
+        if profile_data and profile_data.get('expo_token'):
+            instance.profile.expo_token = profile_data.get('expo_token')
+            instance.save()
+            return instance
