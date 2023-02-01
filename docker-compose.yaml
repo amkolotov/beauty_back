@@ -60,7 +60,7 @@ services:
 
   beauty_celery_main:
     build: .
-    command: celery -A config.settings worker -Q main
+    command: celery -A config worker -Q main
     env_file:
       - .env
     volumes:
