@@ -4,7 +4,7 @@ from celery import Celery, signals
 
 from kombu import Queue, Exchange
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 
 app = Celery('config', include=['salon.tasks'])
 
