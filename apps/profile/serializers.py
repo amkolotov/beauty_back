@@ -44,5 +44,5 @@ class UserDataSerializer(serializers.ModelSerializer):
         profile_data = validated_data.get('profile')
         if profile_data and profile_data.get('expo_token'):
             instance.profile.expo_token = profile_data.get('expo_token')
-            instance.save()
+            instance.profile.save()
             return instance
