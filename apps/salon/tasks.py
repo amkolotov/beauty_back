@@ -5,9 +5,6 @@ from exponent_server_sdk import PushClient, PushMessage, PushServerError,\
     DeviceNotRegisteredError, PushTicketError
 from requests.exceptions import ConnectionError, HTTPError
 
-from apps.profile.models import Profile
-from apps.salon.models import Notification
-
 logger = logging.getLogger('tasks')
 
 
@@ -65,6 +62,9 @@ def send_push_notification(token: str, message: str, extra: dict = None) -> None
 @shared_task(name='send_push_notifications')
 def send_push_notifications_task(notification_id: int) -> None:
     """Таска для отправки пуш уведомления"""
+
+    from apps.profile.models import Profile
+    from apps.salon.models import Notification
 
     notification = Notification.objects.filter(id=notification_id).first()
 
