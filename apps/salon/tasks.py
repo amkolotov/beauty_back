@@ -71,8 +71,10 @@ def send_push_notifications_task(notification_id: int) -> None:
     if notification and notification.is_publish:
         profiles_qs = Profile.objects.filter(expo_token__isnull=False)
 
-        if notification.for_users:
+        if notification.for_users.exists():
             profiles_qs.filter(user__in=notification.for_users.all())
+        elif notification.for_salons.exists():
+            profiles_qs.filter(salon__in=notification.for_salons.all())
 
         for profile in profiles_qs:
             try:
