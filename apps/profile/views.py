@@ -62,7 +62,8 @@ class GetUserDataView(BaseGenericAPIView):
             data['unread_count'] = Notification.objects.filter(
                 is_publish=True, created_at__gt=self.request.user.created_at
             ) \
-                .filter(Q(for_users=self.request.user) | Q(for_salons=salon_id)) \
+                .filter(Q(for_users=self.request.user) | Q(for_salons=salon_id) \
+                        | Q(for_users=None, for_salons=None, for_all=True)) \
                 .order_by('-id') \
                 .distinct('id') \
                 .exclude(read=request.user).\
@@ -71,7 +72,7 @@ class GetUserDataView(BaseGenericAPIView):
             data['unread_count'] = Notification.objects.filter(
                 is_publish=True, created_at__gt=self.request.user.created_at
             ) \
-                .filter(Q(for_users=self.request.user)) \
+                .filter(Q(for_users=self.request.user) | Q(for_users=None, for_salons=None, for_all=True)) \
                 .order_by('-id') \
                 .distinct('id') \
                 .exclude(read=request.user)\

@@ -160,7 +160,8 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
         queryset = super().get_queryset()
         if salon_id := self.request.GET.get('salon'):
             return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at) \
-                .filter(Q(for_users=self.request.user) | Q(for_salons=salon_id)) \
+                .filter(Q(for_users=self.request.user) | Q(for_salons=salon_id) \
+                        | Q(for_users=None, for_salons=None, for_all=True)) \
                 .order_by('-id') \
                 .distinct('id') \
                 .annotate(is_read=Case(
@@ -169,7 +170,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                     output_field=BooleanField())
                 )
         return queryset.filter(is_publish=True, created_at__gt=self.request.user.created_at)\
-            .filter(Q(for_users=self.request.user)) \
+            .filter(Q(for_users=self.request.user) | Q(for_users=None, for_salons=None, for_all=True)) \
             .order_by('-id') \
             .distinct('id') \
             .annotate(is_read=Case(
@@ -192,7 +193,8 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                 count = Notification.objects.filter(
                     is_publish=True, created_at__gt=self.request.user.created_at
                 ) \
-                    .filter(Q(for_users=self.request.user) | Q(for_salons=salon_id)) \
+                    .filter(Q(for_users=self.request.user) | Q(for_salons=salon_id) \
+                            | Q(for_users=None, for_salons=None, for_all=True)) \
                     .order_by('-id') \
                     .distinct('id') \
                     .exclude(read=request.user)\
@@ -201,7 +203,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
                 count = Notification.objects.filter(
                     is_publish=True, created_at__gt=self.request.user.created_at
                 ) \
-                    .filter(Q(for_users=self.request.user)) \
+                    .filter(Q(for_users=self.request.user) | Q(for_users=None, for_salons=None, for_all=True)) \
                     .order_by('-id') \
                     .distinct('id') \
                     .exclude(read=request.user)\
