@@ -38,6 +38,17 @@ class ChangeUserDataView(UpdateAPIView):
         return self.request.user
 
 
+class RemovePushTokenView(BaseGenericAPIView):
+    """Удаление пуш токена"""
+    def post(self, request, user_id):
+        if User.objects.filter(id=user_id).exists():
+            user = User.objects.get(id=user_id)
+            user.profile.expo_token = None
+            user.profile.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+
 class GetUserDataView(BaseGenericAPIView):
     """Получение данных пользователя"""
     queryset = User.objects.all()

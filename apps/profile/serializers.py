@@ -46,7 +46,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         if profile_data and profile_data.get('expo_token'):
             instance.profile.expo_token = profile_data.get('expo_token')
             instance.profile.save()
-        if profile_data and profile_data.get('salon'):
-            instance.profile.salon_id = profile_data.get('salon')
+        if profile_data and profile_data.get('salon_id'):
+            instance.profile.salon_id = profile_data.get('salon_id')
             instance.profile.save()
         return instance
