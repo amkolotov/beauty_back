@@ -1,0 +1,42 @@
+:root {
+    --primary: #5a5a5a;
+    --secondary: #000000;
+    --accent: #f6dac5;
+    --primary-fg: #f9f6f2;
+    --body-fg: #5a5a5a;
+    --body-bg: #fff;
+    --body-quiet-color: #5a5a5a;
+    --body-loud-color: #000;
+    --header-color: #f6dac5;
+    --header-branding-color: var(--accent);
+    --header-bg: var(--secondary);
+    --header-link-color: var(--primary-fg);
+    --breadcrumbs-fg: #f6dac5;
+    --breadcrumbs-link-fg: var(--body-bg);
+    --breadcrumbs-bg: var(--primary);
+    --link-fg: #000000;
+    --link-hover-color: #5a5a5a;
+    --link-selected-fg: #5a5a5ab0;
+    --hairline-color: #ffffff;
+    --border-color: #e5e5e5;
+    --error-fg: #db1010;
+    --message-success-bg: #1b8d1b;
+    --message-warning-bg: #f9f6f2;
+    --message-error-bg: #f9f6f2;
+    --darkened-bg: #f4f4f4;
+    --selected-bg: #e5e5e5;
+    --selected-row: #f4f4f4;
+    --button-fg: #fff;
+    --button-bg: var(--primary);
+    --button-hover-bg: #5a5a5a;
+    --default-button-bg: var(--secondary);
+    --default-button-hover-bg: #5a5a5a;
+    --close-button-bg: #888;
+    --close-button-hover-bg: #747474;
+    --delete-button-bg: #e71515;
+    --delete-button-hover-bg: #d10c0c;
+    --object-tools-fg: var(--button-fg);
+    --object-tools-bg: var(--close-button-bg);
+    --object-tools-hover-bg: var(--close-button-hover-bg);
+}
+
