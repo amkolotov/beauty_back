@@ -38,7 +38,8 @@ class UserDataSerializer(serializers.ModelSerializer):
         if not hasattr(instance, 'profile'):
             Profile.objects.get_or_create(user=self.instance)
         if instance.profile.avatar:
-            data['avatar'] = instance.profile.avatar.url
+            request = self.context.get('request')
+            data['avatar'] = request.build_absolute_uri(instance.profile.avatar.url)
         return data
 
     def update(self, instance, validated_data):

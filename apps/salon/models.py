@@ -229,7 +229,8 @@ class Order(BaseModel):
 
 class Notification(BaseModel):
     """Модель уведомлений"""
-    text = models.TextField('Текст', max_length=256, null=True, blank=True)
+    title = models.CharField('Заголовок', max_length=128, null=True, blank=True)
+    text = models.TextField('Текст', max_length=512, null=True, blank=True)
     read = models.ManyToManyField(User, related_name='read_notifications')
     for_users = models.ManyToManyField(User, related_name='personal_notifications',
                                        blank=True, verbose_name='Для конкретных клиентов')

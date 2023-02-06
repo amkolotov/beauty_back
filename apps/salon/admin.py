@@ -194,10 +194,10 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
-    list_display = ['text',  'is_for_salons', 'is_for_users', 'is_publish', 'created_at', 'updated_at']
-    fields = ['text', 'for_salons', 'is_publish', 'for_users']
+    list_display = ['title', 'text',  'is_for_salons', 'is_for_users', 'is_publish', 'created_at', 'updated_at']
+    fields = ['title', 'text', 'for_salons', 'is_publish', 'for_users']
     list_filter = ['for_salons', 'is_publish']
-    search_fields = ['text']
+    search_fields = ['title', 'text']
 
     def is_for_salons(self, obj):
         return bool(obj.for_salons.count())
