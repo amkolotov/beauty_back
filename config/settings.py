@@ -17,7 +17,6 @@ from decouple import config, Csv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -92,7 +91,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -116,7 +114,6 @@ else:
             'PORT': config('DB_PORT'),
         }
     }
-
 
 CACHES = {
     'default': {
@@ -160,14 +157,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = ('static',)
 STATIC_ROOT = BASE_DIR / 'staticfiles/'
-
 
 MEDIA_ROOT = BASE_DIR / 'media/'
 MEDIA_URL = '/media/'
@@ -195,7 +190,7 @@ REST_FRAMEWORK = {
     },
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 3
-    }
+}
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
@@ -297,4 +292,16 @@ ADMIN_REORDER = [
     {"app": "auth_app", "models": ["auth_app.User", 'auth.Group', 'auth_app.Code']},
 ]
 
-
+CKEDITOR_CONFIGS = {
+    'default': {
+        "skin": "moono-lisa",
+        "toolbar_Basic": [["Source", "-", "Bold", "Italic"]],
+        "toolbar_Custom": [["Styles", "Format", "Bold", "Italic", "Underline", "Strike", "SpellChecker", "Undo", "Redo"],
+                          ["Link", "Unlink"],
+                          ["TextColor", "BGColor"], ["Smiley", "SpecialChar"], ["Source"]],
+        "toolbar": "Custom",
+        "height": 291,
+        "width": 835,
+        "language": "ru"
+    }
+}
