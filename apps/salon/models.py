@@ -322,3 +322,19 @@ class AppReasons(BaseModel):
 
     def __str__(self):
         return self.title
+
+
+class ConfInfo(BaseModel):
+    """Модель политики конфиденциальности"""
+    title = models.CharField('Заголовок', max_length=64)
+    text = models.TextField('Текст')
+    is_publish = models.BooleanField('Опубликовано', default=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        verbose_name = 'Политика конфиденциальности'
+        verbose_name_plural = 'Политика конфиденциальности'
+
+    def __str__(self):
+        return self.title
+

@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg, \
-    CompanyInfo, Notification, Order, Messenger, MessengerType, Faq
+    CompanyInfo, Notification, Order, Messenger, MessengerType, Faq, ConfInfo
 from apps.service.models import ServiceCategory, Service
 
 User = get_user_model()
@@ -155,6 +155,15 @@ class NotificationSerializer(serializers.ModelSerializer):
 
 class FaqSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для faq"""
+
     class Meta:
         model = Faq
+        fields = '__all__'
+
+
+class ConfInfoSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для политики конфиденциальности"""
+
+    class Meta:
+        model = ConfInfo
         fields = '__all__'

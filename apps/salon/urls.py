@@ -1,11 +1,13 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
+from apps.profile.views import ConfView
 from apps.salon.views import MainSalonInfoView, NotificationViewSet, OrderViewSet,\
     ReviewViewSet, FaqViewSet
 
 urlpatterns = [
     path('main-info/', MainSalonInfoView.as_view(), name='main_info'),
+    path('conf/', ConfView.as_view(), name='conf'),
 ]
 
 router = DefaultRouter()
