@@ -52,7 +52,7 @@ class TokenObtainPairFromLoginView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
         user = User.objects.get(email=request.data['email'])
-        user_serializer = self.extra_serializer(user)
+        user_serializer = self.extra_serializer(user, context={'request': request})
         response.data.update(user_serializer.data)
         return response
 

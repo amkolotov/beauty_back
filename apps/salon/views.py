@@ -181,7 +181,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
-        response.data['unread_count'] = self.get_queryset().exclude(read=self.request.user).count()
+        response.data['unread_ids'] = self.get_queryset().exclude(read=self.request.user).values_list('id', flat=True)
         return response
 
     def update(self, request, *args, **kwargs):
