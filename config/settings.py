@@ -292,7 +292,7 @@ ADMIN_REORDER = [
         'salon.Sale', 'salon.Review', 'salon.Order', 'salon.Notification',
     ]},
     {"app": "salon", 'label': 'Мессенджеры', "models": ["salon.Messenger", 'salon.MessengerType']},
-    {"app": "blog", 'label': 'Блог и Faq', "models": ["blog.Post", "salon.Faq"]},
+    {"app": "blog", 'label': 'Блог и Faq', "models": ["blog.Post", "salon.Faq", "salon.ConfInfo"]},
     {"app": "salon", 'label': 'Для сайта', "models": ['salon.MobileAppSection']},
     {"app": "auth_app", "models": ["auth_app.User", 'auth.Group', 'auth_app.Code']},
 ]

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, \
-    Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store, AppReasons
+    Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store, AppReasons, ConfInfo
 
 
 class MessengerInlineCompanyAdmin(admin.TabularInline):
@@ -238,3 +238,8 @@ class MobileAppSectionAdmin(admin.ModelAdmin):
 
     inlines = [StoreInlineAdmin, ReasonsInlineAdmin]
 
+
+@admin.register(ConfInfo)
+class ConfInfoAdmin(admin.ModelAdmin):
+    list_display = ['title', 'is_publish', 'created_at', 'updated_at']
+    fields = ['title', 'text', 'is_publish']
