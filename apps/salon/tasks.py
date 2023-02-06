@@ -8,12 +8,13 @@ from requests.exceptions import ConnectionError, HTTPError
 logger = logging.getLogger('tasks')
 
 
-def send_push_notification(token: str, message: str, extra: dict = None) -> None:
+def send_push_notification(token: str, title: str, message: str, extra: dict = None) -> None:
     """Отправляет пуш уведомления"""
 
     try:
         response = PushClient().publish(
             PushMessage(to=token,
+                        title=title,
                         body=message,
                         data=extra))
 
@@ -21,6 +22,7 @@ def send_push_notification(token: str, message: str, extra: dict = None) -> None
         # Encountered some likely formatting/validation error.
         data = {
                 'token': token,
+                'title': title,
                 'message': message,
                 'extra': extra,
                 'errors': exc.errors,
@@ -32,7 +34,7 @@ def send_push_notification(token: str, message: str, extra: dict = None) -> None
     except (ConnectionError, HTTPError) as exc:
         # Encountered some Connection or HTTP error - retry a few times in
         # case it is transient.
-        data = {'token': token, 'message': message, 'extra': extra}
+        data = {'token': token, 'title': title, 'message': message, 'extra': extra}
         logger.exception('ConnectionError, HTTPError: %s', data)
         raise
 
@@ -51,6 +53,7 @@ def send_push_notification(token: str, message: str, extra: dict = None) -> None
         # Encountered some other per-notification error.
         data = {
                 'token': token,
+                'title': title,
                 'message': message,
                 'extra': extra,
                 'push_response': exc.push_response._asdict(),
@@ -78,7 +81,9 @@ def send_push_notifications_task(notification_id: int) -> None:
 
         for profile in profiles_qs:
             try:
-                send_push_notification(profile.expo_token, notification.text)
+                send_push_notification(
+                    profile.expo_token, notification.title, notification.text
+                )
             except DeviceNotRegisteredError:
                 profile.expo_token = None
                 profile.save(update_fields='expo_token')
