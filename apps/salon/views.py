@@ -8,6 +8,7 @@ from rest_framework.status import HTTP_404_NOT_FOUND
 from api.v1.views import BaseGenericAPIView
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo, Order, Notification, Messenger, \
     Faq, ConfInfo
+from apps.salon.paginator import NotificationPagination
 from apps.salon.serializers import SalonSerializer, ServiceCategorySerializer, CompanyInfoSerializer, \
     SalonListSerializer, ReviewSerializer, OrderSerializer, NotificationSerializer, SalonMessengersSerializer, \
     FaqSerializer, ConfInfoSerializer
@@ -131,6 +132,7 @@ class OrderViewSet(mixins.ListModelMixin, mixins.CreateModelMixin,
     """Вьюсет заявок"""
     queryset = Order.objects.all().exclude(status='canceled')
     serializer_class = OrderSerializer
+    pagination_class = NotificationPagination
 
     def get_permissions(self, *args, **kwargs):
         if self.request.method in ['GET']:
@@ -155,6 +157,7 @@ class NotificationViewSet(mixins.ListModelMixin, mixins.UpdateModelMixin,
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = NotificationPagination
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -218,6 +221,7 @@ class FaqViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gene
     """Вьюсет faq"""
     serializer_class = FaqSerializer
     queryset = Faq.objects.filter(is_publish=True)
+    pagination_class = NotificationPagination
 
 
 class ConfView(BaseGenericAPIView):
