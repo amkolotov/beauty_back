@@ -43,11 +43,16 @@ class UserDataSerializer(serializers.ModelSerializer):
         return data
 
     def update(self, instance, validated_data):
-        profile_data = validated_data.get('profile')
-        if profile_data and profile_data.get('expo_token'):
-            instance.profile.expo_token = profile_data.get('expo_token')
+        if profile_data := validated_data.get('profile'):
+            if token := profile_data.get('expo_token'):
+                instance.profile.expo_token = token
+            if salon_id := profile_data.get('salon_id'):
+                instance.profile.salon_id = salon_id
             instance.profile.save()
-        if profile_data and profile_data.get('salon_id'):
-            instance.profile.salon_id = profile_data.get('salon_id')
-            instance.profile.save()
+        if username := validated_data.get('username'):
+            instance.username = username
+        if phone := validated_data.get('phone'):
+            instance.phone = phone
+        instance.save()
+
         return instance

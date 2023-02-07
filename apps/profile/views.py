@@ -9,8 +9,7 @@ from rest_framework.response import Response
 from api.v1.views import GenericAPIView, BaseGenericAPIView
 
 from apps.profile.serializers import ProfileAvatarSerializer, UserDataSerializer
-from apps.salon.models import Notification, ConfInfo
-from apps.salon.serializers import ConfInfoSerializer
+from apps.salon.models import Notification
 
 User = get_user_model()
 
@@ -78,16 +77,4 @@ class GetUserDataView(BaseGenericAPIView):
                 .distinct('id') \
                 .exclude(read=request.user)\
                 .count()
-        return Response(data)
-
-
-class ConfView(BaseGenericAPIView):
-    """Получение политики конфиденциальности"""
-
-    queryset = ConfInfo.objects.all()
-    serializer_class = ConfInfoSerializer
-
-    def get(self, request):
-        conf = self.get_queryset().filter(is_publish=True).first()
-        data = self.get_serializer(conf).data
         return Response(data)

@@ -7,10 +7,10 @@ from rest_framework.status import HTTP_404_NOT_FOUND
 
 from api.v1.views import BaseGenericAPIView
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo, Order, Notification, Messenger, \
-    Faq
+    Faq, ConfInfo
 from apps.salon.serializers import SalonSerializer, ServiceCategorySerializer, CompanyInfoSerializer, \
     SalonListSerializer, ReviewSerializer, OrderSerializer, NotificationSerializer, SalonMessengersSerializer, \
-    FaqSerializer
+    FaqSerializer, ConfInfoSerializer
 from apps.service.models import Service, ServiceCategory
 
 
@@ -218,3 +218,15 @@ class FaqViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.Gene
     """Вьюсет faq"""
     serializer_class = FaqSerializer
     queryset = Faq.objects.filter(is_publish=True)
+
+
+class ConfView(BaseGenericAPIView):
+    """Получение политики конфиденциальности"""
+
+    queryset = ConfInfo.objects.all()
+    serializer_class = ConfInfoSerializer
+
+    def get(self, request):
+        conf = self.get_queryset().filter(is_publish=True).first()
+        data = self.get_serializer(conf).data
+        return Response(data)

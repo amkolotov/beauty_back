@@ -1,9 +1,8 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from apps.profile.views import ConfView
-from apps.salon.views import MainSalonInfoView, NotificationViewSet, OrderViewSet,\
-    ReviewViewSet, FaqViewSet
+from apps.salon.views import MainSalonInfoView, NotificationViewSet, OrderViewSet, \
+    ReviewViewSet, FaqViewSet, ConfView
 
 urlpatterns = [
     path('main-info/', MainSalonInfoView.as_view(), name='main_info'),
