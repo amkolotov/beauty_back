@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from apps.auth_app.validators import validate_phone as phone_validator
 from apps.profile.models import Profile
 
 User = get_user_model()
@@ -42,6 +43,9 @@ class UserDataSerializer(serializers.ModelSerializer):
             data['avatar'] = request.build_absolute_uri(instance.profile.avatar.url)
         return data
 
+    def validate_phone(self, value):
+        return phone_validator(value)
+
     def update(self, instance, validated_data):
         if profile_data := validated_data.get('profile'):
             if token := profile_data.get('expo_token'):
@@ -52,6 +56,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         if username := validated_data.get('username'):
             instance.username = username
         if phone := validated_data.get('phone'):
+            print('ser', phone)
             instance.phone = phone
         instance.save()
 

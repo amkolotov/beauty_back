@@ -4,6 +4,7 @@ from rest_framework import serializers
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg, \
     CompanyInfo, Notification, Order, Messenger, MessengerType, Faq, ConfInfo
 from apps.service.models import ServiceCategory, Service
+from apps.auth_app.validators import validate_phone as phone_validator
 
 User = get_user_model()
 
@@ -142,6 +143,9 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = ['user', 'name', 'phone', 'salon', 'service', 'spec',
                   'salon_name', 'service_name', 'spec_name', 'date', 'status']
         read_only_fields = ['status', 'service_name', 'salon_name', 'spec_name']
+
+    def validate_phone(self, value):
+        return phone_validator(value)
 
 
 class NotificationSerializer(serializers.ModelSerializer):

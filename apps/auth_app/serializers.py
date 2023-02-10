@@ -9,6 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from api.exceptions import Throttled
 from apps.auth_app import services
 from apps.profile.models import Profile
+from apps.auth_app.validators import validate_phone as phone_validator
 
 User = get_user_model()
 
@@ -22,6 +23,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'password', 'password2', 'username', 'phone')
+
+    def validate_phone(self, value):
+        return phone_validator(value)
 
     def validate(self, attrs: dict) -> dict:
         if attrs['password'] != attrs['password2']:
