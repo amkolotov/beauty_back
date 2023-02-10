@@ -9,8 +9,8 @@ from apps.auth_app.fields import PhoneField
 
 class BaseModel(models.Model):
     """Базовая модель"""
-    created_at = models.DateTimeField('Дата создания', default=timezone.now, db_index=True)
-    updated_at = models.DateTimeField('Дата обновления', default=timezone.now, db_index=True)
+    created_at = models.DateTimeField('Дата создания', auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField('Дата обновления', auto_now=True, db_index=True)
 
     class Meta:
         ordering = ('-updated_at',)

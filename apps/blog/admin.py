@@ -22,10 +22,10 @@ class PostAdminForm(forms.ModelForm):
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
     form = PostAdminForm
-    list_display = ['title', 'image', 'img_preview', 'salon', 'is_publish', 'created_at', 'updated_at']
-    # fields = ['title', 'image', 'img_preview', 'text', 'salon', 'is_publish']
+    list_display = ['title', 'image', 'img_preview', 'is_publish', 'created_at', 'updated_at']
+    fields = ['title', 'image', 'img_preview', 'text', 'is_publish']
     readonly_fields = ['img_preview']
-    list_filter = ['salon', 'is_publish']
+    list_filter = ['is_publish']
     search_fields = ['title', 'text', 'salon']
     ordering = ['-updated_at']
 

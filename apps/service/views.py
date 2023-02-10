@@ -1,10 +1,8 @@
 from django.shortcuts import render
-
-from apps.service.models import ServiceType
+from rest_framework import mixins, viewsets
 
 
 class ServiceViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """Вьюсет видов сервисов"""
-    serializer_class = ServiceTypeSerializer
-    queryset = ServiceType.objects.all()
+    pass
 

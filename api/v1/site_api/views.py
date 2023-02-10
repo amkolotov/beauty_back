@@ -108,3 +108,10 @@ class PostSiteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets
     serializer_class = PostSerializer
     queryset = Post.objects.filter(is_publish=True)
     pagination_class = PostPagination
+
+
+class FaqSiteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """Вьюсет faqs"""
+    serializer_class = FaqSerializer
+    queryset = Faq.objects.filter(is_publish=True)
+    pagination_class = PostPagination
