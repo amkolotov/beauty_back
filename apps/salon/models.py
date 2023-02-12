@@ -21,6 +21,7 @@ class CompanyInfo(BaseModel):
     logo_black = models.FileField('Логотип темный', upload_to='company', null=True, blank=True,
                                   validators=[validate_image_and_svg_file_extension])
     img = models.ImageField('Изображение', upload_to='company')
+    about_img = models.ImageField('Доп изображение для сайта', upload_to='company', null=True, blank=True)
     address = models.CharField('Адрес', max_length=128, null=True, blank=True)
     phone = models.CharField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)

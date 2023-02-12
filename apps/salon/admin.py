@@ -5,6 +5,14 @@ from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg,
     Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store, AppReasons, ConfInfo
 
 
+class ReadChangeOnlyMixin:
+    def has_add_permission(self, *args, **kwargs) -> bool:
+        return False
+
+    def has_delete_permission(self, *args, **kwargs) -> bool:
+        return False
+
+
 class MessengerInlineCompanyAdmin(admin.TabularInline):
     model = Messenger
     fk_name = 'company'
@@ -43,7 +51,7 @@ class MessengerAdmin(admin.ModelAdmin):
 
 
 @admin.register(CompanyInfo)
-class CompanyInfoAdmin(admin.ModelAdmin):
+class CompanyInfoAdmin(ReadChangeOnlyMixin, admin.ModelAdmin):
     list_display = ['name', 'logo_preview', 'logo_black_preview', 'tagline', 'img_preview',
                     'address', 'phone', 'work_time', 'is_publish', 'created_at', 'updated_at']
     fields = ['name', 'logo', 'logo_preview', 'logo_black', 'logo_black_preview', 'img',
