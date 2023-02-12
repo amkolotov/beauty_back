@@ -52,11 +52,12 @@ class MessengerAdmin(admin.ModelAdmin):
 
 @admin.register(CompanyInfo)
 class CompanyInfoAdmin(ReadChangeOnlyMixin, admin.ModelAdmin):
-    list_display = ['name', 'logo_preview', 'logo_black_preview', 'tagline', 'img_preview',
+    list_display = ['name', 'logo_preview', 'logo_black_preview', 'tagline', 'img_preview', 'about_img_preview',
                     'address', 'phone', 'work_time', 'is_publish', 'created_at', 'updated_at']
     fields = ['name', 'logo', 'logo_preview', 'logo_black', 'logo_black_preview', 'img',
-              'img_preview', 'address', 'phone', 'email', 'work_time', 'tagline', 'decs', 'is_publish']
-    readonly_fields = ['logo_preview', 'logo_black_preview', 'img_preview']
+              'img_preview', 'img_preview', 'about_img_preview', 'address', 'phone', 'email',
+              'work_time', 'tagline', 'decs', 'is_publish']
+    readonly_fields = ['logo_preview', 'logo_black_preview', 'img_preview', 'about_img_preview']
 
     def logo_preview(self, obj):
         if obj.logo:
@@ -73,9 +74,15 @@ class CompanyInfoAdmin(ReadChangeOnlyMixin, admin.ModelAdmin):
             return mark_safe(f'<img src="{obj.img.url}" width="50" />')
         return ""
 
+    def about_img_preview(self, obj):
+        if obj.about_img:
+            return mark_safe(f'<img src="{obj.about_img.url}" width="50" />')
+        return ""
+
     logo_preview.short_description = 'Превью логотипа'
     logo_black_preview.short_description = 'Превью темного логотипа'
     img_preview.short_description = 'Превью изображения'
+    about_img_preview.short_description = 'Превью доп изображения для сайта'
 
 
 class SalonImgInlineAdmin(admin.TabularInline):
