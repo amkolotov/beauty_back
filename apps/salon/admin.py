@@ -55,7 +55,7 @@ class CompanyInfoAdmin(ReadChangeOnlyMixin, admin.ModelAdmin):
     list_display = ['name', 'logo_preview', 'logo_black_preview', 'tagline', 'img_preview', 'about_img_preview',
                     'address', 'phone', 'work_time', 'is_publish', 'created_at', 'updated_at']
     fields = ['name', 'logo', 'logo_preview', 'logo_black', 'logo_black_preview', 'img',
-              'img_preview', 'img_preview', 'about_img_preview', 'address', 'phone', 'email',
+              'img_preview', 'about_img', 'about_img_preview', 'address', 'phone', 'email',
               'work_time', 'tagline', 'decs', 'is_publish']
     readonly_fields = ['logo_preview', 'logo_black_preview', 'img_preview', 'about_img_preview']
 
