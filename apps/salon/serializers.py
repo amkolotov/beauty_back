@@ -137,11 +137,12 @@ class OrderSerializer(serializers.ModelSerializer):
     salon_name = serializers.CharField(source='salon.name', required=False)
     service_name = serializers.CharField(source='service.name', required=False)
     spec_name = serializers.CharField(source='spec.name', required=False)
+    source = serializers.CharField(required=False)
 
     class Meta:
         model = Order
         fields = ['user', 'name', 'phone', 'salon', 'service', 'spec',
-                  'salon_name', 'service_name', 'spec_name', 'date', 'status']
+                  'salon_name', 'service_name', 'spec_name', 'date', 'status', 'source']
         read_only_fields = ['status', 'service_name', 'salon_name', 'spec_name']
 
     def validate_phone(self, value):

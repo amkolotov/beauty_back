@@ -8,7 +8,8 @@ from apps.auth_app.fields import PhoneField
 from apps.auth_app.models import BaseModel
 from apps.auth_app.validators import validate_image_and_svg_file_extension
 from apps.service.models import ServiceCategory
-from apps.salon.tasks import send_push_notifications_task
+from apps.salon.tasks import send_push_notifications_task, send_push_order_confirmed_task, \
+    send_salon_new_order_to_telegram_task
 
 User = get_user_model()
 
@@ -155,10 +156,14 @@ class WorkImg(BaseModel):
 
 class Sale(BaseModel):
     """Модель акций"""
-    title = models.CharField('Заголовок', max_length=128)
-    desc = models.CharField('Описание', max_length=512)
-    text = models.TextField('Текст')
-    button_text = models.CharField('Текст кнопки', max_length=29)
+    title = models.CharField('Заголовок', max_length=64,
+                             help_text='Максимальная длина 64 символа')
+    desc = models.CharField('Описание', max_length=128,
+                            help_text='Максимальная длина 128 символов')
+    text = models.TextField('Текст', max_length=512,
+                            help_text='Максимальная длина 512 символов')
+    button_text = models.CharField('Текст кнопки', max_length=29,
+                                   help_text='Максимальная длина 29 символов')
     img = models.ImageField('Изображение', upload_to='sales')
     salons = models.ManyToManyField(Salon, verbose_name='Салоны', related_name='sales')
     is_publish = models.BooleanField('Опубликована', default=False)
@@ -217,6 +222,7 @@ class Order(BaseModel):
                              verbose_name='Cпециалист', related_name='spec_orders')
     date = models.DateTimeField('Дата и время бронирования')
     status = models.CharField('Статус', max_length=10, choices=STATUSES, default='new')
+    source = models.CharField('Источник', max_length=10, default='app')
     is_processed = models.BooleanField('Обработана', default=False)
 
     class Meta:
@@ -225,7 +231,20 @@ class Order(BaseModel):
         verbose_name_plural = 'Заявки'
 
     def __str__(self):
-        return f'{self.salon}-{self.user}'
+        user = self.user if self.user else ''
+        return f'{self.salon}-{user}'
+
+
+@receiver(post_save, sender=Order)
+def send_order_confirm(sender, instance, **kwargs):
+    if instance.user and instance.status == 'confirmed':
+        send_push_order_confirmed_task.delay(instance.id)
+
+
+@receiver(post_save, sender=Order)
+def send_telegram(sender, instance, **kwargs):
+    if instance.salon and instance.status == 'new':
+        send_salon_new_order_to_telegram_task.delay(instance.id)
 
 
 class Notification(BaseModel):
@@ -249,7 +268,7 @@ class Notification(BaseModel):
 
 
 @receiver(post_save, sender=Notification)
-def update_stock(sender, instance, **kwargs):
+def update_notification(sender, instance, **kwargs):
     if instance.is_publish:
         send_push_notifications_task.delay(instance.id)
 
@@ -340,3 +359,32 @@ class ConfInfo(BaseModel):
     def __str__(self):
         return self.title
 
+
+class TgSettings(BaseModel):
+    """Модель настройки телеграмм бота"""
+    salon = models.OneToOneField('salon.Salon', on_delete=models.CASCADE, verbose_name='Салон')
+    token = models.CharField('Токен бота ТГ', max_length=128, null=True)
+    is_publish = models.BooleanField('Опубликовано', default=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        verbose_name = 'Телеграмм бота'
+        verbose_name_plural = 'Телеграмм боты'
+
+    def __str__(self):
+        return f'{self.salon.name}-{self.token if self.token else ""}'
+
+
+class ChatsIds(BaseModel):
+    """ID чата пользователя"""
+    name = models.CharField('Имя пользователя', max_length=128)
+    chat_id = models.PositiveIntegerField('ID чата')
+    tg_bot = models.ForeignKey(TgSettings, on_delete=models.CASCADE, related_name='chats')
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Пользователь ТГ'
+        verbose_name_plural = 'Пользователи ТГ'
+
+    def __str__(self):
+        return f'{self.name}-{self.chat_id}'

@@ -1,9 +1,11 @@
 import logging
 
+import requests
 from celery import shared_task
 from exponent_server_sdk import PushClient, PushMessage, PushServerError,\
     DeviceNotRegisteredError, PushTicketError
 from requests.exceptions import ConnectionError, HTTPError
+
 
 logger = logging.getLogger('tasks')
 
@@ -87,3 +89,54 @@ def send_push_notifications_task(notification_id: int) -> None:
             except DeviceNotRegisteredError:
                 profile.expo_token = None
                 profile.save(update_fields='expo_token')
+
+
+@shared_task(name='send_push_order_confirmed')
+def send_push_order_confirmed_task(order_id: int) -> None:
+    """Таска для отправки пуш уведомления подтверждения записи"""
+
+    from apps.profile.models import Profile
+    from apps.salon.models import Order
+
+    order = Order.objects.filter(id=order_id).first()
+
+    if order and order.user and order.status == 'confirmed':
+        profile = Profile.objects.filter(expo_token__isnull=False, user=order.user).first()
+
+        date = order.date.strftime('%Y-%m-%d %H:%M')
+        title = 'Подтверждение записи'
+        text = f'Вы записаны в салон {order.salon.name} \n на {date}. \n' \
+               f'Подробнее в личном кабинете'
+
+        if profile:
+            try:
+                send_push_notification(
+                    profile.expo_token, title, text
+                )
+            except DeviceNotRegisteredError:
+                profile.expo_token = None
+                profile.save(update_fields='expo_token')
+
+
+@shared_task(name='send_to_telegram')
+def send_salon_new_order_to_telegram_task(order_id):
+    """Таска отправки сообщения в телеграмм"""
+
+    from apps.salon.models import Order
+    from apps.salon.models import TgSettings
+
+    order = Order.objects.filter(id=order_id).first()
+
+    message = f'Поступление новой заявки\n' \
+              f'Источник: {order.source}\n' \
+              f'Телефон: {order.phone}'
+
+    if order and order.salon and order.status == 'new':
+        bot = TgSettings.objects.filter(salon_id=order.salon_id, is_publish=True).first()
+        if bot and bot.token and bot.chats:
+            url = f'https://api.telegram.org/bot{bot.token}/sendMessage'
+            for chat in bot.chats.all():
+                try:
+                    requests.post(url, {'chat_id': chat.chat_id, 'text': message})
+                except Exception as e:
+                    logger.exception('Send telegram exception\n', str(e))

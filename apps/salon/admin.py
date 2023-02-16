@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, \
-    Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store, AppReasons, ConfInfo
+    Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store, AppReasons, ConfInfo, \
+    ChatsIds, TgSettings
 
 
 class ReadChangeOnlyMixin:
@@ -192,10 +193,10 @@ class ReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['salon', 'service', 'spec', 'user', 'name', 'phone',  'date', 'status',
+    list_display = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'date', 'source', 'status',
                     'is_processed', 'created_at', 'updated_at']
-    fields = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'date', 'status', 'is_processed']
-    list_filter = ['salon', 'service', 'spec', 'status', 'is_processed']
+    fields = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'date', 'source', 'status', 'is_processed']
+    list_filter = ['salon', 'service', 'spec', 'source', 'status', 'is_processed']
     search_fields = ['user', 'salon', 'service', 'spec', 'name', 'phone']
     ordering = ['-updated_at']
 
@@ -213,6 +214,8 @@ class NotificationAdmin(admin.ModelAdmin):
     fields = ['title', 'text', 'for_salons', 'is_publish', 'for_users']
     list_filter = ['for_salons', 'is_publish']
     search_fields = ['title', 'text']
+    filter_horizontal = ['for_users']
+    list_display_links = ['title', 'text']
 
     def is_for_salons(self, obj):
         return bool(obj.for_salons.count())
@@ -258,3 +261,18 @@ class MobileAppSectionAdmin(admin.ModelAdmin):
 class ConfInfoAdmin(admin.ModelAdmin):
     list_display = ['title', 'is_publish', 'created_at', 'updated_at']
     fields = ['title', 'text', 'is_publish']
+
+
+class TGUserAdmin(admin.TabularInline):
+    model = ChatsIds
+    fk_name = 'tg_bot'
+    exclude = ['id', 'created_at', 'updated_at', ]
+    extra = 0
+
+
+@admin.register(TgSettings)
+class TgSettingsAdmin(admin.ModelAdmin):
+    list_display = ['salon', 'is_publish', 'created_at', 'updated_at']
+    fields = ['salon', 'token', 'is_publish']
+    inlines = [TGUserAdmin]
+
