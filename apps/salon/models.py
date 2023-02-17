@@ -242,8 +242,8 @@ def send_order_confirm(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Order)
-def send_telegram(sender, instance, created, **kwargs):
-    if created and instance.salon and instance.status == 'new':
+def send_telegram(sender, instance, **kwargs):
+    if instance.salon and instance.status == 'new':
         send_salon_new_order_to_telegram_task.delay(instance.id)
 
 
