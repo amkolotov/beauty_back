@@ -128,7 +128,7 @@ def send_salon_new_order_to_telegram_task(order_id):
     order = Order.objects.filter(id=order_id).first()
     salon_name = order.salon.name if order.salon else "-"
     name = order.name if order.name else "-"
-    service_name = order.service.salon if order.salon else "-"
+    service_name = order.service.name if order.name else "-"
     spec_name = order.spec.name if order.spec else "-"
     date = order.date.strftime("%Y-%m-%d %H:%M")
 
