@@ -129,7 +129,12 @@ def send_salon_new_order_to_telegram_task(order_id):
 
     message = f'Поступление новой заявки\n' \
               f'Источник: {order.source}\n' \
-              f'Телефон: {order.phone}'
+              f'Салон: {order.salon.name if order.salon else "-"}\n' \
+              f'Телефон: {order.phone}\n' \
+              f'Имя: {order.name if order.name else "-"}\n' \
+              f'Услуга: {order.service.salon if order.salon else "-"}\n' \
+              f'Специалист: {order.spec.name if order.spec else "-"}\n' \
+              f'Дата: {order.date.strftime("%Y-%m-%d %H:%M")}'
 
     if order and order.salon and order.status == 'new':
         bot = TgSettings.objects.filter(salon_id=order.salon_id, is_publish=True).first()

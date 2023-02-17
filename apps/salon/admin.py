@@ -149,20 +149,13 @@ class SpecialistAdmin(admin.ModelAdmin):
 
     photo_preview.short_description = 'Изображение'
 
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        if request.user.is_superuser:
-            return queryset
-        elif request.user.is_staff:
-            return queryset.filter(salons=request.user.profile.salon.id)
-
 
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
-    list_display = ['title', 'desc', 'img_preview', 'is_publish', 'created_at', 'updated_at']
+    list_display = ['title', 'desc', 'img_preview', 'get_salons', 'is_publish', 'created_at', 'updated_at']
     fields = ['title', 'desc', 'text', 'button_text', 'img', 'img_preview', 'salons', 'is_publish']
     readonly_fields = ['img_preview']
-    list_filter = ['is_publish']
+    list_filter = ['is_publish', 'salons']
     search_fields = ['name']
     ordering = ['-updated_at']
 
@@ -171,6 +164,9 @@ class SaleAdmin(admin.ModelAdmin):
             return mark_safe(f'<img src="{obj.img.url}" width="100" />')
         return ""
 
+    def get_salons(self, obj):
+        return ", ".join([salon.name for salon in obj.salons.all()])
+
     img_preview.short_description = 'Изображение'
 
     def get_queryset(self, request):
@@ -178,7 +174,9 @@ class SaleAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return queryset
         elif request.user.is_staff:
-            return queryset.filter(salons=request.user.profile.salon.id)
+            if request.user.profile.salon:
+                return queryset.filter(salons=request.user.profile.salon.id)
+            return queryset.filter(salons=0)
 
 
 @admin.register(Review)
@@ -189,6 +187,15 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ['user', 'salon', 'spec']
     ordering = ['-updated_at']
     list_display_links = ['rating']
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            return queryset
+        elif request.user.is_staff:
+            if request.user.profile.salon:
+                return queryset.filter(salon=request.user.profile.salon.id)
+            return queryset.filter(salon=0)
 
 
 @admin.register(Order)
@@ -205,7 +212,9 @@ class OrderAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return queryset
         elif request.user.is_staff:
-            return queryset.filter(salons=request.user.profile.salon.id)
+            if request.user.profile.salon:
+                return queryset.filter(salon=request.user.profile.salon.id)
+            return queryset.filter(salon=0)
 
 
 @admin.register(Notification)
@@ -227,6 +236,15 @@ class NotificationAdmin(admin.ModelAdmin):
     is_for_salons.short_description = "Для салонов"
     is_for_users.boolean = True
     is_for_users.short_description = "Для пользователей"
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if request.user.is_superuser:
+            return queryset
+        elif request.user.is_staff:
+            if request.user.profile.salon:
+                return queryset.filter(for_salons=request.user.profile.salon.id)
+            return queryset.filter(for_salons=0)
 
 
 @admin.register(Faq)
