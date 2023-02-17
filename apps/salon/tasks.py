@@ -126,15 +126,20 @@ def send_salon_new_order_to_telegram_task(order_id):
     from apps.salon.models import TgSettings
 
     order = Order.objects.filter(id=order_id).first()
+    salon_name = order.salon.name if order.salon else "-"
+    name = order.name if order.name else "-"
+    service_name = order.service.salon if order.salon else "-"
+    spec_name = order.spec.name if order.spec else "-"
+    date = order.date.strftime("%Y-%m-%d %H:%M")
 
     message = f'Поступление новой заявки\n' \
               f'Источник: {order.source}\n' \
-              f'Салон: {order.salon.name if order.salon else "-"}\n' \
+              f'Салон: {salon_name}\n' \
               f'Телефон: {order.phone}\n' \
-              f'Имя: {order.name if order.name else "-"}\n' \
-              f'Услуга: {order.service.salon if order.salon else "-"}\n' \
-              f'Специалист: {order.spec.name if order.spec else "-"}\n' \
-              f'Дата: {order.date.strftime("%Y-%m-%d %H:%M")}'
+              f'Имя: {name}\n' \
+              f'Услуга: {service_name}\n' \
+              f'Специалист: {spec_name}\n' \
+              f'Дата: {date}'
 
     if order and order.salon and order.status == 'new':
         bot = TgSettings.objects.filter(salon_id=order.salon_id, is_publish=True).first()
