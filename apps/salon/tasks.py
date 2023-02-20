@@ -106,7 +106,7 @@ def send_push_order_confirmed_task(order_id: int) -> None:
 
         date = (order.date + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M')
         title = 'Подтверждение записи'
-        text = f'Вы записаны в салон {order.salon.name} \n на {date}. \n' \
+        text = f'Вы записаны в салон {order.salon.name}\n{date} (Мск).\n' \
                f'Подробнее в личном кабинете'
 
         if profile:
@@ -140,7 +140,7 @@ def send_salon_new_order_to_telegram_task(order_id):
               f'Имя: {name}\n' \
               f'Услуга: {service_name}\n' \
               f'Специалист: {spec_name}\n' \
-              f'Дата: {date}'
+              f'Дата: {date} (Мск)'
 
     if order and order.salon and order.status == 'new':
         bot = TgSettings.objects.filter(salon_id=order.salon_id, is_publish=True).first()
