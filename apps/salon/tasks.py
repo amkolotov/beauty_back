@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 import requests
 from celery import shared_task
@@ -103,7 +104,7 @@ def send_push_order_confirmed_task(order_id: int) -> None:
     if order and order.user and order.status == 'confirmed':
         profile = Profile.objects.filter(expo_token__isnull=False, user=order.user).first()
 
-        date = order.date.strftime('%Y-%m-%d %H:%M')
+        date = (order.date + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M')
         title = 'Подтверждение записи'
         text = f'Вы записаны в салон {order.salon.name} \n на {date}. \n' \
                f'Подробнее в личном кабинете'
@@ -130,7 +131,7 @@ def send_salon_new_order_to_telegram_task(order_id):
     name = order.name if order.name else "-"
     service_name = order.service.name if order.name else "-"
     spec_name = order.spec.name if order.spec else "-"
-    date = order.date.strftime("%Y-%m-%d %H:%M")
+    date = (order.date + timedelta(hours=3)).strftime('%Y-%m-%d %H:%M')
 
     message = f'Поступление новой заявки\n' \
               f'Источник: {order.source}\n' \

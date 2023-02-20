@@ -223,6 +223,7 @@ class Order(BaseModel):
     date = models.DateTimeField('Дата и время бронирования')
     status = models.CharField('Статус', max_length=10, choices=STATUSES, default='new')
     source = models.CharField('Источник', max_length=10, default='app')
+    comment = models.TextField('Комментарий', null=True, blank=True)
     is_processed = models.BooleanField('Обработана', default=False)
 
     class Meta:
