@@ -238,7 +238,7 @@ class Order(BaseModel):
     def save(self, *args, **kwargs):
         if self.status != 'new':
             self.is_processed = True
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 @receiver(post_save, sender=Order)

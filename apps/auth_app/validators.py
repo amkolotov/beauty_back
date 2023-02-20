@@ -5,7 +5,7 @@ from django.core.validators import (get_available_image_extensions, FileExtensio
 
 def validate_phone(phone: str) -> str:
     """Провалидировать номер телефона"""
-    print('validate')
+
     try:
         phone = phonenumbers.parse(phone)
     except phonenumbers.NumberParseException:
@@ -16,8 +16,6 @@ def validate_phone(phone: str) -> str:
 
     if str(phone.country_code) not in ('7', '8'):
         raise ValidationError("Номер из данной страны не поддерживается")
-
-    print(phone, f"+{phone.country_code}{phone.national_number}")
 
     return f"+{phone.country_code}{phone.national_number}"
 
