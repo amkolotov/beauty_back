@@ -141,7 +141,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ['user', 'name', 'phone', 'salon', 'service', 'spec', 'comment'
+        fields = ['user', 'name', 'phone', 'salon', 'service', 'spec', 'comment',
                   'salon_name', 'service_name', 'spec_name', 'date', 'status', 'source']
         read_only_fields = ['status', 'service_name', 'salon_name', 'spec_name']
         extra_kwargs = {"comment": {"write_only": True, }}
