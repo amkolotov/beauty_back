@@ -235,6 +235,11 @@ class Order(BaseModel):
         user = self.user if self.user else ''
         return f'{self.salon}-{user}'
 
+    def save(self, *args, **kwargs):
+        if self.status != 'new':
+            self.is_processed = True
+            super().save(*args, **kwargs)
+
 
 @receiver(post_save, sender=Order)
 def send_order_confirm(sender, instance, **kwargs):

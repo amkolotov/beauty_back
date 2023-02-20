@@ -203,7 +203,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'date',
                     'source', 'status', 'is_processed', 'created_at', 'updated_at']
     fields = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'comment',
-              'date', 'source', 'status', 'is_processed']
+              'date', 'source', 'status']
     list_filter = ['salon', 'service', 'spec', 'source', 'status', 'is_processed']
     search_fields = ['user', 'salon', 'service', 'spec', 'name', 'phone']
     ordering = ['-updated_at']
