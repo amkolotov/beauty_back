@@ -8,3 +8,6 @@ urlpatterns = [
 
     path('site/', include('api.v1.site_api.urls'))
 ]
+
+handler400 = 'rest_framework.exceptions.bad_request'
+handler500 = 'rest_framework.exceptions.server_error'

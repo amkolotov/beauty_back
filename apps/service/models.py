@@ -9,7 +9,8 @@ User = get_user_model()
 class ServiceCategory(BaseModel):
     """Модель категории услуг"""
     name = models.CharField('Наименование', max_length=128)
-    img = models.ImageField('Изображение', upload_to='service_types')
+    img = models.ImageField('Изображение', upload_to='service_types',
+                            help_text='Рекомендуемый размер 370Х310px')
     title = models.CharField('Заголовок описания', max_length=128,
                              null=True, blank=True)
     text = models.TextField('Полное описание')
@@ -28,7 +29,8 @@ class AddServiceImg(BaseModel):
     """Модель изображения услуги для сайта"""
     service = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE,
                                 related_name='service_imgs', verbose_name='Услуга')
-    img = models.ImageField('Изображение услуги для сайта', upload_to='services_types_site')
+    img = models.ImageField('Изображение услуги для сайта', upload_to='services_types_site',
+                            help_text='Рекомендуемый размер 370Х310px')
 
     class Meta:
         ordering = ['service']

@@ -21,15 +21,17 @@ class CompanyInfo(BaseModel):
                             validators=[validate_image_and_svg_file_extension])
     logo_black = models.FileField('Логотип темный', upload_to='company', null=True, blank=True,
                                   validators=[validate_image_and_svg_file_extension])
-    img = models.ImageField('Изображение', upload_to='company')
-    about_img = models.ImageField('Доп изображение для сайта', upload_to='company', null=True, blank=True)
+    img = models.ImageField('Изображение', upload_to='company',
+                            help_text='Рекомендуемый размер 1600Х100px')
+    about_img = models.ImageField('Доп изображение для сайта', upload_to='company', null=True, blank=True,
+                                  help_text='Рекомендуемый размер 1200Х325px')
     address = models.CharField('Адрес', max_length=128, null=True, blank=True)
     phone = models.CharField('Телефон', max_length=20, null=True, blank=True)
     email = models.EmailField('E-mail', null=True, blank=True)
     tagline = models.CharField('Слоган', max_length=256)
     decs = models.TextField('Описание')
     work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
-    is_publish = models.BooleanField('Опубликована', default=False)
+    is_publish = models.BooleanField('Опубликована', default=True)
 
     class Meta:
         ordering = ['-created_at']
@@ -65,7 +67,8 @@ class SalonImg(BaseModel):
     """Модель изображения салона"""
     salon = models.ForeignKey(Salon, on_delete=models.CASCADE, related_name='salon_imgs',
                               verbose_name='Салон')
-    img = models.ImageField('Изображение салона', upload_to='salons')
+    img = models.ImageField('Изображение салона', upload_to='salons',
+                            help_text='Рекомендуемый размер: главная - 1200Х480px, остальные - 700Х480px')
     is_main = models.BooleanField('Главное фото', default=False)
     is_publish = models.BooleanField('Опубликовано', default=False)
 
@@ -115,7 +118,8 @@ class Messenger(BaseModel):
 class Specialist(BaseModel):
     """Модель специалиста"""
     name = models.CharField('Имя', max_length=128)
-    photo = models.ImageField('Фото', upload_to='specialists')
+    photo = models.ImageField('Фото', upload_to='specialists',
+                              help_text='Рекомендуемый формат вертикальный (9:16) с шириной не более 520px')
     position = models.CharField('Должность', max_length=128)
     experience = models.CharField('Стаж работы', max_length=128)
     title = models.CharField('Заголовок описания', max_length=128,
@@ -164,7 +168,8 @@ class Sale(BaseModel):
                             help_text='Максимальная длина 512 символов')
     button_text = models.CharField('Текст кнопки', max_length=29,
                                    help_text='Максимальная длина 29 символов')
-    img = models.ImageField('Изображение', upload_to='sales')
+    img = models.ImageField('Изображение', upload_to='sales',
+                            help_text='Рекомендуемый размер 600Х320px')
     salons = models.ManyToManyField(Salon, verbose_name='Салоны', related_name='sales')
     is_publish = models.BooleanField('Опубликована', default=False)
 
@@ -334,11 +339,13 @@ class Store(BaseModel):
 
 class AppReasons(BaseModel):
     """Модель причин для установки приложения"""
-    title = models.CharField('Заголовок', max_length=64)
+    title = models.CharField('Заголовок', max_length=64,
+                             help_text='Максимально 64 символа')
     section = models.ForeignKey(MobileAppSection, on_delete=models.CASCADE,
                                 verbose_name='Секция', related_name='reasons')
     img = models.FileField('Изображение ', upload_to='app_stores',
-                           validators=[validate_image_and_svg_file_extension])
+                           validators=[validate_image_and_svg_file_extension],
+                           help_text='Рекомендуемый размер 56px в формате SVG')
     text = models.TextField('Текст')
     is_publish = models.BooleanField('Опубликовано', default=True)
 

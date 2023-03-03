@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework import status
@@ -14,6 +16,7 @@ from .services import send_code
 from .throttles import SendCodeThrottle, TokenObtainThrottle, TokenObtainEmailThrottle
 
 User = get_user_model()
+logger = logging.getLogger('django.request')
 
 
 class RegisterView(BaseGenericAPIView):
@@ -28,14 +31,18 @@ class RegisterView(BaseGenericAPIView):
         user = serializer.save()
 
         Code.objects.filter(user_id=user.id).delete()
-        code = send_code(user)
+        try:
+            code = send_code(user)
 
-        retry_after = code.created_at + settings.AUTH_CODE_ISSUE_THRESHOLD
+            retry_after = code.created_at + settings.AUTH_CODE_ISSUE_THRESHOLD
 
-        return Response(
-            status=status.HTTP_200_OK,
-            headers={"Retry-After": int(retry_after.timestamp())}
-        )
+            return Response(
+                status=status.HTTP_200_OK,
+                headers={"Retry-After": int(retry_after.timestamp())}
+            )
+        except Exception as e:
+            logger.error(f'ResetPasswordView error: {e}')
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class TokenObtainPairFromCodeView(TokenObtainPairView):
@@ -72,8 +79,12 @@ class ResetPasswordView(BaseGenericAPIView):
         if not user:
             raise ValidationError('Пользователь с указанным адресом не зарегистрирован')
         Code.objects.filter(user_id=user.id).delete()
-        send_code(user)
-        return Response(status=status.HTTP_200_OK)
+        try:
+            send_code(user)
+            return Response(status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f'ResetPasswordView error: {e}')
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ResetPasswordSetView(BaseGenericAPIView):
