@@ -48,7 +48,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.subdomain=beauty"
-      - "traefik.http.services.beauty.loadbalancer.server.port=8000"
+      - "traefik.http.services.beauty.loadbalancer.server.port=8002"
       - "traefik.http.routers.beauty.tls.certresolver=letsEncrypt"
 
   redis:
