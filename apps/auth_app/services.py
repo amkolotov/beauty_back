@@ -1,6 +1,8 @@
 import hashlib
 import random
+import smtplib
 from datetime import timedelta
+from email.mime.text import MIMEText
 
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -32,15 +34,28 @@ def generate_code(length: int) -> str:
     return str(code).rjust(length, "0")
 
 
+# def send_email(user: User, code: str) -> None:
+#     """Отправить электронное письмо"""
+#     send_mail(
+#         'Код подтверждения',
+#         f'Ваш код подтверждения регистрации: {code}',
+#         settings.DEFAULT_FROM_EMAIL,
+#         [user.email],
+#         fail_silently=False,
+#     )
+
 def send_email(user: User, code: str) -> None:
     """Отправить электронное письмо"""
-    send_mail(
-        'Код подтверждения',
-        f'Ваш код подтверждения регистрации: {code}',
-        settings.DEFAULT_FROM_EMAIL,
-        [user.email],
-        fail_silently=False,
-    )
+    sender = settings.DEFAULT_FROM_EMAIL
+    password = settings.EMAIL_HOST_PASSWORD
+
+    server = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
+    server.starttls()
+
+    server.login(sender, password)
+    msg = MIMEText(f'Ваш код подтверждения регистрации: {code}')
+    msg["Subject"] = "Код подтверждения Nina Dudin"
+    server.sendmail(sender, user.email, msg.as_string())
 
 
 def send_code(user: User) -> Code:
