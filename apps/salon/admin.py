@@ -299,4 +299,4 @@ class TgSettingsAdmin(admin.ModelAdmin):
 @admin.register(Ceo)
 class CeoAdmin(ReadChangeOnlyMixin, admin.ModelAdmin):
     list_display = ['__str__', 'created_at', 'updated_at']
-    fields = ['head', 'body']
+    fields = ['head']
