@@ -401,3 +401,17 @@ class ChatsIds(BaseModel):
 
     def __str__(self):
         return f'{self.name}-{self.chat_id}'
+
+
+class Ceo(BaseModel):
+    """Модель для хранения сео скриптов"""
+    head = models.TextField('Добавление в Head', null=True, blank=True, help_text='Добавить общим html')
+    body = models.TextField('Добавление в Body', null=True, blank=True, help_text='Добавить общим html')
+
+    class Meta:
+        verbose_name = 'CEO скрипт'
+        verbose_name_plural = 'CEO скрипты'
+
+    def __str__(self):
+        return f'СEO скрипт'
+

@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe
 
 from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, \
     Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store, AppReasons, ConfInfo, \
-    ChatsIds, TgSettings
+    ChatsIds, TgSettings, Ceo
 
 
 class ReadChangeOnlyMixin:
@@ -295,3 +295,8 @@ class TgSettingsAdmin(admin.ModelAdmin):
     fields = ['salon', 'token', 'is_publish']
     inlines = [TGUserAdmin]
 
+
+@admin.register(Ceo)
+class CeoAdmin(ReadChangeOnlyMixin, admin.ModelAdmin):
+    list_display = ['__str__', 'created_at', 'updated_at']
+    fields = ['head', 'body']
