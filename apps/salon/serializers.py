@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg, \
-    CompanyInfo, Notification, Order, Messenger, MessengerType, Faq, ConfInfo, Ceo
+    CompanyInfo, Notification, Order, Messenger, MessengerType, Faq, ConfInfo
 from apps.service.models import ServiceCategory, Service
 from apps.auth_app.validators import validate_phone as phone_validator
 
@@ -173,11 +173,3 @@ class ConfInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ConfInfo
         fields = '__all__'
-
-
-class CeoSerializer(serializers.ModelSerializer):
-    """Класс сериалайзер для CEO"""
-
-    class Meta:
-        model = Ceo
-        fields = ['head', 'body']

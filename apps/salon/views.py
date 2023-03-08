@@ -7,11 +7,11 @@ from rest_framework.status import HTTP_404_NOT_FOUND
 
 from api.v1.views import BaseGenericAPIView
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, CompanyInfo, Order, Notification, Messenger, \
-    Faq, ConfInfo, Ceo
+    Faq, ConfInfo
 from apps.salon.paginator import NotificationPagination
 from apps.salon.serializers import SalonSerializer, ServiceCategorySerializer, CompanyInfoSerializer, \
     SalonListSerializer, ReviewSerializer, OrderSerializer, NotificationSerializer, SalonMessengersSerializer, \
-    FaqSerializer, ConfInfoSerializer, CeoSerializer
+    FaqSerializer, ConfInfoSerializer
 from apps.service.models import Service, ServiceCategory
 
 
@@ -46,10 +46,6 @@ class MainSalonInfoView(BaseGenericAPIView):
         data['company']['messengers'] = SalonMessengersSerializer(
             Messenger.objects.filter(for_company=True, is_publish=True), many=True, context={'request': request}
         ).data
-
-        ceo = Ceo.objects.first()
-        if ceo:
-            data['ceo'] = CeoSerializer(ceo).data
 
         if salon_id := request.GET.get('salon'):
             review_subquery = Subquery(Review.objects \

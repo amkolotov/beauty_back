@@ -6,12 +6,12 @@ from api.v1.site_api.paginator import PostPagination
 from api.v1.views import BaseGenericAPIView
 from apps.blog.models import Post
 from apps.blog.serializers import PostSerializer
-from apps.salon.models import Messenger, Salon, SalonImg, CompanyInfo, Specialist, Sale, MobileAppSection, Faq
+from apps.salon.models import Messenger, Salon, SalonImg, CompanyInfo, Specialist, Sale, MobileAppSection, Faq, Ceo
 from apps.salon.serializers import CompanyInfoSerializer, FaqSerializer
 
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 from api.v1.site_api.serializers import SalonListSerializer, SalonMessengersSerializer, SalonSerializer, \
-    ServiceCategorySerializer, MobileAppSectionSerializer
+    ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer
 
 
 class SiteMainSalonInfoView(BaseGenericAPIView):
@@ -46,6 +46,10 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
             Messenger.objects.filter(for_company=True, is_publish=True), many=True,
             context={'request': request}
         ).data
+
+        ceo = Ceo.objects.first()
+        if ceo:
+            data['ceo'] = CeoSerializer(ceo).data
 
         if request.GET.get('salon'):
             salon_id = request.GET.get('salon')
