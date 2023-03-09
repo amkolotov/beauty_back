@@ -101,3 +101,14 @@ class ResetPasswordSetView(BaseGenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_200_OK)
+
+
+class RemoveUserView(BaseGenericAPIView):
+    """Удаление пользователя"""
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        instance = request.user
+        instance.delete()
+        return Response(status=status.HTTP_200_OK)

@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.auth_app.views import RegisterView, TokenObtainPairFromCodeView, ResetPasswordView, \
-    TokenObtainPairFromLoginView, ResetPasswordSetView
+    TokenObtainPairFromLoginView, ResetPasswordSetView, RemoveUserView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='auth_register'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('reset-password-set/', ResetPasswordSetView.as_view(), name='reset_password_set'),
+    path('remove-user/', RemoveUserView.as_view(), name='remove_user')
 ]
