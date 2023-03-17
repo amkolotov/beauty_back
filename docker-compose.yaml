@@ -47,9 +47,9 @@ services:
       - beauty_web
     labels:
       - "traefik.enable=true"
-      - "traefik.subdomain=beauty"
-      - "traefik.http.services.beauty.loadbalancer.server.port=8002"
-      - "traefik.http.routers.beauty.tls.certresolver=letsEncrypt"
+      - "traefik.subdomain=fastapi"
+      - "traefik.http.services.fastapi.loadbalancer.server.port=8002"
+      - "traefik.http.routers.fastapi.tls.certresolver=letsEncrypt"
 
   redis:
     image: "redis:latest"
