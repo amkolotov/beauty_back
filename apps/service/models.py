@@ -1,3 +1,4 @@
+from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -15,6 +16,8 @@ class ServiceCategory(BaseModel):
                              null=True, blank=True)
     text = models.TextField('Полное описание')
     is_publish = models.BooleanField('Опубликовано', default=False)
+    slug = AutoSlugField('Слаг', populate_from='name', unique=True,
+                         editable=True, null=True, blank=True)
 
     class Meta:
         ordering = ['name']

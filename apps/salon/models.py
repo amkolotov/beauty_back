@@ -1,3 +1,4 @@
+from autoslug import AutoSlugField
 from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -53,6 +54,8 @@ class Salon(BaseModel):
     work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
     coords = models.CharField('Координаты(58.786093,62.516021)', max_length=64, null=True, blank=True)
     is_publish = models.BooleanField('Опубликован', default=False)
+    slug = AutoSlugField('Слаг', populate_from='name', unique=True,
+                         editable=True, null=True, blank=True)
 
     class Meta:
         ordering = ['address']
