@@ -34,22 +34,31 @@ class SalonImgSerializer(serializers.ModelSerializer):
         fields = ['id', 'img', 'is_main']
 
 
-class SalonListSerializer(serializers.ModelSerializer):
+class SalonFooterSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для footera"""
+    salon_messengers = SalonMessengersSerializer(many=True)
+
+    class Meta:
+        model = Salon
+        fields = ['id', 'name', 'address', 'email', 'phone', 'work_time',
+                  'salon_messengers', 'slug']
+
+    def get_slug(self, obj):
+        if not obj.slug:
+            return str(obj.id)
+        return obj.slug
+
+
+class SalonListSerializer(SalonFooterSerializer):
     """Класс сериалайзер для списка салонов"""
 
     salon_imgs = SalonImgSerializer(many=True)
-    salon_messengers = SalonMessengersSerializer(many=True)
     slug = serializers.SerializerMethodField()
 
     class Meta:
         model = Salon
         fields = ['id', 'name', 'address', 'email', 'phone', 'salon_imgs', 'work_time',
                   'coords', 'short_desc', 'desc', 'salon_messengers', 'slug']
-
-    def get_slug(self, obj):
-        if not obj.slug:
-            return str(obj.id)
-        return obj.slug
 
 
 class SpecialistSerializer(serializers.ModelSerializer):
@@ -69,23 +78,33 @@ class SaleSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'desc', 'text', 'button_text', 'img']
 
 
-class SalonSerializer(serializers.ModelSerializer):
-    """Класс сериалайзер для салона"""
+class SalonHomeSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер салона для домашней страницы"""
 
     salon_imgs = SalonImgSerializer(many=True)
-    specialists = SpecialistSerializer(many=True)
     sales = SaleSerializer(many=True)
     slug = serializers.SerializerMethodField()
 
     class Meta:
         model = Salon
         fields = ['id', 'name', 'address', 'phone', 'email', 'short_desc', 'desc',
-                  'work_time', 'coords', 'salon_imgs', 'specialists', 'sales', 'slug']
+                  'work_time', 'coords', 'salon_imgs', 'sales', 'slug']
 
     def get_slug(self, obj):
         if not obj.slug:
             return str(obj.id)
         return obj.slug
+
+
+class SalonSerializer(SalonHomeSerializer):
+    """Класс сериалайзер для салона"""
+
+    specialists = SpecialistSerializer(many=True)
+
+    class Meta:
+        model = Salon
+        fields = ['id', 'name', 'address', 'phone', 'email', 'short_desc', 'desc',
+                  'work_time', 'coords', 'salon_imgs', 'specialists', 'sales', 'slug']
 
 
 class ServiceSerializer(serializers.ModelSerializer):

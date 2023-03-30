@@ -10,69 +10,24 @@ from apps.salon.models import Messenger, Salon, SalonImg, CompanyInfo, Specialis
 from apps.salon.serializers import CompanyInfoSerializer, FaqSerializer
 
 from apps.service.models import ServiceCategory, Service, AddServiceImg
-from api.v1.next_api.serializers import SalonListSerializer, SalonMessengersSerializer, SalonSerializer, \
-    ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer
+from api.v1.next_api.serializers import SalonListSerializer, SalonMessengersSerializer, SalonHomeSerializer, \
+    ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer, SalonFooterSerializer
 
 
-class SiteMainSalonInfoView(BaseGenericAPIView):
+class HomeView(BaseGenericAPIView):
     """Возвращает информацию для главной страницы сайта"""
 
     def get(self, request):
         data = {}
-        messengers_subquery = Subquery(Messenger.objects
-                                       .filter(salon_id=OuterRef('salon_id'), is_publish=True)
-                                       .values_list('id', flat=True))
-
-        salons = Salon.objects.filter(is_publish=True) \
-            .prefetch_related(
-            Prefetch(
-                'salon_imgs',
-                queryset=SalonImg.objects.filter(is_main=True, is_publish=True)
-            )
-        ).prefetch_related(
-            Prefetch(
-                'salon_messengers',
-                queryset=Messenger.objects.filter(id__in=messengers_subquery)
-            )).all()
-
-        data['salons'] = SalonListSerializer(
-            salons, many=True, context={'request': request}
-        ).data
-
         company = CompanyInfo.objects.filter(is_publish=True).first()
         data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
-
-        data['company']['messengers'] = SalonMessengersSerializer(
-            Messenger.objects.filter(for_company=True, is_publish=True), many=True,
-            context={'request': request}
-        ).data
-
-        ceo = Ceo.objects.first()
-        if ceo:
-            data['ceo'] = CeoSerializer(ceo).data
 
         if request.GET.get('salon'):
             salon_id = request.GET.get('salon')
         else:
             salon_id = Salon.objects.filter(is_publish=True).first().id
 
-        salon = Salon.objects.filter(id=salon_id, is_publish=True) \
-            .prefetch_related(
-            Prefetch(
-                'salon_imgs',
-                queryset=SalonImg.objects.filter(is_publish=True)
-            )
-        ).prefetch_related(
-            Prefetch(
-                'specialists',
-                queryset=Specialist.objects.filter(is_publish=True)
-            )
-        ).prefetch_related(
-            Prefetch(
-                'sales',
-                queryset=Sale.objects.filter(is_publish=True)
-            )
-        ).first()
+        salon = Salon.objects.filter(id=salon_id, is_publish=True).first()
 
         categories = ServiceCategory.objects.filter(is_publish=True).prefetch_related(
             Prefetch(
@@ -84,7 +39,7 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
                 queryset=AddServiceImg.objects.all()
             )).filter(services__salons=salon_id).distinct()
 
-        salon_data = SalonSerializer(salon, context={'request': request}).data
+        salon_data = SalonHomeSerializer(salon, context={'request': request}).data
         salon_data['service_categories'] = ServiceCategorySerializer(
             categories, many=True, context={'request': request}
         ).data
@@ -96,13 +51,52 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
             app_section, context={'request': request}
         ).data
 
-        posts = Post.objects.filter(is_publish=True)[:8]
+        posts = Post.objects.filter(is_publish=True)[:4]
         salon_data['posts'] = PostSerializer(
             posts, many=True, context={'request': request}
         ).data
 
         faqs = Faq.objects.filter(is_publish=True)[:4]
         salon_data['faqs'] = FaqSerializer(faqs, many=True).data
+
+        ceo = Ceo.objects.first()
+        if ceo:
+            data['ceo'] = CeoSerializer(ceo).data
+
+        return Response(salon_data)
+
+
+class FooterView(BaseGenericAPIView):
+    """Возвращает информацию для футера"""
+
+    def get(self, request):
+
+        if request.GET.get('salon'):
+            salon_id = request.GET.get('salon')
+        else:
+            salon_id = Salon.objects.filter(is_publish=True).first().id
+
+        messengers_subquery = Subquery(Messenger.objects
+                                       .filter(salon_id=OuterRef('salon_id'), is_publish=True)
+                                       .values_list('id', flat=True))
+
+        salon = Salon.objects.filter(is_publish=True, id=salon_id) \
+            .prefetch_related(
+                Prefetch(
+                    'salon_messengers',
+                    queryset=Messenger.objects.filter(id__in=messengers_subquery)
+                )).first()
+
+        salon_data = SalonFooterSerializer(salon, context={'request': request}).data
+
+        company = CompanyInfo.objects.filter(is_publish=True).first()
+        salon_data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
+
+        app_section = MobileAppSection.objects.filter(is_publish=True)\
+            .prefetch_related('stores').first()
+        salon_data['app_section'] = MobileAppSectionSerializer(
+            app_section, context={'request': request}
+        ).data
 
         return Response(salon_data)
 
