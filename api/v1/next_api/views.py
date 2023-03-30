@@ -66,6 +66,53 @@ class HomeView(BaseGenericAPIView):
         return Response(salon_data)
 
 
+class ContactsView(BaseGenericAPIView):
+    """Возвращает контактную"""
+
+    def get(self, request):
+        data = {}
+        messengers_subquery = Subquery(Messenger.objects
+                                       .filter(salon_id=OuterRef('salon_id'), is_publish=True)
+                                       .values_list('id', flat=True))
+
+        salons = Salon.objects.filter(is_publish=True) \
+            .prefetch_related(
+            Prefetch(
+                'salon_imgs',
+                queryset=SalonImg.objects.filter(is_main=True, is_publish=True)
+            )
+        ).prefetch_related(
+            Prefetch(
+                'salon_messengers',
+                queryset=Messenger.objects.filter(id__in=messengers_subquery)
+            )).all()
+
+        data['salons'] = SalonListSerializer(
+            salons, many=True, context={'request': request}
+        ).data
+
+        company = CompanyInfo.objects.filter(is_publish=True).first()
+        data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
+
+        data['company']['messengers'] = SalonMessengersSerializer(
+            Messenger.objects.filter(for_company=True, is_publish=True), many=True,
+            context={'request': request}
+        ).data
+
+        app_section = MobileAppSection.objects.filter(is_publish=True)\
+            .prefetch_related('stores').first()
+        data['app_section'] = MobileAppSectionSerializer(
+            app_section, context={'request': request}
+        ).data
+
+
+        ceo = Ceo.objects.first()
+        if ceo:
+            data['ceo'] = CeoSerializer(ceo).data
+
+        return Response(data)
+
+
 class FooterView(BaseGenericAPIView):
     """Возвращает информацию для футера"""
 
