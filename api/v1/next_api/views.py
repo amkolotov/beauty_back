@@ -1,5 +1,5 @@
 from django.db.models import Subquery, OuterRef, Prefetch
-from rest_framework import mixins, viewsets
+from rest_framework import mixins, viewsets, generics
 from rest_framework.response import Response
 
 from api.v1.next_api.paginator import PostPagination
@@ -11,7 +11,7 @@ from apps.salon.serializers import CompanyInfoSerializer, FaqSerializer
 
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 from api.v1.next_api.serializers import SalonListSerializer, SalonMessengersSerializer, SalonHomeSerializer, \
-    ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer, SalonFooterSerializer
+    ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer, SalonFooterSerializer, SalonSerializer
 
 
 class HomeView(BaseGenericAPIView):
@@ -64,6 +64,33 @@ class HomeView(BaseGenericAPIView):
             data['ceo'] = CeoSerializer(ceo).data
 
         return Response(salon_data)
+
+
+class SalonsView(generics.RetrieveAPIView):
+    queryset = Salon.objects.filter(is_publish=True) \
+            .prefetch_related(
+            Prefetch(
+                'salon_imgs',
+                queryset=SalonImg.objects.filter(is_publish=True)
+            )
+        ).prefetch_related(
+            Prefetch(
+                'specialists',
+                queryset=Specialist.objects.filter(is_publish=True)
+            )
+        ).prefetch_related(
+            Prefetch(
+                'sales',
+                queryset=Sale.objects.filter(is_publish=True)
+            )
+        ).all()
+    serializer_class = SalonSerializer
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+        company = CompanyInfo.objects.filter(is_publish=True).first()
+        response.data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
+        return response
 
 
 class ContactsView(BaseGenericAPIView):
