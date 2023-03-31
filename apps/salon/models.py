@@ -1,5 +1,5 @@
-from autoslug import AutoSlugField
 from ckeditor.fields import RichTextField
+from pytils.translit import slugify
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models.signals import post_save
@@ -54,8 +54,9 @@ class Salon(BaseModel):
     work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
     coords = models.CharField('Координаты(58.786093,62.516021)', max_length=64, null=True, blank=True)
     is_publish = models.BooleanField('Опубликован', default=False)
-    slug = AutoSlugField('Слаг', populate_from='name', unique=True,
-                         editable=True, null=True, blank=True)
+    slug = models.SlugField('Слаг', unique=True, max_length=255, db_index=True,
+                            help_text='Если не заполнено, создается автоматически',
+                            null=True, blank=True)
 
     class Meta:
         ordering = ['address']
@@ -64,6 +65,11 @@ class Salon(BaseModel):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
 
 class SalonImg(BaseModel):

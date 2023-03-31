@@ -41,7 +41,7 @@ class AddServiceImgInline(admin.TabularInline):
 @admin.register(ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'img_preview', 'title', 'is_publish', 'created_at', 'updated_at']
-    fields = ['name', 'img', 'img_preview', 'title', 'text', 'is_publish']
+    fields = ['name', 'img', 'img_preview', 'title', 'text', 'is_publish', 'slug']
     readonly_fields = ['img_preview']
     list_filter = ['is_publish']
     search_fields = ['name']

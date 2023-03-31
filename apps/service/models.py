@@ -1,6 +1,6 @@
-from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
 from django.db import models
+from pytils.translit import slugify
 
 from apps.auth_app.models import BaseModel
 
@@ -16,8 +16,9 @@ class ServiceCategory(BaseModel):
                              null=True, blank=True)
     text = models.TextField('Полное описание')
     is_publish = models.BooleanField('Опубликовано', default=False)
-    slug = AutoSlugField('Слаг', populate_from='name', unique=True,
-                         editable=True, null=True, blank=True)
+    slug = models.SlugField('Слаг', unique=True, max_length=255, db_index=True,
+                            help_text='Если не заполнено, создается автоматически',
+                            null=True, blank=True)
 
     class Meta:
         ordering = ['name']
@@ -26,6 +27,11 @@ class ServiceCategory(BaseModel):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
 
 class AddServiceImg(BaseModel):

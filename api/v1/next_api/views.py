@@ -85,6 +85,7 @@ class SalonsView(generics.RetrieveAPIView):
             )
         ).all()
     serializer_class = SalonSerializer
+    lookup_field = 'slug'
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)

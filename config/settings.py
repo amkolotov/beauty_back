@@ -306,3 +306,5 @@ CKEDITOR_CONFIGS = {
         "language": "ru"
     }
 }
+
+AUTOSLUG_SLUGIFY_FUNCTION = 'autoslug.utils.translit_short'
