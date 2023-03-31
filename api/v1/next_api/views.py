@@ -89,12 +89,25 @@ class SalonsView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
+        print(args, kwargs)
         company = CompanyInfo.objects.filter(is_publish=True).first()
         response.data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
         app_section = MobileAppSection.objects.filter(is_publish=True)\
             .prefetch_related('stores').first()
         response.data['app_section'] = MobileAppSectionSerializer(
             app_section, context={'request': request}
+        ).data
+        categories = ServiceCategory.objects.filter(is_publish=True).prefetch_related(
+            Prefetch(
+                'services',
+                queryset=Service.objects.filter(salons__slug=kwargs.get('slug'), is_publish=True)
+            )).prefetch_related(
+            Prefetch(
+                'service_imgs',
+                queryset=AddServiceImg.objects.all()
+            )).filter(services__salons__slug=kwargs.get('slug')).distinct()
+        response.data['service_categories'] = ServiceCategorySerializer(
+            categories, many=True, context={'request': request}
         ).data
 
         return response
