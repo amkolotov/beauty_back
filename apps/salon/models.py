@@ -55,7 +55,7 @@ class Salon(BaseModel):
     coords = models.CharField('Координаты(58.786093,62.516021)', max_length=64, null=True, blank=True)
     is_publish = models.BooleanField('Опубликован', default=False)
     slug = models.SlugField('Слаг', unique=True, max_length=255, db_index=True,
-                            help_text='Если не заполнено, создается автоматически',
+                            help_text='Cоздается автоматически',
                             null=True, blank=True)
 
     class Meta:

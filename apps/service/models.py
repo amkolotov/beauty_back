@@ -17,7 +17,7 @@ class ServiceCategory(BaseModel):
     text = models.TextField('Полное описание')
     is_publish = models.BooleanField('Опубликовано', default=False)
     slug = models.SlugField('Слаг', unique=True, max_length=255, db_index=True,
-                            help_text='Если не заполнено, создается автоматически',
+                            help_text='Cоздается автоматически',
                             null=True, blank=True)
 
     class Meta:

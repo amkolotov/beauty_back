@@ -107,6 +107,7 @@ class SalonAdmin(admin.ModelAdmin):
                     'created_at', 'updated_at']
     fields = ['name', 'address', 'phone', 'email', 'work_time', 'coords',
               'short_desc', 'desc', 'is_publish', 'slug']
+    readonly_fields = ['slug']
     inlines = [SalonImgInlineAdmin]
     list_filter = ['name']
     search_fields = ['name', 'address', 'phone', 'email']
