@@ -91,6 +91,12 @@ class SalonsView(generics.RetrieveAPIView):
         response = super().get(request, *args, **kwargs)
         company = CompanyInfo.objects.filter(is_publish=True).first()
         response.data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
+        app_section = MobileAppSection.objects.filter(is_publish=True)\
+            .prefetch_related('stores').first()
+        response.data['app_section'] = MobileAppSectionSerializer(
+            app_section, context={'request': request}
+        ).data
+
         return response
 
 
