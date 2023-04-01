@@ -198,7 +198,7 @@ class ServiceView(BaseGenericAPIView):
             salon = Salon.objects.filter(slug=salon_slug).first()
             if kwargs.get('service_slug') and salon:
                 service_slug = kwargs.get('service_slug')
-                category = ServiceCategory.objects.filter(is_publish=True).prefetch_related(
+                categories = ServiceCategory.objects.filter(is_publish=True).prefetch_related(
                     Prefetch(
                         'services',
                         queryset=Service.objects.filter(salons=salon, is_publish=True)
@@ -211,11 +211,14 @@ class ServiceView(BaseGenericAPIView):
                         Prefetch(
                             'service_imgs',
                             queryset=AddServiceImg.objects.all()
-                        )).filter(services__salons=salon).distinct() \
-                    .filter(slug=service_slug).first()
+                        )).filter(services__salons=salon).distinct()
+                category = categories.filter(slug=service_slug).first()
                 if category:
                     data = ServiceDetailCategorySerializer(
                         category, context={'request': request}
+                    ).data
+                    data['service_categories'] = ServiceCategorySerializer(
+                        categories, many=True, context={'request': request}
                     ).data
                     app_section = MobileAppSection.objects.filter(is_publish=True) \
                         .prefetch_related('stores').first()
