@@ -11,7 +11,8 @@ from apps.salon.serializers import CompanyInfoSerializer, FaqSerializer
 
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 from api.v1.next_api.serializers import SalonListSerializer, SalonMessengersSerializer, SalonHomeSerializer, \
-    ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer, SalonFooterSerializer, SalonSerializer
+    ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer, SalonFooterSerializer, SalonSerializer, \
+    SaleSerializer
 
 
 class HomeView(BaseGenericAPIView):
@@ -89,7 +90,6 @@ class SalonsView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
-        print(args, kwargs)
         company = CompanyInfo.objects.filter(is_publish=True).first()
         response.data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
         app_section = MobileAppSection.objects.filter(is_publish=True)\
@@ -229,6 +229,12 @@ class PostSiteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets
     serializer_class = PostSerializer
     queryset = Post.objects.filter(is_publish=True)
     pagination_class = PostPagination
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        sales = Sale.objects.filter(is_publish=True)
+        response.data['sales'] = SaleSerializer(sales, context={'request': request}, many=True).data
+        return response
 
 
 class FaqSiteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
