@@ -140,6 +140,16 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
         return obj.slug
 
 
+class ServiceDetailCategorySerializer(ServiceCategorySerializer):
+
+    specialists = SpecialistSerializer(many=True)
+
+    class Meta:
+        model = ServiceCategory
+        fields = ['id', 'name', 'img', 'service_imgs', 'title', 'text', 'services',
+                  'slug', 'specialists']
+
+
 class StoreSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для секции мобильного приложения"""
     class Meta:

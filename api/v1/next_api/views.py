@@ -13,7 +13,7 @@ from apps.salon.serializers import CompanyInfoSerializer, FaqSerializer
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 from api.v1.next_api.serializers import SalonListSerializer, SalonMessengersSerializer, SalonHomeSerializer, \
     ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer, SalonFooterSerializer, SalonSerializer, \
-    SaleSerializer
+    SaleSerializer, ServiceDetailCategorySerializer
 
 
 class HomeView(BaseGenericAPIView):
@@ -47,7 +47,7 @@ class HomeView(BaseGenericAPIView):
         ).data
         salon_data.update(data)
 
-        app_section = MobileAppSection.objects.filter(is_publish=True)\
+        app_section = MobileAppSection.objects.filter(is_publish=True) \
             .prefetch_related('stores').first()
         salon_data['app_section'] = MobileAppSectionSerializer(
             app_section, context={'request': request}
@@ -70,22 +70,22 @@ class HomeView(BaseGenericAPIView):
 
 class SalonsView(generics.RetrieveAPIView):
     queryset = Salon.objects.filter(is_publish=True) \
-            .prefetch_related(
-            Prefetch(
-                'salon_imgs',
-                queryset=SalonImg.objects.filter(is_publish=True)
-            )
-        ).prefetch_related(
-            Prefetch(
-                'specialists',
-                queryset=Specialist.objects.filter(is_publish=True)
-            )
-        ).prefetch_related(
-            Prefetch(
-                'sales',
-                queryset=Sale.objects.filter(is_publish=True)
-            )
-        ).all()
+        .prefetch_related(
+        Prefetch(
+            'salon_imgs',
+            queryset=SalonImg.objects.filter(is_publish=True)
+        )
+    ).prefetch_related(
+        Prefetch(
+            'specialists',
+            queryset=Specialist.objects.filter(is_publish=True)
+        )
+    ).prefetch_related(
+        Prefetch(
+            'sales',
+            queryset=Sale.objects.filter(is_publish=True)
+        )
+    ).all()
     serializer_class = SalonSerializer
     lookup_field = 'slug'
 
@@ -93,7 +93,7 @@ class SalonsView(generics.RetrieveAPIView):
         response = super().get(request, *args, **kwargs)
         company = CompanyInfo.objects.filter(is_publish=True).first()
         response.data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
-        app_section = MobileAppSection.objects.filter(is_publish=True)\
+        app_section = MobileAppSection.objects.filter(is_publish=True) \
             .prefetch_related('stores').first()
         response.data['app_section'] = MobileAppSectionSerializer(
             app_section, context={'request': request}
@@ -147,7 +147,7 @@ class ContactsView(BaseGenericAPIView):
             context={'request': request}
         ).data
 
-        app_section = MobileAppSection.objects.filter(is_publish=True)\
+        app_section = MobileAppSection.objects.filter(is_publish=True) \
             .prefetch_related('stores').first()
         data['app_section'] = MobileAppSectionSerializer(
             app_section, context={'request': request}
@@ -203,15 +203,27 @@ class ServiceView(BaseGenericAPIView):
                         'services',
                         queryset=Service.objects.filter(salons=salon, is_publish=True)
                     )).prefetch_related(
-                    Prefetch(
-                        'service_imgs',
-                        queryset=AddServiceImg.objects.all()
-                    )).filter(services__salons=salon).distinct()\
+                        Prefetch(
+                            'specialists',
+                            queryset=Specialist.objects.filter(is_publish=True)
+                        )
+                    ).prefetch_related(
+                        Prefetch(
+                            'service_imgs',
+                            queryset=AddServiceImg.objects.all()
+                        )).filter(services__salons=salon).distinct() \
                     .filter(slug=service_slug).first()
                 if category:
-                    return Response(ServiceCategorySerializer(
+                    data = ServiceDetailCategorySerializer(
                         category, context={'request': request}
-                    ).data)
+                    ).data
+                    app_section = MobileAppSection.objects.filter(is_publish=True) \
+                        .prefetch_related('stores').first()
+                    data['app_section'] = MobileAppSectionSerializer(
+                        app_section, context={'request': request}
+                    ).data
+
+                    return Response(data)
 
         return Response(status=HTTP_404_NOT_FOUND)
 
@@ -232,17 +244,17 @@ class FooterView(BaseGenericAPIView):
 
         salon = Salon.objects.filter(is_publish=True, id=salon_id) \
             .prefetch_related(
-                Prefetch(
-                    'salon_messengers',
-                    queryset=Messenger.objects.filter(id__in=messengers_subquery)
-                )).first()
+            Prefetch(
+                'salon_messengers',
+                queryset=Messenger.objects.filter(id__in=messengers_subquery)
+            )).first()
 
         salon_data = SalonFooterSerializer(salon, context={'request': request}).data
 
         company = CompanyInfo.objects.filter(is_publish=True).first()
         salon_data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
 
-        app_section = MobileAppSection.objects.filter(is_publish=True)\
+        app_section = MobileAppSection.objects.filter(is_publish=True) \
             .prefetch_related('stores').first()
         salon_data['app_section'] = MobileAppSectionSerializer(
             app_section, context={'request': request}
