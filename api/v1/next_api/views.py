@@ -1,6 +1,7 @@
 from django.db.models import Subquery, OuterRef, Prefetch
 from rest_framework import mixins, viewsets, generics
 from rest_framework.response import Response
+from rest_framework.status import HTTP_404_NOT_FOUND
 
 from api.v1.next_api.paginator import PostPagination, SalePagination
 from api.v1.views import BaseGenericAPIView
@@ -186,6 +187,33 @@ class AboutView(BaseGenericAPIView):
             data['ceo'] = CeoSerializer(ceo).data
 
         return Response(data)
+
+
+class ServiceView(BaseGenericAPIView):
+    """Возвращает информацию для страницы услуги"""
+
+    def get(self, request, *args, **kwargs):
+
+        if salon_slug := kwargs.get('salon_slug'):
+            salon = Salon.objects.filter(slug=salon_slug).first()
+            if kwargs.get('service_slug') and salon:
+                service_slug = kwargs.get('service_slug')
+                category = ServiceCategory.objects.filter(is_publish=True).prefetch_related(
+                    Prefetch(
+                        'services',
+                        queryset=Service.objects.filter(salons=salon, is_publish=True)
+                    )).prefetch_related(
+                    Prefetch(
+                        'service_imgs',
+                        queryset=AddServiceImg.objects.all()
+                    )).filter(services__salons=salon).distinct()\
+                    .filter(slug=service_slug).first()
+                if category:
+                    return Response(ServiceCategorySerializer(
+                        category, context={'request': request}
+                    ).data)
+
+        return Response(status=HTTP_404_NOT_FOUND)
 
 
 class FooterView(BaseGenericAPIView):
