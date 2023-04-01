@@ -160,6 +160,35 @@ class ContactsView(BaseGenericAPIView):
         return Response(data)
 
 
+class AboutView(BaseGenericAPIView):
+    """Возвращает информацию для страницы о нас"""
+
+    def get(self, request):
+        data = {}
+        salons = Salon.objects.filter(is_publish=True) \
+            .prefetch_related(
+            Prefetch(
+                'salon_imgs',
+                queryset=SalonImg.objects.filter(is_main=True, is_publish=True)
+            )
+        ).all()
+        data['salons'] = SalonListSerializer(
+            salons, many=True, context={'request': request}
+        ).data
+
+        company = CompanyInfo.objects.filter(is_publish=True).first()
+        data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
+
+        faqs = Faq.objects.filter(is_publish=True)[:4]
+        data['faqs'] = FaqSerializer(faqs, many=True).data
+
+        ceo = Ceo.objects.first()
+        if ceo:
+            data['ceo'] = CeoSerializer(ceo).data
+
+        return Response(data)
+
+
 class FooterView(BaseGenericAPIView):
     """Возвращает информацию для футера"""
 
