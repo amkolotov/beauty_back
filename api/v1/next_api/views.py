@@ -24,21 +24,21 @@ class HomeView(BaseGenericAPIView):
         data['company'] = CompanyInfoSerializer(company, context={'request': request}).data
 
         if request.GET.get('salon'):
-            salon_id = request.GET.get('salon')
+            salon_slug = request.GET.get('salon')
         else:
-            salon_id = Salon.objects.filter(is_publish=True).first().id
+            salon_slug = Salon.objects.filter(is_publish=True).first().slug
 
-        salon = Salon.objects.filter(id=salon_id, is_publish=True).first()
+        salon = Salon.objects.filter(slug=salon_slug, is_publish=True).first()
 
         categories = ServiceCategory.objects.filter(is_publish=True).prefetch_related(
             Prefetch(
                 'services',
-                queryset=Service.objects.filter(salons=salon_id, is_publish=True)
+                queryset=Service.objects.filter(salons=salon, is_publish=True)
             )).prefetch_related(
             Prefetch(
                 'service_imgs',
                 queryset=AddServiceImg.objects.all()
-            )).filter(services__salons=salon_id).distinct()
+            )).filter(services__salons=salon).distinct()
 
         salon_data = SalonHomeSerializer(salon, context={'request': request}).data
         salon_data['service_categories'] = ServiceCategorySerializer(
@@ -232,7 +232,11 @@ class PostSiteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
-        sales = Sale.objects.filter(is_publish=True)
+        if slug := request.GET.get('salon'):
+            salon = Salon.objects.filter(is_publish=True, slug=slug).first()
+        else:
+            salon = Salon.objects.filter(is_publish=True).first()
+        sales = Sale.objects.filter(is_publish=True, salons=salon)
         response.data['sales'] = SaleSerializer(sales, context={'request': request}, many=True).data
         return response
 
