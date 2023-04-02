@@ -27,12 +27,14 @@ class UserDataSerializer(serializers.ModelSerializer):
 
     avatar = serializers.ImageField(source='profile.avatar', required=False)
     salon_id = serializers.IntegerField(source='profile.salon_id', required=False)
+    salon_slug = serializers.IntegerField(source='profile.salon.slug', required=False)
+    salon_name = serializers.IntegerField(source='profile.salon.name', required=False)
     expo_token = serializers.CharField(source='profile.expo_token', required=False)
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'phone', 'avatar', 'expo_token', 'salon_id')
-        read_only_fields = ('email', 'avatar',)
+        fields = ('email', 'username', 'phone', 'avatar', 'expo_token', 'salon_id', 'salon_slug', 'salon_name')
+        read_only_fields = ('email', 'avatar', 'salon_slug', 'salon_name')
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
