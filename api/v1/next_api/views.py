@@ -237,15 +237,15 @@ class FooterView(BaseGenericAPIView):
     def get(self, request):
 
         if request.GET.get('salon'):
-            salon_id = request.GET.get('salon')
+            salon_slug = request.GET.get('salon')
         else:
-            salon_id = Salon.objects.filter(is_publish=True).first().id
+            salon_slug = Salon.objects.filter(is_publish=True).first().id
 
         messengers_subquery = Subquery(Messenger.objects
                                        .filter(salon_id=OuterRef('salon_id'), is_publish=True)
                                        .values_list('id', flat=True))
 
-        salon = Salon.objects.filter(is_publish=True, id=salon_id) \
+        salon = Salon.objects.filter(is_publish=True, slug=salon_slug) \
             .prefetch_related(
             Prefetch(
                 'salon_messengers',
