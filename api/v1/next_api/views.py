@@ -226,7 +226,11 @@ class ServiceView(BaseGenericAPIView):
                         app_section, context={'request': request}
                     ).data
 
-                    return Response(data)
+                    data['salon'] = {
+                        'salon_name': salon.name,
+                        'salon_id': salon.id,
+                        'salon_slug': salon.slug
+                    }
 
         return Response(status=HTTP_404_NOT_FOUND)
 
