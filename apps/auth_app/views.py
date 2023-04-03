@@ -14,6 +14,7 @@ from .models import Code
 from .serializers import RegisterSerializer, CustomTokenObtainPairSerializer, UserSerializer, ResetPasswordSerializer
 from .services import send_code
 from .throttles import SendCodeThrottle, TokenObtainThrottle, TokenObtainEmailThrottle
+from ..profile.serializers import UserDataSerializer
 
 User = get_user_model()
 logger = logging.getLogger('django.request')
@@ -54,7 +55,7 @@ class TokenObtainPairFromCodeView(TokenObtainPairView):
 class TokenObtainPairFromLoginView(TokenObtainPairView):
     """Получение токена в обмен на авторизационный код"""
     throttle_classes = [TokenObtainThrottle]
-    extra_serializer = UserSerializer
+    extra_serializer = UserDataSerializer
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
