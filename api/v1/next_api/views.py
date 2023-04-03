@@ -232,6 +232,8 @@ class ServiceView(BaseGenericAPIView):
                         'salon_slug': salon.slug
                     }
 
+                    return Response(data)
+
         return Response(status=HTTP_404_NOT_FOUND)
 
 
