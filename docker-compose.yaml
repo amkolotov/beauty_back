@@ -49,7 +49,6 @@ services:
       - "traefik.enable=true"
       - "traefik.subdomain=fastapi"
       - "traefik.http.services.fastapi.loadbalancer.server.port=8002"
-      - "traefik.http.routers.fastapi.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)"
       - "traefik.http.routers.fastapi.tls.certresolver=letsEncrypt"
 
   redis:
