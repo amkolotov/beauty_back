@@ -9,7 +9,7 @@ class PostSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
 
     def get_image(self, obj):
-        return self.context['request'].build_absolute_uri(obj.image.url)
+        return self.context['request'].build_absolute_uri(obj.image.url).replace('http', 'https')
 
     class Meta:
         model = Post
