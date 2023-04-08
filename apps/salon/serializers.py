@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from api.services import get_absolute_uri
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, Review, WorkImg, \
     CompanyInfo, Notification, Order, Messenger, MessengerType, Faq, ConfInfo
 from apps.service.models import ServiceCategory, Service
@@ -123,6 +124,23 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
 
 class CompanyInfoSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для компании"""
+
+    logo = serializers.SerializerMethodField()
+    logo_black = serializers.SerializerMethodField()
+    img = serializers.SerializerMethodField()
+    about_img = serializers.SerializerMethodField()
+
+    def get_logo(self, obj):
+        return get_absolute_uri(self.context['request'], obj.logo.url)
+
+    def get_logo_black(self, obj):
+        return get_absolute_uri(self.context['request'], obj.logo_black.url)
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
+
+    def get_about_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.about_img.url)
 
     class Meta:
         model = CompanyInfo

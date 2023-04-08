@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from api.services import get_absolute_uri
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, \
     Messenger, MessengerType, MobileAppSection, Store, AppReasons, Ceo
 from apps.service.models import ServiceCategory, Service, AddServiceImg
@@ -10,6 +11,11 @@ User = get_user_model()
 
 class MessengerTypeSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для изображений салона"""
+
+    img = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
 
     class Meta:
         model = MessengerType
@@ -28,6 +34,11 @@ class SalonMessengersSerializer(serializers.ModelSerializer):
 
 class SalonImgSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для изображений салона"""
+
+    img = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
 
     class Meta:
         model = SalonImg
@@ -64,6 +75,11 @@ class SalonListSerializer(SalonFooterSerializer):
 class SpecialistSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для изображений салона"""
 
+    photo = serializers.SerializerMethodField()
+
+    def get_photo(self, obj):
+        return get_absolute_uri(self.context['request'], obj.photo.url)
+
     class Meta:
         model = Specialist
         fields = ['id', 'name', 'photo', 'position', 'experience', 'title',
@@ -72,6 +88,11 @@ class SpecialistSerializer(serializers.ModelSerializer):
 
 class SaleSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для акции"""
+
+    img = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
 
     class Meta:
         model = Sale
@@ -100,6 +121,7 @@ class SalonSerializer(SalonHomeSerializer):
     """Класс сериалайзер для салона"""
 
     specialists = SpecialistSerializer(many=True)
+    salon_imgs = SalonImgSerializer(many=True)
 
     class Meta:
         model = Salon
@@ -116,8 +138,13 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class ServiceImgSerializer(serializers.ModelSerializer):
-
     """Сериализатор для изображения услуги"""
+
+    img = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
+
     class Meta:
         model = AddServiceImg
         fields = ['id', 'img']
@@ -129,10 +156,14 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
     services = ServiceSerializer(many=True)
     service_imgs = ServiceImgSerializer(many=True)
     slug = serializers.SerializerMethodField()
+    img = serializers.SerializerMethodField()
 
     class Meta:
         model = ServiceCategory
         fields = ['id', 'name', 'img', 'service_imgs', 'title', 'text', 'services', 'slug']
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
 
     def get_slug(self, obj):
         if not obj.slug:
@@ -141,8 +172,12 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
 
 
 class ServiceDetailCategorySerializer(ServiceCategorySerializer):
-
     specialists = SpecialistSerializer(many=True)
+    service_imgs = ServiceImgSerializer(many=True)
+    img = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
 
     class Meta:
         model = ServiceCategory
@@ -152,6 +187,12 @@ class ServiceDetailCategorySerializer(ServiceCategorySerializer):
 
 class StoreSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для секции мобильного приложения"""
+
+    img = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
+
     class Meta:
         model = Store
         fields = ['id', 'name', 'img', 'link']
@@ -159,6 +200,12 @@ class StoreSerializer(serializers.ModelSerializer):
 
 class ReasonSerializer(serializers.ModelSerializer):
     """Класс сериалайзер для плюсов приложения"""
+
+    img = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
+
     class Meta:
         model = AppReasons
         fields = ['id', 'title', 'img', 'text']
@@ -169,6 +216,14 @@ class MobileAppSectionSerializer(serializers.ModelSerializer):
 
     stores = StoreSerializer(many=True)
     reasons = ReasonSerializer(many=True)
+    img = serializers.SerializerMethodField()
+    img_for_section = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img.url)
+
+    def get_img_for_section(self, obj):
+        return get_absolute_uri(self.context['request'], obj.img_for_section.url)
 
     class Meta:
         model = MobileAppSection
