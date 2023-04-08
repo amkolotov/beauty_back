@@ -131,16 +131,20 @@ class CompanyInfoSerializer(serializers.ModelSerializer):
     about_img = serializers.SerializerMethodField()
 
     def get_logo(self, obj):
-        return get_absolute_uri(self.context['request'], obj.logo.url)
+        if obj.logo:
+            return get_absolute_uri(self.context['request'], obj.logo.url)
 
     def get_logo_black(self, obj):
-        return get_absolute_uri(self.context['request'], obj.logo_black.url)
+        if obj.logo_black:
+            return get_absolute_uri(self.context['request'], obj.logo_black.url)
 
     def get_img(self, obj):
-        return get_absolute_uri(self.context['request'], obj.img.url)
+        if obj.img:
+            return get_absolute_uri(self.context['request'], obj.img.url)
 
     def get_about_img(self, obj):
-        return get_absolute_uri(self.context['request'], obj.about_img.url)
+        if obj.about_img:
+            return get_absolute_uri(self.context['request'], obj.about_img.url)
 
     class Meta:
         model = CompanyInfo
