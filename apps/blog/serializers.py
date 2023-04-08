@@ -6,6 +6,11 @@ from apps.salon.models import Faq
 
 class PostSerializer(serializers.ModelSerializer):
 
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        return self.context['request'].build_absolute_uri(obj.image.url)
+
     class Meta:
         model = Post
         fields = '__all__'
