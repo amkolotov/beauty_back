@@ -7,6 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.exceptions import Throttled
+from api.services import get_absolute_uri
 from apps.auth_app import services
 from apps.profile.models import Profile
 from apps.auth_app.validators import validate_phone as phone_validator
@@ -64,7 +65,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     """Изменение данных пользователя"""
 
-    avatar = serializers.ImageField(source='profile.avatar')
+    avatar = serializers.SerializerMethodField()
+
+    def get_avatar(self, obj):
+        if obj.profile.avatar:
+            return get_absolute_uri(self.context['request'], obj.profile.avatar.url)
 
     class Meta:
         model = User
