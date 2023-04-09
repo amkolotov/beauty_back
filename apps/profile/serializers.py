@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from api.services import get_absolute_uri
 from apps.auth_app.validators import validate_phone as phone_validator
 from apps.profile.models import Profile
 
@@ -10,7 +11,11 @@ User = get_user_model()
 class ProfileAvatarSerializer(serializers.ModelSerializer):
     """Сериалайзер данных профиля пользователя"""
 
-    avatar = serializers.ImageField(required=False)
+    avatar = serializers.SerializerMethodField()
+
+    def get_avatar(self, obj):
+        if obj.profile.avatar:
+            return get_absolute_uri(self.context['request'], obj.profile.avatar.url)
 
     class Meta:
         model = Profile
@@ -27,8 +32,8 @@ class UserDataSerializer(serializers.ModelSerializer):
 
     avatar = serializers.ImageField(source='profile.avatar', required=False)
     salon_id = serializers.IntegerField(source='profile.salon_id', required=False)
-    salon_slug = serializers.IntegerField(source='profile.salon.slug', required=False)
-    salon_name = serializers.IntegerField(source='profile.salon.name', required=False)
+    salon_slug = serializers.CharField(source='profile.salon.slug', required=False)
+    salon_name = serializers.CharField(source='profile.salon.name', required=False)
     expo_token = serializers.CharField(source='profile.expo_token', required=False)
 
     class Meta:
@@ -41,8 +46,7 @@ class UserDataSerializer(serializers.ModelSerializer):
         if not hasattr(instance, 'profile'):
             Profile.objects.get_or_create(user=self.instance)
         if instance.profile.avatar:
-            request = self.context.get('request')
-            data['avatar'] = request.build_absolute_uri(instance.profile.avatar.url)
+            data['avatar'] = get_absolute_uri(self.context['request'], instance.profile.avatar.url)
         return data
 
     def validate_phone(self, value):
@@ -58,7 +62,6 @@ class UserDataSerializer(serializers.ModelSerializer):
         if username := validated_data.get('username'):
             instance.username = username
         if phone := validated_data.get('phone'):
-            print('ser', phone)
             instance.phone = phone
         instance.save()
 
