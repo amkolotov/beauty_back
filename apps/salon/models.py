@@ -415,12 +415,12 @@ class ChatsIds(BaseModel):
 class Ceo(BaseModel):
     """Модель для хранения сео скриптов"""
     head = models.TextField('Кастомный Head', null=True, blank=True, help_text='Добавить общим html')
-    body = models.TextField('Добавление скрипта Body', null=True, blank=True, help_text='Добавить без тега script')
+    body = models.TextField('Добавление скрипта в Body', null=True, blank=True, help_text='Добавить без тега script')
 
     class Meta:
         verbose_name = 'CEO'
         verbose_name_plural = 'CEO'
 
     def __str__(self):
-        return f'СEO скрипт'
+        return f'СEO'
 
