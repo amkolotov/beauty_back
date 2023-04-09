@@ -24,7 +24,7 @@ class ProfileAvatarView(GenericAPIView):
         serializer = self.get_serializer(data=request.data, instance=request.user.profile)
         if serializer.is_valid(raise_exception=True):
             instance = serializer.save()
-            return Response({'avatar': request.build_absolute_uri(instance.avatar.url)},
+            return Response({'avatar': request.build_absolute_uri(instance.avatar.url).replace('http', 'https')},
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

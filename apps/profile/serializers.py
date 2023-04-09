@@ -11,11 +11,7 @@ User = get_user_model()
 class ProfileAvatarSerializer(serializers.ModelSerializer):
     """Сериалайзер данных профиля пользователя"""
 
-    avatar = serializers.SerializerMethodField()
-
-    def get_avatar(self, obj):
-        if obj.profile.avatar:
-            return get_absolute_uri(self.context['request'], obj.profile.avatar.url)
+    avatar = serializers.ImageField(required=False)
 
     class Meta:
         model = Profile
