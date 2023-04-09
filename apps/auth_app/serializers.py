@@ -99,7 +99,7 @@ class CustomTokenObtainPairSerializer(serializers.Serializer):
 
         token = RefreshToken.for_user(self.instance)
         data = {"refresh": str(token), "access": str(token.access_token)}
-        data.update(UserSerializer(self.instance).data)
+        data.update(UserSerializer(self.instance, context={'request': self.context.get('request')}).data)
         return data
 
 
