@@ -1,7 +1,7 @@
 from django.db.models import Subquery, OuterRef, Prefetch
 from rest_framework import mixins, viewsets, generics
 from rest_framework.response import Response
-from rest_framework.status import HTTP_404_NOT_FOUND
+from rest_framework.status import HTTP_404_NOT_FOUND, HTTP_204_NO_CONTENT
 
 from api.v1.next_api.paginator import PostPagination, SalePagination
 from api.v1.views import BaseGenericAPIView
@@ -297,3 +297,13 @@ class FaqSiteViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.
     serializer_class = FaqSerializer
     queryset = Faq.objects.filter(is_publish=True)
     pagination_class = PostPagination
+
+
+class CeoView(BaseGenericAPIView):
+    """Возвращает ceo"""
+
+    def get(self, request):
+        ceo = Ceo.objects.first()
+        if ceo:
+            return Response(CeoSerializer(ceo).data)
+        return Response(status=HTTP_204_NO_CONTENT)

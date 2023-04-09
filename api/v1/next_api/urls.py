@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from api.v1.next_api.views import HomeView, PostSiteViewSet, FaqSiteViewSet, \
-    FooterView, ContactsView, SalonsView, AboutView, SaleViewSet, ServiceView
+    FooterView, ContactsView, SalonsView, AboutView, SaleViewSet, ServiceView, CeoView
 
 urlpatterns = [
     path('home/', HomeView.as_view(), name='home'),
@@ -13,6 +13,7 @@ urlpatterns = [
     path('salons/<slug:slug>', SalonsView.as_view(), name='salons'),
 
     path('footer/', FooterView.as_view(), name='footer'),
+    path('ceo/', CeoView.as_view(), name='footer'),
 ]
 
 router = DefaultRouter()
