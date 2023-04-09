@@ -5,8 +5,8 @@ from django.contrib.auth.models import Group
 from apps.auth_app.models import User, Code
 from apps.profile.models import Profile
 
-admin.site.site_title = "Nina Dudin"
-admin.site.site_header = "Nina Dudin"
+admin.site.site_title = "Nina Dunin"
+admin.site.site_header = "Nina Dunin"
 # admin.site.unregister(Group)
 admin.site.enable_nav_sidebar = False
 

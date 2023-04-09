@@ -47,10 +47,6 @@ class SiteMainSalonInfoView(BaseGenericAPIView):
             context={'request': request}
         ).data
 
-        ceo = Ceo.objects.first()
-        if ceo:
-            data['ceo'] = CeoSerializer(ceo).data
-
         if request.GET.get('salon'):
             salon_id = request.GET.get('salon')
         else:

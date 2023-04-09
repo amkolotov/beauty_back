@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from api.services import get_absolute_uri
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, \
-    Messenger, MessengerType, MobileAppSection, Store, AppReasons, Ceo
+    Messenger, MessengerType, MobileAppSection, Store, AppReasons, Ceo, HeadScript
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 
 User = get_user_model()
@@ -241,9 +241,27 @@ class MobileAppSectionSerializer(serializers.ModelSerializer):
         fields = ['title', 'text', 'promo', 'img', 'img_for_section', 'reasons', 'stores']
 
 
+class HeadScriptSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для скрипта head"""
+    class Meta:
+        model = HeadScript
+        fields = ['name', 'script']
+
+
+class BodyScriptSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для скрипта body"""
+
+    class Meta:
+        model = HeadScript
+        fields = ['name', 'script']
+
+
 class CeoSerializer(serializers.ModelSerializer):
-    """Класс сериалайзер для CEO"""
+    """Класс сериалайзер для Ceo"""
+
+    head_scripts = HeadScriptSerializer(many=True)
+    body_scripts = BodyScriptSerializer(many=True)
 
     class Meta:
         model = Ceo
-        fields = ['head', 'body']
+        fields = ['head', 'head_scripts', 'body_scripts']

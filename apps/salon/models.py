@@ -413,14 +413,40 @@ class ChatsIds(BaseModel):
 
 
 class Ceo(BaseModel):
-    """Модель для хранения сео скриптов"""
+    """Модель для CEO"""
     head = models.TextField('Кастомный Head', null=True, blank=True, help_text='Добавить общим html')
-    body = models.TextField('Добавление скрипта в Body', null=True, blank=True, help_text='Добавить без тега script')
 
     class Meta:
         verbose_name = 'CEO'
         verbose_name_plural = 'CEO'
 
     def __str__(self):
-        return f'СEO'
+        return f'CEO'
 
+
+class HeadScript(BaseModel):
+    """Модель скрипта для head"""
+    name = models.CharField('Наименование', max_length=128)
+    script = models.TextField('Скрипт', null=True, blank=True, help_text='Добавить без тега script')
+    ceo = models.ForeignKey(Ceo, on_delete=models.CASCADE, related_name='head_scripts')
+
+    class Meta:
+        verbose_name = 'Скрипт для head'
+        verbose_name_plural = 'Скрипты для head'
+
+    def __str__(self):
+        return self.name
+
+
+class BodyScript(BaseModel):
+    """Модель скрипта для body"""
+    name = models.CharField('Наименование', max_length=128)
+    script = models.TextField('Скрипт', null=True, blank=True, help_text='Добавить без тега script')
+    ceo = models.ForeignKey(Ceo, on_delete=models.CASCADE, related_name='body_scripts')
+
+    class Meta:
+        verbose_name = 'Скрипт для body'
+        verbose_name_plural = 'Скрипты для body'
+
+    def __str__(self):
+        return self.name

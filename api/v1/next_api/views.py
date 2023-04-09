@@ -8,6 +8,7 @@ from api.v1.views import BaseGenericAPIView
 from apps.blog.models import Post
 from apps.blog.serializers import PostSerializer
 from apps.salon.models import Messenger, Salon, SalonImg, CompanyInfo, Specialist, Sale, MobileAppSection, Faq, Ceo
+
 from apps.salon.serializers import CompanyInfoSerializer, FaqSerializer
 
 from apps.service.models import ServiceCategory, Service, AddServiceImg
@@ -60,10 +61,6 @@ class HomeView(BaseGenericAPIView):
 
         faqs = Faq.objects.filter(is_publish=True)[:4]
         salon_data['faqs'] = FaqSerializer(faqs, many=True).data
-
-        ceo = Ceo.objects.first()
-        if ceo:
-            data['ceo'] = CeoSerializer(ceo).data
 
         return Response(salon_data)
 
@@ -153,10 +150,6 @@ class ContactsView(BaseGenericAPIView):
             app_section, context={'request': request}
         ).data
 
-        ceo = Ceo.objects.first()
-        if ceo:
-            data['ceo'] = CeoSerializer(ceo).data
-
         return Response(data)
 
 
@@ -182,9 +175,6 @@ class AboutView(BaseGenericAPIView):
         faqs = Faq.objects.filter(is_publish=True)[:4]
         data['faqs'] = FaqSerializer(faqs, many=True).data
 
-        ceo = Ceo.objects.first()
-        if ceo:
-            data['ceo'] = CeoSerializer(ceo).data
 
         return Response(data)
 
@@ -306,4 +296,4 @@ class CeoView(BaseGenericAPIView):
         ceo = Ceo.objects.first()
         if ceo:
             return Response(CeoSerializer(ceo).data)
-        return Response(status=HTTP_204_NO_CONTENT)
+        return Response(HTTP_204_NO_CONTENT)
