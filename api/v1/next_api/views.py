@@ -14,7 +14,7 @@ from apps.salon.serializers import CompanyInfoSerializer, FaqSerializer
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 from api.v1.next_api.serializers import SalonListSerializer, SalonMessengersSerializer, SalonHomeSerializer, \
     ServiceCategorySerializer, MobileAppSectionSerializer, CeoSerializer, SalonFooterSerializer, SalonSerializer, \
-    SaleSerializer, ServiceDetailCategorySerializer
+    SaleSerializer, ServiceDetailCategorySerializer, SpecialistSerializer, SpecialistRetrieveSerializer
 
 
 class HomeView(BaseGenericAPIView):
@@ -225,6 +225,21 @@ class ServiceView(BaseGenericAPIView):
                     return Response(data)
 
         return Response(status=HTTP_404_NOT_FOUND)
+
+
+class SpecialistViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+    """Возвращает информацию о специалисте"""
+    serializer_class = SpecialistRetrieveSerializer
+    queryset = Specialist.objects.filter(is_publish=True)
+
+    def retrieve(self, request, *args, **kwargs):
+        response = super(SpecialistViewSet, self).retrieve(request, *args, **kwargs)
+        app_section = MobileAppSection.objects.filter(is_publish=True) \
+            .prefetch_related('stores').first()
+        response.data['app_section'] = MobileAppSectionSerializer(
+            app_section, context={'request': request}
+        ).data
+        return response
 
 
 class FooterView(BaseGenericAPIView):

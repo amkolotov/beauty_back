@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from api.services import get_absolute_uri
 from apps.salon.models import Salon, SalonImg, Specialist, Sale, \
-    Messenger, MessengerType, MobileAppSection, Store, AppReasons, Ceo, HeadScript
+    Messenger, MessengerType, MobileAppSection, Store, AppReasons, Ceo, HeadScript, WorkImg
 from apps.service.models import ServiceCategory, Service, AddServiceImg
 
 User = get_user_model()
@@ -75,7 +75,7 @@ class SalonListSerializer(SalonFooterSerializer):
 
 
 class SpecialistSerializer(serializers.ModelSerializer):
-    """Класс сериалайзер для изображений салона"""
+    """Класс сериалайзер для изображений специалиста"""
 
     photo = serializers.SerializerMethodField()
 
@@ -87,6 +87,30 @@ class SpecialistSerializer(serializers.ModelSerializer):
         model = Specialist
         fields = ['id', 'name', 'photo', 'position', 'experience', 'title',
                   'text', 'services']
+
+
+class WorkImgSerializer(serializers.ModelSerializer):
+    """Класс сериалайзер для специалиста"""
+
+    img = serializers.SerializerMethodField()
+
+    def get_img(self, obj):
+        if obj.img:
+            return get_absolute_uri(self.context['request'], obj.img.url)
+
+    class Meta:
+        model = WorkImg
+        fields = ['id', 'name', 'img']
+
+
+class SpecialistRetrieveSerializer(SpecialistSerializer):
+    """Класс сериалайзер для специалиста"""
+    work_imgs = WorkImgSerializer(many=True)
+
+    class Meta:
+        model = Specialist
+        fields = ['id', 'name', 'photo', 'position', 'experience', 'title',
+                  'text', 'work_imgs']
 
 
 class SaleSerializer(serializers.ModelSerializer):
