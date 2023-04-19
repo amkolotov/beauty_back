@@ -1,13 +1,18 @@
+import datetime
+
 from ckeditor.fields import RichTextField
+from django.core.exceptions import ValidationError
 from pytils.translit import slugify
 from django.contrib.auth import get_user_model
-from django.db import models
-from django.db.models.signals import post_save
+from django.db import models, transaction
+from django.db.models.signals import post_save, m2m_changed
 from django.dispatch import receiver
 
 from apps.auth_app.fields import PhoneField
 from apps.auth_app.models import BaseModel
-from apps.auth_app.validators import validate_image_and_svg_file_extension
+from apps.auth_app.validators import validate_image_and_svg_file_extension, validate_time
+# from apps.schedule.models import Segment, PlannedSegment
+
 from apps.service.models import ServiceCategory
 from apps.salon.tasks import send_push_notifications_task, send_push_order_confirmed_task, \
     send_salon_new_order_to_telegram_task
@@ -31,7 +36,10 @@ class CompanyInfo(BaseModel):
     email = models.EmailField('E-mail', null=True, blank=True)
     tagline = models.CharField('Слоган', max_length=256)
     decs = models.TextField('Описание')
-    work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
+    work_time_start = models.TimeField('Время начала работы', default=datetime.time(10, 00),
+                                       validators=[validate_time])
+    work_time_end = models.TimeField('Время окончания работы', default=datetime.time(20, 00),
+                                     validators=[validate_time])
     is_publish = models.BooleanField('Опубликована', default=True)
 
     class Meta:
@@ -51,7 +59,10 @@ class Salon(BaseModel):
     email = models.EmailField('E-mail', null=True, blank=True)
     short_desc = models.CharField('Краткое описание', max_length=128, null=True, blank=True)
     desc = models.TextField('Описание')
-    work_time = models.CharField('Часы работы', max_length=64, null=True, blank=True)
+    work_time_start = models.TimeField('Время начала работы', default=datetime.time(10, 00),
+                                       validators=[validate_time])
+    work_time_end = models.TimeField('Время окончания работы', default=datetime.time(20, 00)
+                                     , validators=[validate_time])
     coords = models.CharField('Координаты(58.786093,62.516021)', max_length=64, null=True, blank=True)
     is_publish = models.BooleanField('Опубликован', default=False)
     slug = models.SlugField('Слаг', unique=True, max_length=255, db_index=True,
@@ -223,7 +234,7 @@ STATUSES = (
 
 
 class Order(BaseModel):
-    """Модель заявки"""
+    """Модель записи"""
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
                              verbose_name='Пользователь', related_name='orders')
     name = models.CharField('Имя', max_length=256, null=True, blank=True)
@@ -234,7 +245,9 @@ class Order(BaseModel):
                                 verbose_name='Услуга', related_name='service_orders')
     spec = models.ForeignKey('salon.Specialist', on_delete=models.SET_NULL, null=True, blank=True,
                              verbose_name='Cпециалист', related_name='spec_orders')
-    date = models.DateTimeField('Дата и время бронирования')
+    date = models.DateField('Дата бронирования')
+    start_time = models.TimeField('Время начала', validators=[validate_time])
+    end_time = models.TimeField('Время окончания', validators=[validate_time])
     status = models.CharField('Статус', max_length=10, choices=STATUSES, default='new')
     source = models.CharField('Источник', max_length=10, default='app')
     comment = models.TextField('Комментарий', null=True, blank=True)
@@ -249,22 +262,53 @@ class Order(BaseModel):
         user = self.user if self.user else ''
         return f'{self.salon}-{user}'
 
+    def clean(self):
+        from apps.schedule.models import PlannedSegment
+        self.is_cleaned = True
+
+        if self.date < datetime.date.today():
+            raise ValidationError('Неверная дата записи')
+        if self.start_time >= self.end_time:
+            raise ValidationError('Некорректное время записи')
+        if self.spec:
+            work_segments = PlannedSegment.objects.filter(
+                date=self.date, spec=self.spec, is_busy=False,
+                segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time)\
+                .order_by('segment__number')
+            if not work_segments:
+                raise ValidationError('Некорректное время записи к специалисту')
+
+        super().clean()
+
+    @transaction.atomic
     def save(self, *args, **kwargs):
+        from apps.schedule.models import PlannedSegment
+        if not self.is_cleaned:
+            self.full_clean()
         if self.status != 'new':
             self.is_processed = True
+        if self.spec:
+            work_segments = PlannedSegment.objects.filter(
+                date=self.date, spec=self.spec, is_busy=False,
+                segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time)\
+                .order_by('segment__number')
+            for plan_segment in work_segments:
+                plan_segment.is_busy = True
+                plan_segment.save()
+
         super().save(*args, **kwargs)
 
 
-@receiver(post_save, sender=Order)
-def send_order_confirm(sender, instance, **kwargs):
-    if instance.user and instance.status == 'confirmed':
-        send_push_order_confirmed_task.delay(instance.id)
+# @receiver(post_save, sender=Order)
+# def send_order_confirm(sender, instance, **kwargs):
+#     if instance.user and instance.status == 'confirmed':
+#         send_push_order_confirmed_task.delay(instance.id)
 
 
-@receiver(post_save, sender=Order)
-def send_telegram(sender, instance, created, **kwargs):
-    if created and instance.salon and instance.status == 'new':
-        send_salon_new_order_to_telegram_task.delay(instance.id)
+# @receiver(post_save, sender=Order)
+# def send_telegram(sender, instance, created, **kwargs):
+#     if created and instance.salon and instance.status == 'new':
+#         send_salon_new_order_to_telegram_task.delay(instance.id)
 
 
 class Notification(BaseModel):

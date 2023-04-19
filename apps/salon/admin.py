@@ -54,10 +54,10 @@ class MessengerAdmin(admin.ModelAdmin):
 @admin.register(CompanyInfo)
 class CompanyInfoAdmin(ReadChangeOnlyMixin, admin.ModelAdmin):
     list_display = ['name', 'logo_preview', 'logo_black_preview', 'tagline', 'img_preview', 'about_img_preview',
-                    'address', 'phone', 'work_time', 'is_publish', 'created_at', 'updated_at']
+                    'address', 'phone', 'work_time_start', 'work_time_end', 'is_publish', 'created_at', 'updated_at']
     fields = ['name', 'logo', 'logo_preview', 'logo_black', 'logo_black_preview', 'img',
               'img_preview', 'about_img', 'about_img_preview', 'address', 'phone', 'email',
-              'work_time', 'tagline', 'decs', 'is_publish']
+              'work_time_start', 'work_time_end',  'tagline', 'decs', 'is_publish']
     readonly_fields = ['logo_preview', 'logo_black_preview', 'img_preview', 'about_img_preview']
 
     def logo_preview(self, obj):
@@ -103,9 +103,9 @@ class SalonImgInlineAdmin(admin.TabularInline):
 
 @admin.register(Salon)
 class SalonAdmin(admin.ModelAdmin):
-    list_display = ['name', 'address', 'phone', 'email', 'work_time', 'is_publish',
-                    'created_at', 'updated_at']
-    fields = ['name', 'address', 'phone', 'email', 'work_time', 'coords',
+    list_display = ['name', 'address', 'phone', 'email', 'work_time_start', 'work_time_end',
+                    'is_publish', 'created_at', 'updated_at']
+    fields = ['name', 'address', 'phone', 'email', 'work_time_start', 'work_time_end', 'coords',
               'short_desc', 'desc', 'is_publish', 'slug']
     readonly_fields = ['slug']
     inlines = [SalonImgInlineAdmin]
@@ -204,7 +204,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'date',
                     'source', 'status', 'is_processed', 'created_at', 'updated_at']
     fields = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'comment',
-              'date', 'source', 'status']
+              'date', 'start_time', 'end_time', 'source', 'status']
     list_filter = ['salon', 'service', 'spec', 'source', 'status', 'is_processed']
     search_fields = ['user', 'salon', 'service', 'spec', 'name', 'phone']
     ordering = ['-updated_at']

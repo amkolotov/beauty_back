@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'apps.profile',
     'apps.blog',
     'apps.salon',
-    'apps.service'
+    'apps.service',
+    'apps.schedule',
 
 ]
 
@@ -156,6 +157,8 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 
 USE_TZ = True
+
+TIME_INPUT_FORMATS = ['%H:%M']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -284,7 +287,10 @@ ADMIN_REORDER = [
     {"app": "salon", "models": [
         {'model': 'salon.CompanyInfo', 'label': 'Компания'},
         'salon.Salon', 'salon.Specialist', 'service.ServiceCategory', 'service.Service',
-        'salon.Sale', 'salon.Review', 'salon.Order', 'salon.Notification',
+        'salon.Sale', 'salon.Review', 'salon.Notification',
+    ]},
+    {"app": "schedule", 'label': 'График работы', "models": [
+        'schedule.PlannedSegment', 'schedule.Schedule', 'salon.Order'
     ]},
     {"app": "salon", 'label': 'Мессенджеры', "models": ["salon.Messenger", 'salon.MessengerType']},
     {"app": "salon", 'label': 'Телеграмм', "models": ["salon.TgSettings"]},
