@@ -1,11 +1,8 @@
 from django.urls import path
-from rest_framework.routers import DefaultRouter
-
-from apps.salon.views import MainSalonInfoView, NotificationViewSet, OrderViewSet, \
-    ReviewViewSet, FaqViewSet, ConfView
-from apps.schedule.views import schedule
+from apps.schedule import views
 
 urlpatterns = [
-    path('', schedule, name='schedule'),
+    path('salon/', views.schedule_salon, name='schedule_salon'),
+    path('specialist/', views.schedule_spec, name='schedule_spec'),
 ]
 

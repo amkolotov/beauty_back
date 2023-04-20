@@ -7,6 +7,7 @@ from apps.profile.models import Profile
 
 admin.site.site_title = "Nina Dunin"
 admin.site.site_header = "Nina Dunin"
+admin.site.index_title = "Добро пожаловать в административную панель"
 # admin.site.unregister(Group)
 admin.site.enable_nav_sidebar = False
 
