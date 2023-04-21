@@ -19,11 +19,16 @@ h1 span {
     font-weight: 700;
 }
 
+.table__wrapper {
+    overflow-x: auto;
+}
+
 
 table {
     line-height: 12px;
     table-layout: fixed;
     border-collapse: collapse;
+    width: 1300px;
 }
 
 
@@ -33,28 +38,24 @@ th, td {
 
     border-right: solid 0.5px #5A5A5A;
     border-left: solid 0.5px #5A5A5A;
+
+    width: 50px;
+}
+
+td {
+    height: 50px;
+    padding: 3px;
+    word-break:break-all;
 }
 
 thead {
     background: #5A5A5A;
     height: 33px;
-}
-
-tbody tr {
-    height: 50px;
+    color: #FFFFFF;
 }
 
 .title {
     width: 150px;
-}
-
-.segment {
-    width: 50px;
-}
-
-
-thead {
-    color: #FFFFFF;
 }
 
 .name {
@@ -80,12 +81,12 @@ thead {
 }
 
 .text {
-    font-size: 6px;
-    line-height: 7px;
+    font-size: 8px;
+    /*line-height: 7px;*/
 }
 
 .text__service {
-    font-size: 6px;
-    line-height: 7px;
+    font-size: 8px;
+    /*line-height: 7px;*/
     font-weight: 700;
 }
