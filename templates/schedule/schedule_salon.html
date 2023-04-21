@@ -2,75 +2,138 @@
 {% load static %}
 {% load schedule_tags %}
 
-{% block title %}График работы салона{% endblock %}
+{% block title %}График работы специалиста{% endblock %}
 
 {% block content %}
 
   <h1>График работы салона {{ salon_name }}: <span>{{ date }}</span></h1>
 
-  <div class="table__wrapper">
-    <table>
+  <div class="wrap">
+    <div class="left">
+      <div class="title_head_wrap">
+        <table class="title_head">
+          <thead>
+          <tr>
+            <th>Специалист / Время</th>
+          </tr>
+          </thead>
+        </table>
+      </div>
 
-      <thead>
+      <div class="title_table_wrap">
+        <table class="title_table">
+          <thead>
 
-      <tr>
-        <th class="title">Специалист / Время</th>
-
-        {% for title in range_titles %}
-          <th class="segment">{{ title }}</th>
-        {% endfor %}
-
-      </tr>
-
-      </thead>
-      <tbody>
-      {% for spec in specialists %}
-        <tr>
-          <td class="name">{{ spec.name }}</td>
-          {% for i in range %}
-            {% with segment=spec.spec_segments|get_segment_for_index:i %}
-
-              {% if segment %}
-
-                {% if segment.order %}
-
-                  <td
-                    class="{% if segment.order.status == 'new' %}new{% elif segment.order.status == 'confirmed' %}confirm{% else %}work{% endif %}">
-                    {% if segment.segment.start_time == segment.order.start_time %}
-                      <div class="content">
-                        <div class="text">{% if segment.order.name %}{{ segment.order.name }}{% endif %}</div>
-                        <div class="text">{{ segment.order.phone }}</div>
-                        <div class="text__service">
-                          {% if segment.order.service_id %}{{ segment.order.service.name }}{% endif %}</div>
-                        <div class="source">
-                          {% if segment.order.source == 'app' %}
-                            <img src="{% static 'img/app.svg' %}" alt="app">
-                          {% elif segment.order.source == 'site' %}
-                            <img src="{% static 'img/site.svg' %}" alt="site">
-                          {% else %}
-                            <img src="{% static 'img/user.svg' %}" alt="admin">
-                          {% endif %}
-                        </div>
-                      </div>
-                    {% endif %}
-                  </td>
-
-                {% else %}
-                  <td class="work"></td>
-                {% endif %}
-              {% else %}
-                <td class="default"></td>
-              {% endif %}
-
-            {% endwith %}
+          {% for spec in specialists %}
+            <tr>
+              <td>{{ spec.name }}</td>
+            </tr>
           {% endfor %}
+
+          </thead>
+        </table>
+
+      </div>
+    </div>
+    <div class="right">
+      <table>
+        <thead class="content_head">
+        <tr>
+
+          {% for title in range_titles %}
+            <th>{{ title }}</th>
+          {% endfor %}
+
         </tr>
+        <tr>
+        </thead>
+        <tbody>
+        {% for spec in specialists %}
+          <tr>
+{#            <td class="name">{{ spec.name }}</td>#}
+            {% for i in range %}
+              {% with segment=spec.spec_segments|get_segment_for_index:i %}
 
-      {% endfor %}
+                {% if segment %}
 
-      </tbody>
+                  {% if segment.order %}
 
-    </table>
+                    <td
+                      class="{% if segment.order.status == 'new' %}new{% elif segment.order.status == 'confirmed' %}confirm{% else %}work{% endif %}">
+                      {% if segment.segment.start_time == segment.order.start_time %}
+                        <div class="content">
+                          <div class="text">{% if segment.order.name %}{{ segment.order.name }}{% endif %}</div>
+                          <div class="text">{{ segment.order.phone }}</div>
+                          <div class="text__service">
+                            {% if segment.order.service_id %}{{ segment.order.service.name }}{% endif %}</div>
+                          <div class="source">
+                            {% if segment.order.source == 'app' %}
+                              <img src="{% static 'img/app.svg' %}" alt="app">
+                            {% elif segment.order.source == 'site' %}
+                              <img src="{% static 'img/site.svg' %}" alt="site">
+                            {% else %}
+                              <img src="{% static 'img/user.svg' %}" alt="admin">
+                            {% endif %}
+                          </div>
+                        </div>
+                      {% endif %}
+                    </td>
+
+                  {% else %}
+                    <td class="work"></td>
+                  {% endif %}
+                {% else %}
+                  <td class="default"></td>
+                {% endif %}
+
+              {% endwith %}
+            {% endfor %}
+          </tr>
+
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
+
+  <script>
+    var wrap = document.querySelector(".wrap");
+    var wrapX = wrap.getBoundingClientRect().left;
+    var wrapY = wrap.getBoundingClientRect().top;
+    var blueWrap = document.querySelector(".title_table_wrap");
+    var blueTable = document.querySelector(".title_table");
+    var blueTableX = blueTable.getBoundingClientRect().left;
+    var blueWrapX = blueWrap.getBoundingClientRect().left;
+    var orangeWrap = document.querySelector(".title_head_wrap");
+    var orangeTable = document.querySelector(".title_head");
+    var orangeTableX = orangeTable.getBoundingClientRect().left;
+    var orangeWrapX = orangeWrap.getBoundingClientRect().left;
+    var orangeTableY = orangeTable.getBoundingClientRect().top;
+    var orangeWrapY = orangeWrap.getBoundingClientRect().top;
+    var difX = blueTableX - wrapX;
+    var difY = orangeTableY - wrapY;
+    wrap.addEventListener("scroll", fixTable);
+
+    function fixTable() {
+      wrapX = wrap.getBoundingClientRect().left;
+      wrapY = wrap.getBoundingClientRect().top;
+      blueWrapX = blueWrap.getBoundingClientRect().left;
+      blueTableX = blueTable.getBoundingClientRect().left;
+      orangeWrapX = orangeWrap.getBoundingClientRect().left;
+      orangeTableX = orangeTable.getBoundingClientRect().left;
+      orangeWrapY = orangeWrap.getBoundingClientRect().top;
+      orangeTableY = orangeTable.getBoundingClientRect().top;
+
+      if (wrapX - blueWrapX >= 0) {
+        blueTable.style.left = Math.abs(wrapX - blueWrapX) + difX + "px";
+        orangeTable.style.left = Math.abs(wrapX - orangeWrapX) + difX + "px";
+      } else {
+        blueTable.style.left = wrapX - blueWrapX + difX + "px";
+        orangeTable.style.left = wrapX - orangeWrapX + difX + "px";
+      }
+      orangeTable.style.top = wrapY - orangeWrapY + difY + "px";
+    }
+
+  </script>
 
 {% endblock %}

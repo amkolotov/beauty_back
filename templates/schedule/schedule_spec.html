@@ -8,28 +8,48 @@
 
   <h1>График работы специалиста: <span>{{ spec.name }}</span></h1>
 
-  <div class="table__wrapper">
-    <table>
+  <div class="wrap">
+    <div class="left">
+      <div class="title_head_wrap">
+        <table class="title_head">
+          <thead>
+          <tr>
+            <th>Дата / Время</th>
+          </tr>
+          </thead>
+        </table>
+      </div>
 
-      <thead>
+      <div class="title_table_wrap">
+        <table class="title_table">
+          <thead>
 
-      <tr>
-        <th class="title">Дата / Время</th>
+          {% for date in range_date %}
+            <tr>
+              <td>{{ date }}</td>
+            </tr>
+          {% endfor %}
 
-        {% for title in range_titles %}
-          <th class="segment">{{ title }}</th>
-        {% endfor %}
+          </thead>
+        </table>
 
-      </tr>
-
-      </thead>
-
-      <tbody>
-      {% for date in range_date %}
-
+      </div>
+    </div>
+    <div class="right">
+      <table>
+        <thead class="content_head">
         <tr>
-          <td class="name">{{ date }}</td>
 
+          {% for title in range_titles %}
+            <th>{{ title }}</th>
+          {% endfor %}
+
+        </tr>
+        <tr>
+        </thead>
+        <tbody>
+        {% for date in range_date %}
+        <tr>
           {% with segments=spec.spec_segments|filter_segments_for_date:date %}
 
             {% for i in range %}
@@ -75,11 +95,50 @@
 
           {% endwith %}
         </tr>
-
-      {% endfor %}
-      </tbody>
-
-    </table>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
+
+  <script>
+    var wrap = document.querySelector(".wrap");
+    var wrapX = wrap.getBoundingClientRect().left;
+    var wrapY = wrap.getBoundingClientRect().top;
+    var blueWrap = document.querySelector(".title_table_wrap");
+    var blueTable = document.querySelector(".title_table");
+    var blueTableX = blueTable.getBoundingClientRect().left;
+    var blueWrapX = blueWrap.getBoundingClientRect().left;
+    var orangeWrap = document.querySelector(".title_head_wrap");
+    var orangeTable = document.querySelector(".title_head");
+    var orangeTableX = orangeTable.getBoundingClientRect().left;
+    var orangeWrapX = orangeWrap.getBoundingClientRect().left;
+    var orangeTableY = orangeTable.getBoundingClientRect().top;
+    var orangeWrapY = orangeWrap.getBoundingClientRect().top;
+    var difX = blueTableX - wrapX;
+    var difY = orangeTableY - wrapY;
+    wrap.addEventListener("scroll", fixTable);
+
+    function fixTable() {
+      wrapX = wrap.getBoundingClientRect().left;
+      wrapY = wrap.getBoundingClientRect().top;
+      blueWrapX = blueWrap.getBoundingClientRect().left;
+      blueTableX = blueTable.getBoundingClientRect().left;
+      orangeWrapX = orangeWrap.getBoundingClientRect().left;
+      orangeTableX = orangeTable.getBoundingClientRect().left;
+      orangeWrapY = orangeWrap.getBoundingClientRect().top;
+      orangeTableY = orangeTable.getBoundingClientRect().top;
+
+      if (wrapX - blueWrapX >= 0) {
+        blueTable.style.left = Math.abs(wrapX - blueWrapX) + difX + "px";
+        orangeTable.style.left = Math.abs(wrapX - orangeWrapX) + difX + "px";
+      } else {
+        blueTable.style.left = wrapX - blueWrapX + difX + "px";
+        orangeTable.style.left = wrapX - orangeWrapX + difX + "px";
+      }
+      orangeTable.style.top = wrapY - orangeWrapY + difY + "px";
+    }
+
+  </script>
 
 {% endblock %}
