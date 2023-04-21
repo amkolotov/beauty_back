@@ -55,7 +55,9 @@ class ScheduleAdmin(admin.ModelAdmin):
         return mark_safe(display_text)
 
     def get_spec_schedule_link(self, obj):
-        display_text = f'<div style="display: flex"><a href={reverse("schedule_spec", kwargs={"pk":obj.spec_id})} target="_blank" class="button">График специалиста</a></div>'
+        display_text = f'<div style="display: flex">' \
+                       f'<a href={reverse("schedule_spec", kwargs={"pk":obj.spec_id})}' \
+                       f'?date={obj.date} target="_blank" class="button">График специалиста</a></div>'
         return mark_safe(display_text)
 
     get_salon_schedule_link.short_description = 'Графики салона'

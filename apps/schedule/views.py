@@ -10,6 +10,7 @@ from apps.schedule.services import get_range_for_segments, get_default_time_star
 
 
 def schedule_salon(request):
+    """График работы салона"""
     context = {}
     salon_id = request.GET.get('salon')
 
@@ -38,12 +39,18 @@ def schedule_salon(request):
 
 
 def schedule_spec(request, pk):
+    """График работы специалиста"""
+    context = {}
 
     if not Specialist.objects.filter(id=pk).exists():
         return HttpResponseNotFound("Page not found")
 
-    context = {}
-    date_from = datetime.datetime.today().date()
+    try:
+        date_from_dt = datetime.datetime.strptime(request.GET.get('date'), "%Y-%m-%d")
+    except Exception:
+        date_from_dt = datetime.datetime.today()
+
+    date_from = date_from_dt.date()
     date_to = (datetime.datetime.today() + datetime.timedelta(days=31)).date()
     context['spec'] = Specialist.objects.filter(id=pk).prefetch_related(
                         Prefetch(
@@ -54,6 +61,6 @@ def schedule_spec(request, pk):
                         )
     ).first()
     context['range'], context['range_titles'] = get_range_for_segments()
-    context['range_date'] = [(datetime.datetime.today() + datetime.timedelta(days=i)).date() for i in range(31)]
+    context['range_date'] = [(date_from_dt + datetime.timedelta(days=i)).date() for i in range(31)]
 
     return render(request, 'schedule/schedule_spec.html', context)
