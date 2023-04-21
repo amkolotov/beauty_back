@@ -1,41 +1,61 @@
 {% extends 'base.html' %}
+{% load schedule_tags %}
 
-{% block title %}График работы специалиста{% endblock %}
+{% block title %}График работы салона{% endblock %}
 
 {% block content %}
 
-  <h1>График работы салона</h1>
-
-  <h2>17.04.2023</h2>
+  <h1>График работы салона {{ salon_name }}: <span>{{ date }}</span></h1>
 
   <table>
 
     <thead>
 
     <tr>
-      <th>Специалист / Время</th>
-      <th>8.00</th>
-      <th>8.30</th>
+      <th class="title">Специалист / Время</th>
+
+      {% for title in range_titles %}
+        <th class="segment">{{ title }}</th>
+      {% endfor %}
+
     </tr>
 
     </thead>
-
     <tbody>
+    {% for spec in specialists %}
+      <tr>
+        <td class="name">{{ spec.name }}</td>
+        {% for i in range %}
+          {% with segment=spec.spec_segments|get_segment_for_index:i %}
 
-    <tr>
-      <td>Пименова Вероника</td>
-      <td></td>
-      <td></td>
-    </tr>
+            {% if segment %}
 
-    <tr>
-      <td>Латвийцева Мария</td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
+              {% if segment.order %}
+
+                <td class="{% if segment.order.status == 'new' %}new{% elif segment.order.status == 'confirmed' %}confirm{% else %}work{% endif %}">
+                {% if segment.segment.start_time == segment.order.start_time %}
+                  <div>{% if segment.order.name %}{{ segment.order.name }}{% endif %}</div>
+                  <div>{{ segment.order.phone }}</div>
+                  <div>{% if segment.order.service_id %}{{ segment.order.service.name }}{% endif %}</div>
+                  <div>{% if segment.order.user_id %}зареген{% endif %}</div>
+                {% endif %}
+                </td>
+
+              {% else %}
+                <td class="work"></td>
+              {% endif %}
+            {% else %}
+              <td class="default"></td>
+            {% endif %}
+
+          {% endwith %}
+        {% endfor %}
+      </tr>
+
+    {% endfor %}
 
     </tbody>
+
   </table>
 
 {% endblock %}

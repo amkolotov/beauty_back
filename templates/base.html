@@ -1,10 +1,12 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="ru">
 
 <head>
   <meta charset="UTF-8">
   <title>{% block title %}{% endblock %}</title>
-  <link href='{{ STATIC_URL }}css/index.css' rel='stylesheet' type='text/css'>
+  <link href='{% static 'css/index.css' %}' rel='stylesheet' type='text/css'>
 
   {% block extra_head %}
   {% endblock %}

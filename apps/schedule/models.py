@@ -7,6 +7,7 @@ from django.dispatch import receiver
 
 from apps.auth_app.validators import validate_segment, validate_time
 from apps.salon.models import CompanyInfo
+from .services import get_default_time_start, get_default_time_end
 
 
 class Segment(models.Model):
@@ -40,6 +41,8 @@ class PlannedSegment(models.Model):
                              verbose_name='Cпециалист', related_name='spec_segments')
     date = models.DateField('Дата')
     segment = models.ForeignKey(Segment, on_delete=models.CASCADE, related_name='planned_segments')
+    order = models.ForeignKey('salon.Order', verbose_name='Заявка', on_delete=models.SET_NULL,
+                              null=True, blank=True, related_name='order_planned_segments')
     is_busy = models.BooleanField('Занят?', default=False)
 
     class Meta:
@@ -59,9 +62,9 @@ class Schedule(models.Model):
                               verbose_name='Салон', related_name='schedules')
     date = models.DateField('Дата')
     work_time_start = models.TimeField('Начало рабочего дня', validators=[validate_time],
-                                       default=lambda: CompanyInfo.objects.first().work_time_start)
+                                       default=get_default_time_start)
     work_time_end = models.TimeField('Окончание рабочего дня', validators=[validate_time],
-                                     default=lambda: CompanyInfo.objects.first().work_time_end)
+                                     default=get_default_time_end)
     break_time_start = models.TimeField('Начало перерыва', null=True, blank=True, validators=[validate_time])
     break_time_end = models.TimeField('Окончание перерыва', null=True, blank=True, validators=[validate_time])
 

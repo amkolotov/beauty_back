@@ -1,41 +1,70 @@
 {% extends 'base.html' %}
+{% load schedule_tags %}
 
 {% block title %}График работы специалиста{% endblock %}
 
 {% block content %}
 
-  <h1>График работы специалиста</h1>
+  <h1>График работы специалиста: <span>{{ spec.name }}</span></h1>
 
-  <h2>Пименова Вероника</h2>
-
+<div class="table__wrapper">
   <table>
 
     <thead>
 
     <tr>
-      <th>Дата / Время</th>
-      <th>8.00</th>
-      <th>8.30</th>
+      <th class="title">Дата / Время</th>
+
+      {% for title in range_titles %}
+        <th class="segment">{{ title }}</th>
+      {% endfor %}
+
     </tr>
 
     </thead>
 
     <tbody>
+    {% for date in range_date %}
 
-    <tr>
-      <td>19 апреля 2023 года</td>
-      <td></td>
-      <td></td>
-    </tr>
+      <tr>
+        <td class="name">{{ date }}</td>
 
-    <tr>
-      <td>20 апреля 2023 года</td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
+        {% with segments=spec.spec_segments|filter_segments_for_date:date %}
 
+          {% for i in range %}
+
+            {% with segment=segments|get_segment_for_index:i %}
+
+              {% if segment %}
+
+                {% if segment.order %}
+                  <td
+                    class="{% if segment.order.status == 'new' %}new{% elif segment.order.status == 'confirmed' %}confirm{% else %}work{% endif %}">
+                    {% if segment.segment.start_time == segment.order.start_time %}
+                      <div class="text">{% if segment.order.name %}{{ segment.order.name }}{% endif %}</div>
+                      <div class="text">{{ segment.order.phone }}</div>
+                      <div class="text__service">{% if segment.order.service_id %}{{ segment.order.service.name }}{% endif %}</div>
+                    {% endif %}
+                  </td>
+
+                {% else %}
+                  <td class="work"></td>
+                {% endif %}
+              {% else %}
+                <td class="default"></td>
+              {% endif %}
+
+            {% endwith %}
+
+          {% endfor %}
+
+        {% endwith %}
+      </tr>
+
+    {% endfor %}
     </tbody>
+
   </table>
+</div>
 
 {% endblock %}

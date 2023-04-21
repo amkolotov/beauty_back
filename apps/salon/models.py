@@ -5,13 +5,12 @@ from django.core.exceptions import ValidationError
 from pytils.translit import slugify
 from django.contrib.auth import get_user_model
 from django.db import models, transaction
-from django.db.models.signals import post_save, m2m_changed
+from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from apps.auth_app.fields import PhoneField
 from apps.auth_app.models import BaseModel
 from apps.auth_app.validators import validate_image_and_svg_file_extension, validate_time
-# from apps.schedule.models import Segment, PlannedSegment
 
 from apps.service.models import ServiceCategory
 from apps.salon.tasks import send_push_notifications_task, send_push_order_confirmed_task, \
@@ -248,6 +247,7 @@ class Order(BaseModel):
     date = models.DateField('Дата бронирования')
     start_time = models.TimeField('Время начала', validators=[validate_time])
     end_time = models.TimeField('Время окончания', validators=[validate_time])
+    planned_segments = models.ManyToManyField('schedule.PlannedSegment', related_name='orders')
     status = models.CharField('Статус', max_length=10, choices=STATUSES, default='new')
     source = models.CharField('Источник', max_length=10, default='app')
     comment = models.TextField('Комментарий', null=True, blank=True)
@@ -270,7 +270,7 @@ class Order(BaseModel):
             raise ValidationError('Неверная дата записи')
         if self.start_time >= self.end_time:
             raise ValidationError('Некорректное время записи')
-        if self.spec:
+        if self.spec and self.status == 'new':
             work_segments = PlannedSegment.objects.filter(
                 date=self.date, spec=self.spec, is_busy=False,
                 segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time)\
@@ -287,24 +287,26 @@ class Order(BaseModel):
             self.full_clean()
         if self.status != 'new':
             self.is_processed = True
-        if self.spec:
+        super().save(*args, **kwargs)
+        if self.spec and self.status == 'new':
             work_segments = PlannedSegment.objects.filter(
                 date=self.date, spec=self.spec, is_busy=False,
                 segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time)\
                 .order_by('segment__number')
             for plan_segment in work_segments:
                 plan_segment.is_busy = True
+                plan_segment.order = self
                 plan_segment.save()
 
-        super().save(*args, **kwargs)
+
 
 
 # @receiver(post_save, sender=Order)
 # def send_order_confirm(sender, instance, **kwargs):
 #     if instance.user and instance.status == 'confirmed':
 #         send_push_order_confirmed_task.delay(instance.id)
-
-
+#
+#
 # @receiver(post_save, sender=Order)
 # def send_telegram(sender, instance, created, **kwargs):
 #     if created and instance.salon and instance.status == 'new':
