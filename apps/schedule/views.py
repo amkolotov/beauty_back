@@ -44,7 +44,7 @@ def schedule_spec(request, pk):
 
     context = {}
     date_from = datetime.datetime.today().date()
-    date_to = (datetime.datetime.today() + datetime.timedelta(days=28)).date()
+    date_to = (datetime.datetime.today() + datetime.timedelta(days=31)).date()
     context['spec'] = Specialist.objects.filter(id=pk).prefetch_related(
                         Prefetch(
                             'spec_segments',
@@ -54,6 +54,6 @@ def schedule_spec(request, pk):
                         )
     ).first()
     context['range'], context['range_titles'] = get_range_for_segments()
-    context['range_date'] = [(datetime.datetime.today() + datetime.timedelta(days=i)).date() for i in range(28)]
+    context['range_date'] = [(datetime.datetime.today() + datetime.timedelta(days=i)).date() for i in range(31)]
 
     return render(request, 'schedule/schedule_spec.html', context)

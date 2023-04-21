@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load schedule_tags %}
 
 {% block title %}График работы салона{% endblock %}
@@ -36,9 +37,21 @@
                   <td
                     class="{% if segment.order.status == 'new' %}new{% elif segment.order.status == 'confirmed' %}confirm{% else %}work{% endif %}">
                     {% if segment.segment.start_time == segment.order.start_time %}
-                      <div class="text">{% if segment.order.name %}{{ segment.order.name }}{% endif %}</div>
-                      <div class="text">{{ segment.order.phone }}</div>
-                      <div class="text__service">{% if segment.order.service_id %}{{ segment.order.service.name }}{% endif %}</div>
+                      <div class="content">
+                        <div class="text">{% if segment.order.name %}{{ segment.order.name }}{% endif %}</div>
+                        <div class="text">{{ segment.order.phone }}</div>
+                        <div class="text__service">
+                          {% if segment.order.service_id %}{{ segment.order.service.name }}{% endif %}</div>
+                        <div class="source">
+                          {% if segment.order.source == 'app' %}
+                            <img src="{% static 'img/app.svg' %}" alt="app">
+                          {% elif segment.order.source == 'site' %}
+                            <img src="{% static 'img/site.svg' %}" alt="site">
+                          {% else %}
+                            <img src="{% static 'img/user.svg' %}" alt="admin">
+                          {% endif %}
+                        </div>
+                      </div>
                     {% endif %}
                   </td>
 

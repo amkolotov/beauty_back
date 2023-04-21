@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load schedule_tags %}
 
 {% block title %}График работы специалиста{% endblock %}
@@ -7,64 +8,78 @@
 
   <h1>График работы специалиста: <span>{{ spec.name }}</span></h1>
 
-<div class="table__wrapper">
-  <table>
+  <div class="table__wrapper">
+    <table>
 
-    <thead>
-
-    <tr>
-      <th class="title">Дата / Время</th>
-
-      {% for title in range_titles %}
-        <th class="segment">{{ title }}</th>
-      {% endfor %}
-
-    </tr>
-
-    </thead>
-
-    <tbody>
-    {% for date in range_date %}
+      <thead>
 
       <tr>
-        <td class="name">{{ date }}</td>
+        <th class="title">Дата / Время</th>
 
-        {% with segments=spec.spec_segments|filter_segments_for_date:date %}
+        {% for title in range_titles %}
+          <th class="segment">{{ title }}</th>
+        {% endfor %}
 
-          {% for i in range %}
-
-            {% with segment=segments|get_segment_for_index:i %}
-
-              {% if segment %}
-
-                {% if segment.order %}
-                  <td
-                    class="{% if segment.order.status == 'new' %}new{% elif segment.order.status == 'confirmed' %}confirm{% else %}work{% endif %}">
-                    {% if segment.segment.start_time == segment.order.start_time %}
-                      <div class="text">{% if segment.order.name %}{{ segment.order.name }}{% endif %}</div>
-                      <div class="text">{{ segment.order.phone }}</div>
-                      <div class="text__service">{% if segment.order.service_id %}{{ segment.order.service.name }}{% endif %}</div>
-                    {% endif %}
-                  </td>
-
-                {% else %}
-                  <td class="work"></td>
-                {% endif %}
-              {% else %}
-                <td class="default"></td>
-              {% endif %}
-
-            {% endwith %}
-
-          {% endfor %}
-
-        {% endwith %}
       </tr>
 
-    {% endfor %}
-    </tbody>
+      </thead>
 
-  </table>
-</div>
+      <tbody>
+      {% for date in range_date %}
+
+        <tr>
+          <td class="name">{{ date }}</td>
+
+          {% with segments=spec.spec_segments|filter_segments_for_date:date %}
+
+            {% for i in range %}
+
+              {% with segment=segments|get_segment_for_index:i %}
+
+                {% if segment %}
+
+                  {% if segment.order %}
+                    <td
+                      class="{% if segment.order.status == 'new' %}new{% elif segment.order.status == 'confirmed' %}confirm{% else %}work{% endif %}">
+                      {% if segment.segment.start_time == segment.order.start_time %}
+                        <div class="content">
+                          <div class="text">{% if segment.order.name %}{{ segment.order.name }}{% endif %}</div>
+                          <div class="text">{{ segment.order.phone }}</div>
+                          <div class="text__service">
+                            {% if segment.order.service_id %}{{ segment.order.service.name }}{% endif %}</div>
+                          <div class="source">
+                            {% if segment.order.source == 'app' %}
+                              <img src="{% static 'img/app.svg' %}" alt="app">
+                            {% elif segment.order.source == 'site' %}
+                              <img src="{% static 'img/site.svg' %}" alt="site">
+                            {% else %}
+                              <img src="{% static 'img/user.svg' %}" alt="admin">
+                            {% endif %}
+                          </div>
+
+                        </div>
+
+                      {% endif %}
+                    </td>
+
+                  {% else %}
+                    <td class="work"></td>
+                  {% endif %}
+                {% else %}
+                  <td class="default"></td>
+                {% endif %}
+
+              {% endwith %}
+
+            {% endfor %}
+
+          {% endwith %}
+        </tr>
+
+      {% endfor %}
+      </tbody>
+
+    </table>
+  </div>
 
 {% endblock %}

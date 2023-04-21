@@ -1,5 +1,5 @@
 body {
-    font-family: 'Roboto';
+    font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 10px;
@@ -28,24 +28,28 @@ table {
     line-height: 12px;
     table-layout: fixed;
     border-collapse: collapse;
-    width: 1300px;
+    width: 100%;
+}
+
+@media (max-width: 1332px) {
+    table {
+        width: 1300px;
+    }
 }
 
 
 th, td {
     border-top: solid 3px #FFFFFF;
     border-bottom: solid 3px #FFFFFF;
-
-    border-right: solid 0.5px #5A5A5A;
-    border-left: solid 0.5px #5A5A5A;
-
-    width: 50px;
+    border-right: solid 0.5px #ffffff52;
+    border-left: solid 0.5px #ffffff52;
+    width: 75px;
 }
 
 td {
     height: 50px;
     padding: 3px;
-    word-break:break-all;
+    word-break: break-all;
 }
 
 thead {
@@ -55,13 +59,15 @@ thead {
 }
 
 .title {
-    width: 150px;
+    width: 140px;
 }
 
 .name {
-    background: #ECECEC;
+    background: #ececec;
     text-align: center;
     border-left: none;
+    border-right: solid 0.5px #5a5a5a14;
+    font-size: 12px;
 }
 
 .default {
@@ -70,6 +76,7 @@ thead {
 
 .work {
     background: #ECECEC;
+    border-right: solid 0.5px #5a5a5a14;
 }
 
 .new {
@@ -78,6 +85,7 @@ thead {
 
 .confirm {
     background: #CAFFB1;
+    border-right: solid 0.5px #caffb1;
 }
 
 .text {
@@ -89,4 +97,18 @@ thead {
     font-size: 8px;
     /*line-height: 7px;*/
     font-weight: 700;
+}
+.content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.source {
+    width: 100%;
+    text-align: end;
+}
+.source img {
+    width: 14px;
+    height: auto;
 }

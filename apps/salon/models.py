@@ -231,6 +231,12 @@ STATUSES = (
     (COMPLETED := 'completed', 'Выполнена'),
 )
 
+SOURCES = (
+    (APP := 'app', 'Приложение'),
+    (SITE := 'site', 'Сайт'),
+    (ADMIN := 'admin', 'Администратор'),
+)
+
 
 class Order(BaseModel):
     """Модель записи"""
@@ -249,7 +255,7 @@ class Order(BaseModel):
     end_time = models.TimeField('Время окончания', validators=[validate_time])
     planned_segments = models.ManyToManyField('schedule.PlannedSegment', related_name='orders')
     status = models.CharField('Статус', max_length=10, choices=STATUSES, default='new')
-    source = models.CharField('Источник', max_length=10, default='app')
+    source = models.CharField('Источник', max_length=10, choices=SOURCES, default='admin')
     comment = models.TextField('Комментарий', null=True, blank=True)
     is_processed = models.BooleanField('Обработана', default=False)
 
