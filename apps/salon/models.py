@@ -11,6 +11,7 @@ from django.dispatch import receiver
 from apps.auth_app.fields import PhoneField
 from apps.auth_app.models import BaseModel
 from apps.auth_app.validators import validate_image_and_svg_file_extension, validate_time
+from apps.schedule.services import get_time_choices
 
 from apps.service.models import ServiceCategory
 from apps.salon.tasks import send_push_notifications_task, send_push_order_confirmed_task, \
@@ -251,8 +252,8 @@ class Order(BaseModel):
     spec = models.ForeignKey('salon.Specialist', on_delete=models.SET_NULL, null=True, blank=True,
                              verbose_name='Cпециалист', related_name='spec_orders')
     date = models.DateField('Дата бронирования')
-    start_time = models.TimeField('Время начала', validators=[validate_time])
-    end_time = models.TimeField('Время окончания', validators=[validate_time])
+    start_time = models.TimeField('Время начала', validators=[validate_time], choices=get_time_choices())
+    end_time = models.TimeField('Время окончания', validators=[validate_time], choices=get_time_choices())
     planned_segments = models.ManyToManyField('schedule.PlannedSegment', related_name='orders')
     status = models.CharField('Статус', max_length=10, choices=STATUSES, default='new')
     source = models.CharField('Источник', max_length=10, choices=SOURCES, default='admin')

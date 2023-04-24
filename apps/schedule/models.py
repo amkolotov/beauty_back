@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 from apps.auth_app.validators import validate_segment, validate_time
 from apps.salon.models import CompanyInfo
-from .services import get_default_time_start, get_default_time_end
+from .services import get_default_time_start, get_default_time_end, get_time_choices
 
 
 class Segment(models.Model):
@@ -62,11 +62,13 @@ class Schedule(models.Model):
                               verbose_name='Салон', related_name='schedules')
     date = models.DateField('Дата')
     work_time_start = models.TimeField('Начало рабочего дня', validators=[validate_time],
-                                       default=get_default_time_start)
+                                       default=get_default_time_start, choices=get_time_choices())
     work_time_end = models.TimeField('Окончание рабочего дня', validators=[validate_time],
-                                     default=get_default_time_end)
-    break_time_start = models.TimeField('Начало перерыва', null=True, blank=True, validators=[validate_time])
-    break_time_end = models.TimeField('Окончание перерыва', null=True, blank=True, validators=[validate_time])
+                                     default=get_default_time_end, choices=get_time_choices())
+    break_time_start = models.TimeField('Начало перерыва', null=True, blank=True,
+                                        validators=[validate_time], choices=get_time_choices())
+    break_time_end = models.TimeField('Окончание перерыва', null=True, blank=True,
+                                      validators=[validate_time], choices=get_time_choices())
 
     class Meta:
         unique_together = ['spec', 'date', 'salon']
