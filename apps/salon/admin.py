@@ -15,6 +15,11 @@ class ReadChangeOnlyMixin:
         return False
 
 
+class AddChangeOnlyMixin:
+    def has_delete_permission(self, *args, **kwargs) -> bool:
+        return False
+
+
 class MessengerInlineCompanyAdmin(admin.TabularInline):
     model = Messenger
     fk_name = 'company'
@@ -202,7 +207,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 @admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
+class OrderAdmin(AddChangeOnlyMixin, admin.ModelAdmin):
     list_display = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'date',
                     'source', 'status', 'is_processed', 'created_at', 'updated_at']
     fields = ['salon', 'service', 'spec', 'user', 'name', 'phone', 'comment',

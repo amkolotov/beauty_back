@@ -17,6 +17,11 @@ class ReadOnlyMixin:
         return False
 
 
+class AddChangeOnlyMixin:
+    def has_delete_permission(self, *args, **kwargs) -> bool:
+        return False
+
+
 @admin.register(PlannedSegment)
 class PlannedSegmentAdmin(ReadOnlyMixin, admin.ModelAdmin):
     list_display = ['date', 'get_start_time', 'get_end_time', 'spec', 'get_is_busy']
@@ -50,7 +55,7 @@ class SalonInlineAdmin(admin.TabularInline):
 
 
 @admin.register(Schedule)
-class ScheduleAdmin(admin.ModelAdmin):
+class ScheduleAdmin(AddChangeOnlyMixin, admin.ModelAdmin):
     list_display = ['date', 'spec', 'work_time_start', 'work_time_end', 'break_time_start',
                     'break_time_end', 'get_salon_schedule_link', 'get_spec_schedule_link']
     ordering = ['-date', 'spec']
