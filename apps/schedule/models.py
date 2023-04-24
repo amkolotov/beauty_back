@@ -80,6 +80,9 @@ class Schedule(models.Model):
     def clean(self):
         self.is_cleaned = True
 
+        if not hasattr(self, 'spec'):
+            raise ValidationError('Выберите специалиста')
+
         if not self.work_time_start or not self.work_time_end:
             raise ValidationError('Отсутствует время начала или окончания рабочего дня')
 
