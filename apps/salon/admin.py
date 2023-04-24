@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from apps.salon.models import Salon, SalonImg, Specialist, CompanyInfo, WorkImg, \
     Sale, Review, Order, Messenger, MessengerType, Notification, Faq, MobileAppSection, Store, AppReasons, ConfInfo, \
     ChatsIds, TgSettings, Ceo, HeadScript, BodyScript
+from apps.service.models import ServiceCategory
 
 
 class ReadChangeOnlyMixin:
@@ -169,6 +170,7 @@ class SaleAdmin(admin.ModelAdmin):
         return ", ".join([salon.name for salon in obj.salons.all()])
 
     img_preview.short_description = 'Изображение'
+    get_salons.short_description = 'Салоны'
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
@@ -217,6 +219,15 @@ class OrderAdmin(admin.ModelAdmin):
             if request.user.profile.salon:
                 return queryset.filter(salon=request.user.profile.salon.id)
             return queryset.filter(salon=0)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if not request.user.is_superuser:
+            if db_field.name == "salon":
+                kwargs["queryset"] = Salon.objects.filter(profile=request.user.profile)
+                kwargs['initial'] = Salon.objects.filter(profile=request.user.profile).first()
+            if db_field.name == "spec":
+                kwargs["queryset"] = Specialist.objects.filter(salons=request.user.profile.salon)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 @admin.register(Notification)

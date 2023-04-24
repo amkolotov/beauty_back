@@ -272,17 +272,35 @@ class Order(BaseModel):
         from apps.schedule.models import PlannedSegment
         self.is_cleaned = True
 
-        if self.date < datetime.date.today():
+        if not self.date or self.date < datetime.datetime.today().date():
             raise ValidationError('Неверная дата записи')
-        if self.start_time >= self.end_time:
+        if not self.start_time or not self.end_time or self.start_time >= self.end_time:
             raise ValidationError('Некорректное время записи')
-        if self.spec and self.status == 'new':
-            work_segments = PlannedSegment.objects.filter(
-                date=self.date, spec=self.spec, is_busy=False,
-                segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time)\
-                .order_by('segment__number')
-            if not work_segments:
+        if self.spec and not self.salon:
+            raise ValidationError('Не выбран салон')
+        if self.status != 'canceled' and self.spec:
+            if not self.pk:
+                work_segments = PlannedSegment.objects.filter(
+                    date=self.date, spec=self.spec, order__isnull=True,
+                    segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time
+                ).order_by('segment__number')
+            else:
+                work_segments = (
+                        PlannedSegment.objects.filter(
+                            date=self.date, spec=self.spec, order__isnull=True,
+                            segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time) |
+                        PlannedSegment.objects.filter(
+                            date=self.date, spec=self.spec, order__pk=self.pk,
+                            segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time)
+                ).order_by('segment__number')
+
+            if not work_segments or work_segments[0].segment.start_time != self.start_time or \
+                    work_segments[len(work_segments) - 1].segment.end_time != self.end_time:
                 raise ValidationError('Некорректное время записи к специалисту')
+            for i in range(len(work_segments)):
+                if i > 0:
+                    if work_segments[i].segment.number - work_segments[i - 1].segment.number != 1:
+                        raise ValidationError('Некорректное время записи к специалисту')
 
         super().clean()
 
@@ -293,18 +311,25 @@ class Order(BaseModel):
             self.full_clean()
         if self.status != 'new':
             self.is_processed = True
+        else:
+            self.is_processed = False
         super().save(*args, **kwargs)
-        if self.spec and self.status == 'new':
-            work_segments = PlannedSegment.objects.filter(
-                date=self.date, spec=self.spec, is_busy=False,
-                segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time)\
-                .order_by('segment__number')
-            for plan_segment in work_segments:
-                plan_segment.is_busy = True
-                plan_segment.order = self
-                plan_segment.save()
-
-
+        if self.spec:
+            if self.pk:
+                order_segments = PlannedSegment.objects.filter(
+                    date=self.date, spec=self.spec, order__pk=self.pk).order_by('segment__number')
+                print(order_segments)
+                for order_segment in order_segments:
+                    order_segment.order = None
+                    order_segment.save()
+            if self.status != 'canceled':
+                work_segments = PlannedSegment.objects.filter(
+                    date=self.date, spec=self.spec, order__isnull=True,
+                    segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time) \
+                    .order_by('segment__number')
+                for plan_segment in work_segments:
+                    plan_segment.order = self
+                    plan_segment.save()
 
 
 # @receiver(post_save, sender=Order)
@@ -367,7 +392,7 @@ class MobileAppSection(BaseModel):
     img = models.ImageField('Изображение для страницы приложения',
                             upload_to='site', null=True, blank=True)
     img_for_section = models.ImageField('Изображение для секции приложения',
-                            upload_to='site', null=True, blank=True)
+                                        upload_to='site', null=True, blank=True)
     is_publish = models.BooleanField('Опубликовано', default=True)
 
     class Meta:

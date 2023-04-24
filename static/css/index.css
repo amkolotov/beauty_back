@@ -36,7 +36,7 @@ table {
 }
 
 .title_table td, tbody td {
-    height: 80px;
+    height: 100px;
     border-top: solid 3px #FFFFFF;
     border-bottom: solid 3px #FFFFFF;
     border-right: solid 0.5px #ffffff52;
@@ -59,7 +59,7 @@ table {
 .content_head th {
     position: sticky;
     top: 0;
-    width: 80px;
+    width: 100px;
     border-right: solid 0.5px #ffffff52;
     border-left: solid 0.5px #ffffff52;
 }
@@ -130,13 +130,13 @@ table {
 }
 
 .text {
-    font-size: 8px;
-    line-height: 8px;
+    /*font-size: 9px;*/
+    /*line-height: 8px;*/
 }
 
 .text__service {
-    font-size: 8px;
-    line-height: 8px;
+    /*font-size: 8px;*/
+    /*line-height: 8px;*/
     font-weight: 700;
 }
 
