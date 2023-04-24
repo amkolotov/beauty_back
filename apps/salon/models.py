@@ -275,29 +275,33 @@ class Order(BaseModel):
 
         if not self.date or self.date < datetime.datetime.today().date():
             raise ValidationError('Неверная дата записи')
+
         if not self.start_time or not self.end_time or self.start_time >= self.end_time:
             raise ValidationError('Некорректное время записи')
+
         if self.spec and not self.salon:
             raise ValidationError('Не выбран салон')
-        if self.status != 'canceled' and self.spec:
+
+        if self.status != 'canceled' and self.spec and self.salon:
             if not self.pk:
                 work_segments = PlannedSegment.objects.filter(
-                    date=self.date, spec=self.spec, order__isnull=True,
+                    date=self.date, spec=self.spec, order__isnull=True, schedule__salon=self.salon,
                     segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time
                 ).order_by('segment__number')
             else:
                 work_segments = (
                         PlannedSegment.objects.filter(
-                            date=self.date, spec=self.spec, order__isnull=True,
+                            date=self.date, spec=self.spec, order__isnull=True, schedule__salon=self.salon,
                             segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time) |
                         PlannedSegment.objects.filter(
-                            date=self.date, spec=self.spec, order__pk=self.pk,
+                            date=self.date, spec=self.spec, order__pk=self.pk, schedule__salon=self.salon,
                             segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time)
                 ).order_by('segment__number')
 
             if not work_segments or work_segments[0].segment.start_time != self.start_time or \
                     work_segments[len(work_segments) - 1].segment.end_time != self.end_time:
                 raise ValidationError('Некорректное время записи к специалисту')
+
             for i in range(len(work_segments)):
                 if i > 0:
                     if work_segments[i].segment.number - work_segments[i - 1].segment.number != 1:
@@ -308,24 +312,27 @@ class Order(BaseModel):
     @transaction.atomic
     def save(self, *args, **kwargs):
         from apps.schedule.models import PlannedSegment
+
         if not self.is_cleaned:
             self.full_clean()
+
         if self.status != 'new':
             self.is_processed = True
         else:
             self.is_processed = False
+
         super().save(*args, **kwargs)
-        if self.spec:
+
+        if self.spec and self.salon:
             if self.pk:
                 order_segments = PlannedSegment.objects.filter(
                     date=self.date, spec=self.spec, order__pk=self.pk).order_by('segment__number')
-                print(order_segments)
                 for order_segment in order_segments:
                     order_segment.order = None
                     order_segment.save()
             if self.status != 'canceled':
                 work_segments = PlannedSegment.objects.filter(
-                    date=self.date, spec=self.spec, order__isnull=True,
+                    date=self.date, spec=self.spec, order__isnull=True, schedule__salon=self.salon,
                     segment__start_time__gte=self.start_time, segment__end_time__lte=self.end_time) \
                     .order_by('segment__number')
                 for plan_segment in work_segments:

@@ -42,7 +42,7 @@ class Profile(BaseModel):
             raise ValidationError('Администратору должен быть назначен салон')
 
     def save(self, *args, **kwargs):
-        if not self.is_cleaned:
+        if not hasattr(self, 'is_cleaned') or not self.is_cleaned:
             self.full_clean()
         super().save()
 

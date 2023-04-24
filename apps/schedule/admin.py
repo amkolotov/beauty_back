@@ -23,7 +23,8 @@ class AddChangeOnlyMixin:
 
 
 @admin.register(PlannedSegment)
-class PlannedSegmentAdmin(ReadOnlyMixin, admin.ModelAdmin):
+# class PlannedSegmentAdmin(ReadOnlyMixin, admin.ModelAdmin):
+class PlannedSegmentAdmin(admin.ModelAdmin):
     list_display = ['date', 'get_start_time', 'get_end_time', 'spec', 'get_is_busy']
     list_filter = ['date', 'spec']
     search_fields = ['spec', 'date']
@@ -55,11 +56,12 @@ class SalonInlineAdmin(admin.TabularInline):
 
 
 @admin.register(Schedule)
-class ScheduleAdmin(AddChangeOnlyMixin, admin.ModelAdmin):
+# class ScheduleAdmin(AddChangeOnlyMixin, admin.ModelAdmin):
+class ScheduleAdmin(admin.ModelAdmin):
     list_display = ['date', 'spec', 'work_time_start', 'work_time_end', 'break_time_start',
                     'break_time_end', 'get_salon_schedule_link', 'get_spec_schedule_link']
     ordering = ['-date', 'spec']
-    list_filter = ['date', 'spec']
+    list_filter = ['date', 'salon', 'spec']
 
     def get_salon_schedule_link(self, obj):
         display_text = f'<div style="display: flex">' \

@@ -40,6 +40,8 @@ class PlannedSegment(models.Model):
     """Рабочий отрезок времени"""
     spec = models.ForeignKey('salon.Specialist', on_delete=models.SET_NULL, null=True, blank=True,
                              verbose_name='Cпециалист', related_name='spec_segments')
+    schedule = models.ForeignKey('schedule.Schedule', on_delete=models.CASCADE,
+                                 verbose_name='Дневное расписание', related_name='planned_segments')
     date = models.DateField('Дата')
     segment = models.ForeignKey(Segment, on_delete=models.CASCADE, related_name='planned_segments')
     order = models.ForeignKey('salon.Order', verbose_name='Заявка', on_delete=models.SET_NULL,
@@ -104,15 +106,31 @@ class Schedule(models.Model):
                 raise ValidationError('Не корректное время перерыва')
 
         if self.break_time_start and self.break_time_end:
+
             if PlannedSegment.objects.filter(
-                    Q(segment__start_time__lt=self.work_time_start) | Q(segment__end_time__gt=self.work_time_end) |
-                    Q(segment__start_time__gte=self.break_time_start, segment__end_time__lte=self.break_time_end),
+                    Q(segment__start_time__gte=self.work_time_start, segment__end_time__lte=self.break_time_start) |
+                    Q(segment__start_time__gte=self.break_time_end, segment__end_time__lte=self.work_time_end),
+                    date=self.date, spec=self.spec).exclude(schedule__salon=self.salon).exists():
+                raise ValidationError('Указанное время работы в графике другого салона')
+
+            if PlannedSegment.objects.filter(
+                    Q(segment__start_time__gte=self.work_time_start, segment__end_time__lte=self.break_time_start) |
+                    Q(segment__start_time__gte=self.break_time_end, segment__end_time__lte=self.work_time_end),
                     date=self.date, spec=self.spec, order__isnull=False
             ).exists():
                 raise ValidationError('Необходимо перенести заявку на рабочее время')
+
         else:
+            print(PlannedSegment.objects.filter(
+                    Q(segment__start_time__gte=self.work_time_start, segment__end_time__lte=self.work_time_end),
+                    date=self.date, spec=self.spec).exclude(schedule__salon=self.salon).all())
             if PlannedSegment.objects.filter(
-                    Q(segment__start_time__lt=self.work_time_start) | Q(segment__end_time__gt=self.work_time_end),
+                    Q(segment__start_time__gte=self.work_time_start, segment__end_time__lte=self.work_time_end),
+                    date=self.date, spec=self.spec).exclude(schedule__salon=self.salon).exists():
+                raise ValidationError('Указанное время работы в графике другого салона')
+
+            if PlannedSegment.objects.filter(
+                    Q(segment__start_time__gt=self.work_time_start, segment__end_time__lte=self.work_time_end),
                     date=self.date, spec=self.spec, order__isnull=False
             ).exists():
                 raise ValidationError('Необходимо перенести заявку на рабочее время')
@@ -123,44 +141,39 @@ class Schedule(models.Model):
         if not self.is_cleaned:
             self.full_clean()
         if not self.pk:
+            super().save()
             for segment in Segment.objects.all():
                 if self.work_time_start <= segment.start_time < self.work_time_end:
                     if self.break_time_start and self.break_time_start <= segment.start_time < self.break_time_end:
                         continue
-                    PlannedSegment.objects.create(segment=segment, date=self.date, spec=self.spec)
+                    PlannedSegment.objects.create(segment=segment, date=self.date, spec=self.spec, schedule=self)
         else:
+            super().save()
             if self.break_time_start and self.break_time_end:
                 if PlannedSegment.objects.filter(
-                        Q(segment__start_time__lt=self.work_time_start) | Q(segment__end_time__gt=self.work_time_end) |
-                        Q(segment__start_time__gte=self.break_time_start, segment__end_time__lte=self.break_time_end),
+                        Q(segment__start_time__gte=self.work_time_start, segment__end_time__lte=self.break_time_start) |
+                        Q(segment__start_time__gte=self.break_time_end, segment__end_time__lte=self.work_time_end),
                         date=self.date, spec=self.spec, order__isnull=False
                 ).exists():
                     return
-                PlannedSegment.objects.filter(
-                    Q(segment__start_time__lt=self.work_time_start) | Q(segment__end_time__gt=self.work_time_end) |
-                    Q(segment__start_time__gte=self.break_time_start, segment__end_time__lte=self.break_time_end),
-                    date=self.date, spec=self.spec
-                ).delete()
+                PlannedSegment.objects.filter(schedule__pk=self.pk).delete()
                 for segment in Segment.objects.filter(
-                        Q(start_time__gte=self.work_time_start, segment__end_time__lte=self.break_time_start) |
-                        Q(start_time__gte=self.break_time_start, segment__end_time__lte=self.work_time_end)
+                        Q(start_time__gte=self.work_time_start, end_time__lte=self.break_time_start) |
+                        Q(start_time__gte=self.break_time_start, end_time__lte=self.work_time_end)
                 ):
                     if not PlannedSegment.objects.filter(date=self.date, spec=self.spec, segment=segment).exists():
-                        PlannedSegment.objects.create(date=self.date, spec=self.spec, segment=segment)
+                        PlannedSegment.objects.create(date=self.date, spec=self.spec, segment=segment, schedule=self)
             else:
                 if PlannedSegment.objects.filter(
-                        Q(segment__start_time__lt=self.work_time_start) | Q(segment__end_time__gt=self.work_time_end),
+                        Q(segment__start_time__gte=self.work_time_start) | Q(segment__end_time__lte=self.work_time_end),
                         date=self.date, spec=self.spec
                 ).exists():
                     return
-                PlannedSegment.objects.filter(
-                        date=self.date, spec=self.spec,
-                        segment__start_time__lt=self.work_time_start, segment__end_time__gt=self.work_time_end
-                ).delete()
+                PlannedSegment.objects.filter(schedule__pk=self.pk).delete()
                 for segment in Segment.objects.filter(
-                        segment__start_time__gte=self.work_time_start, segment__end_time__lte=self.work_time_end
+                        start_time__gte=self.work_time_start, end_time__lte=self.work_time_end
                 ):
                     if not PlannedSegment.objects.filter(date=self.date, spec=self.spec, segment=segment).exists():
-                        PlannedSegment.objects.create(date=self.date, spec=self.spec, segment=segment)
+                        PlannedSegment.objects.create(date=self.date, spec=self.spec, segment=segment, schedule=self)
 
-        super().save()
+

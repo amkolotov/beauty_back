@@ -34,7 +34,7 @@ def schedule_salon(request):
     )
     context['range'], context['range_titles'] = get_range_for_segments()
     context['date'] = date
-    context['salon_name'] = salon.name
+    context['salon'] = {'id': salon.id, 'name': salon.name}
     return render(request, 'schedule/schedule_salon.html', context)
 
 
@@ -42,7 +42,7 @@ def schedule_spec(request, pk):
     """График работы специалиста"""
     context = {}
 
-    if not Specialist.objects.filter(id=pk).exists():
+    if not request.user.is_staff or not Specialist.objects.filter(id=pk).exists():
         return HttpResponseNotFound("Page not found")
 
     try:
@@ -62,5 +62,5 @@ def schedule_spec(request, pk):
     ).first()
     context['range'], context['range_titles'] = get_range_for_segments()
     context['range_date'] = [(date_from_dt + datetime.timedelta(days=i)).date() for i in range(31)]
-
+    context['salon_id'] = request.user.profile.salon_id if not request.user.is_superuser else None
     return render(request, 'schedule/schedule_spec.html', context)

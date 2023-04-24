@@ -123,6 +123,9 @@ table {
     background: #FFF3B1;
     border-right: solid 0.5px #FFF3B1;
 }
+.another {
+    background: #5A5A5A;
+}
 
 .confirm {
     background: #CAFFB1;
